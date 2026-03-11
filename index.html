@@ -3,16 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>הקניות של אורן - גרסה מלאה</title>
+    <title>הקניות של אורן - גרסת המוח</title>
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#4a90e2">
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
         :root { --primary: #4a90e2; --secondary: #2ecc71; --danger: #e74c3c; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; padding-bottom: 110px; background: #f4f7f9; direction: rtl; text-align: right; }
-        .top-nav { background: white; padding: 12px; display: flex; gap: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; padding-bottom: 110px; background: #f4f7f9; direction: rtl; text-align: right; }
         .app-container { width: 95%; max-width: 500px; margin: 15px auto; }
         .control-panel { background: white; border-radius: 20px; padding: 18px; box-shadow: 0 8px 25px rgba(0,0,0,0.05); border-top: 6px solid var(--primary); }
         .input-group { display: flex; flex-direction: column; gap: 12px; }
@@ -20,39 +19,39 @@
         select, input { padding: 12px; border: 2px solid #f0f0f0; border-radius: 12px; font-size: 16px; outline: none; flex: 1; text-align: right; }
         .btn { padding: 12px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; }
         .btn-add { background: var(--primary); color: white; flex: 2; }
-        ul { list-style: none; padding: 0; margin: 20px 0 0 0; }
-        li { 
-            background: white; margin-bottom: 10px; padding: 16px; border-radius: 15px; 
-            display: flex; align-items: center; justify-content: flex-start; gap: 12px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.03); border-right: 6px solid var(--primary);
+        
+        /* השלמה אוטומטית */
+        .suggestions-wrapper { position: relative; flex: 1; }
+        .suggestions-box { 
+            position: absolute; top: 100%; left: 0; right: 0; background: white; 
+            border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
+            z-index: 2000; display: none; max-height: 200px; overflow-y: auto; 
         }
-        .collected { opacity: 0.4; text-decoration: line-through; filter: grayscale(1); background: #f8f8f8 !important; }
+        .suggestion-item { padding: 12px; border-bottom: 1px solid #eee; cursor: pointer; display: flex; justify-content: space-between; }
+        .suggestion-item:hover { background: #f0f7ff; }
+
+        li { background: white; margin-bottom: 8px; padding: 15px; border-radius: 15px; display: flex; align-items: center; gap: 12px; border-right: 6px solid var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
+        .collected { opacity: 0.4; text-decoration: line-through; filter: grayscale(1); }
         .budget-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #2c3e50; color: white; padding: 18px; display: flex; justify-content: space-around; font-weight: bold; z-index: 1001; }
     </style>
 </head>
 <body>
-    <div class="top-nav">
-        <select id="myListsDropdown" onchange="switchList(this.value)" style="flex:1;"></select>
-        <button class="btn" style="background: var(--secondary); color: white;" onclick="showNewList()">+</button>
-    </div>
     <div class="app-container">
         <div class="control-panel">
-            <input type="text" id="listNameInput" style="font-size:20px; font-weight:bold; border:none; width:100%; margin-bottom:10px; text-align:right;" onblur="saveListName(this.value)">
+            <input type="text" id="listNameInput" style="font-size:20px; font-weight:bold; border:none; width:100%; margin-bottom:10px;" onblur="saveListName(this.value)">
             <div class="input-group">
                 <div class="row">
-                    <select id="itemCat" onchange="updateUI()"></select>
-                    <select id="quickSelect" onchange="useQuick(this.value)" style="max-width: 90px; font-size: 13px; color: #666;">
-                        <option value="">הצג</option>
-                    </select>
+                    <select id="itemCat"></select>
+                    <input type="number" id="itemPrice" placeholder="₪ מחיר">
                 </div>
                 <div class="row">
-                    <input type="text" id="itemInput" placeholder="מה לקנות?" oninput="checkPrice(this.value)" autocomplete="off">
-                    <input type="number" id="itemPrice" placeholder="₪ מחיר" style="max-width: 70px;">
+                    <div class="suggestions-wrapper">
+                        <input type="text" id="itemInput" placeholder="מה לקנות?" oninput="handleAutocomplete(this.value)" autocomplete="off">
+                        <div id="suggestions" class="suggestions-box"></div>
+                    </div>
+                    <input type="number" id="itemQty" value="1" style="max-width: 55px;">
                 </div>
-                <div class="row">
-                    <input type="number" id="itemQty" value="1" style="max-width: 65px;">
-                    <button class="btn btn-add" onclick="addItem()">הוסף לרשימה</button>
-                </div>
+                <button class="btn btn-add" onclick="addItem()">הוסף</button>
             </div>
         </div>
         <ul id="shoppingList"></ul>
@@ -75,45 +74,70 @@
         };
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
-        let currentListId = new URLSearchParams(window.location.search).get('list') || (JSON.parse(localStorage.getItem('myLists')) || ['list_general'])[0];
+        let currentListId = new URLSearchParams(window.location.search).get('list') || 'list_general';
+        let learnedDictionary = {};
 
-        if ('serviceWorker' in navigator) { window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js')); }
-
-        const prices = { "חלב": 6.5, "ביצים": 13, "לחם": 8, "עוף": 35, "עגבניה": 6, "מלפפון": 5, "קוטג": 6, "גבינה": 14 };
-        const cats = { 
-            super: {meat:"🥩 בשר", dairy:"🥛 חלב", veg:"🥦 ירקות", gen:"📦 כללי"}, 
-            birthday: {party:"🎈 מסיבה", sweet:"🍰 מתוקים", drinks:"🥤 שתייה"} 
-        };
-        const quickItems = {
-            meat: ["עוף", "בשר טחון", "שניצל", "סטייק"],
-            dairy: ["חלב", "גבינה צהובה", "קוטג'", "חמאה"],
-            veg: ["עגבניה", "מלפפון", "בצל", "תפוח אדמה"],
-            gen: ["שמן", "סוכר", "קפה", "אורז"],
-            party: ["בלונים", "מפות", "נרות"],
-            sweet: ["עוגה", "חטיפים", "ממתקים"],
-            drinks: ["קולה", "מיץ", "מים"]
+        // מחירון בסיסי (אומדן)
+        const basePrices = { 
+            "חלב": 6.5, "ביצים": 13, "לחם": 8, "עוף": 35, "בשר טחון": 55, "עגבניה": 6, 
+            "מלפפון": 5, "קוטג": 6, "גבינה צהובה": 15, "שמן": 12, "נייר טואלט": 32, "קפה": 30 
         };
 
-        function checkPrice(v) { for (let k in prices) { if (v.includes(k)) { document.getElementById('itemPrice').value = prices[k]; return; } } }
-        function useQuick(v) { if(v) { document.getElementById('itemInput').value = v; checkPrice(v); } }
-        
         function init() {
+            // טעינת מילון המוצרים שהמערכת למדה
+            database.ref('global_dictionary').on('value', s => { learnedDictionary = s.val() || {}; });
+            
             database.ref('all_lists/'+currentListId+'/metadata').on('value', s => {
                 const meta = s.val() || { name: "רשימה כללית", type: "super" };
                 document.getElementById('listNameInput').value = meta.name;
-                const sel = document.getElementById('itemCat');
-                sel.innerHTML = Object.entries(cats[meta.type] || cats.super).map(([k,v]) => `<option value="${k}">${v}</option>`).join('');
-                updateUI();
+                updateCats(meta.type || "super");
             });
             database.ref('all_lists/'+currentListId+'/items').on('value', s => render(s.val()));
-            updateDrop();
         }
 
-        function updateUI() {
-            const cat = document.getElementById('itemCat').value;
-            const qs = document.getElementById('quickSelect');
-            const items = quickItems[cat] || [];
-            qs.innerHTML = '<option value="">הצג</option>' + items.map(i => `<option value="${i}">${i}</option>`).join('');
+        function updateCats(type) {
+            const cats = { super: {meat:"🥩 בשר", dairy:"🥛 חלב", veg:"🥦 ירקות", gen:"📦 כללי"} };
+            document.getElementById('itemCat').innerHTML = Object.entries(cats[type] || cats.super).map(([k,v]) => `<option value="${k}">${v}</option>`).join('');
+        }
+
+        function handleAutocomplete(val) {
+            const box = document.getElementById('suggestions');
+            if (val.length < 1) { box.style.display = 'none'; return; }
+
+            // איחוד המילון הבסיסי עם המילון הנלמד
+            const allItems = { ...basePrices, ...learnedDictionary };
+            const filtered = Object.keys(allItems).filter(i => i.includes(val)).slice(0, 5);
+
+            if (filtered.length > 0) {
+                box.innerHTML = filtered.map(name => `
+                    <div class="suggestion-item" onclick="selectItem('${name}', ${allItems[name]})">
+                        <span>${name}</span>
+                        <small style="color:#2ecc71">${allItems[name]}₪</small>
+                    </div>
+                `).join('');
+                box.style.display = 'block';
+            } else { box.style.display = 'none'; }
+        }
+
+        function selectItem(name, price) {
+            document.getElementById('itemInput').value = name;
+            document.getElementById('itemPrice').value = price;
+            document.getElementById('suggestions').style.display = 'none';
+        }
+
+        function addItem() {
+            const text = document.getElementById('itemInput').value.trim();
+            const price = parseFloat(document.getElementById('itemPrice').value) || 0;
+            if(!text) return;
+
+            // למידה: שמירת המחיר והמוצר למילון הגלובלי
+            database.ref('global_dictionary/' + text).set(price);
+
+            database.ref('all_lists/'+currentListId+'/items').push({
+                text, price, qty: document.getElementById('itemQty').value, 
+                category: document.getElementById('itemCat').value, collected: false
+            });
+            document.getElementById('itemInput').value = ""; document.getElementById('itemPrice').value = "";
         }
 
         function render(data) {
@@ -126,43 +150,16 @@
                 p += total; if(item.collected) c += total;
                 const li = document.createElement('li');
                 li.className = item.collected ? 'collected' : '';
-                li.innerHTML = `<div onclick="toggle('${id}', ${item.collected})" style="flex:1"><b>${item.qty}</b> | ${item.text} ${total > 0 ? `<span style="color:#2ecc71; font-weight:bold;">(${total}₪)</span>` : ''}</div><span onclick="del('${id}')" style="cursor:pointer">🗑️</span>`;
+                li.innerHTML = `<div onclick="toggle('${id}', ${item.collected})" style="flex:1"><b>${item.qty}</b> | ${item.text} ${total > 0 ? `<span style="color:#2ecc71">(${total}₪)</span>` : ''}</div><span onclick="del('${id}')">🗑️</span>`;
                 (item.collected ? done : todo).appendChild(li);
             }
             document.getElementById('sumP').innerText = p.toFixed(1);
             document.getElementById('sumC').innerText = c.toFixed(1);
         }
 
-        function addItem() {
-            const text = document.getElementById('itemInput').value.trim();
-            if(!text) return;
-            database.ref('all_lists/'+currentListId+'/items').push({
-                text, price: parseFloat(document.getElementById('itemPrice').value) || 0,
-                qty: document.getElementById('itemQty').value, category: document.getElementById('itemCat').value, collected: false
-            });
-            document.getElementById('itemInput').value = ""; document.getElementById('itemPrice').value = "";
-        }
-
         function toggle(id, s) { database.ref('all_lists/'+currentListId+'/items/'+id).update({collected: !s}); }
         function del(id) { if(confirm("למחוק?")) database.ref('all_lists/'+currentListId+'/items/'+id).remove(); }
         function saveListName(n) { database.ref('all_lists/'+currentListId+'/metadata/name').set(n); }
-        function switchList(id) { window.location.search = '?list=' + id; }
-        function showNewList() {
-            const n = prompt("שם הרשימה:"), t = prompt("סוג (super/birthday):", "super");
-            if(!n) return; const id = 'list_'+Date.now();
-            database.ref('all_lists/'+id+'/metadata').set({name:n, type:t || "super"});
-            let l = JSON.parse(localStorage.getItem('myLists')) || []; l.push(id);
-            localStorage.setItem('myLists', JSON.stringify(l)); switchList(id);
-        }
-        async function updateDrop() {
-            const d = document.getElementById('myListsDropdown');
-            let l = JSON.parse(localStorage.getItem('myLists')) || []; d.innerHTML = "";
-            for (const id of l) {
-                const s = await database.ref('all_lists/'+id+'/metadata/name').once('value');
-                const o = document.createElement('option'); o.value = id; o.text = s.val() || "רשימה";
-                if(id === currentListId) o.selected = true; d.add(o);
-            }
-        }
         init();
     </script>
 </body>
