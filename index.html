@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>רשימת קניות מתקדמת</title>
+    <title>רשימת קניות - גרסה יציבה</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     
@@ -11,84 +11,111 @@
         :root {
             --primary: #4a90e2; --secondary: #2ecc71; --danger: #e74c3c;
             --meat: #ffcc80; --dairy: #bbdefb; --cleaning: #e1bee7; --veg: #c8e6c9; --bakery: #fff9c4;
+            --general: #ffffff;
         }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f0f2f5; margin: 0; display: flex; flex-direction: column; align-items: center; }
-        
-        .top-bar { background: white; width: 100%; max-width: 500px; padding: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; display: flex; gap: 10px; }
-        
-        .app-container { width: 92%; max-width: 480px; margin-top: 20px; }
-        
-        .list-card { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        
-        /* עריכת שם רשימה */
-        .title-container { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
-        .list-title { font-size: 22px; font-weight: bold; margin: 0; flex: 1; }
-        .edit-icon { cursor: pointer; font-size: 18px; color: var(--primary); }
 
-        /* אזור הזנה חכם */
-        .input-box { background: #f8f9fa; padding: 15px; border-radius: 15px; }
-        .row { display: flex; gap: 8px; margin-bottom: 10px; }
-        select, input { padding: 12px; border: 1px solid #ddd; border-radius: 10px; font-size: 16px; outline: none; flex: 1; }
-        
-        /* הצעות השלמה אוטומטית */
-        .suggestions { border: 1px solid #ddd; border-radius: 10px; background: white; max-height: 150px; overflow-y: auto; display: none; margin-top: -5px; margin-bottom: 10px; }
-        .suggestion-item { padding: 10px; cursor: pointer; border-bottom: 1px solid #eee; }
-        .suggestion-item:hover { background: #f0f0f0; }
+        * { box-sizing: border-box; } /* מונע מהאלמנטים לחרוג מהמסך */
 
-        /* עיצוב פריטים */
-        ul { list-style: none; padding: 0; }
-        li { margin-bottom: 10px; padding: 15px; display: flex; align-items: center; border-radius: 12px; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-right: 6px solid #ddd; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f0f2f5; margin: 0; display: flex; flex-direction: column; align-items: center; }
+        
+        /* תפריט עליון רספונסיבי */
+        .top-bar { 
+            background: white; width: 100%; max-width: 500px; padding: 10px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; 
+            display: flex; align-items: center; gap: 8px;
+        }
+        
+        .app-container { width: 95%; max-width: 480px; margin-top: 15px; padding-bottom: 50px; }
+        
+        .list-card { background: white; padding: 15px; border-radius: 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        
+        .title-container { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .list-title { font-size: 20px; font-weight: bold; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        /* אזור הזנה גמיש */
+        .input-box { background: #f8f9fa; padding: 12px; border-radius: 12px; }
+        .flex-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+        
+        select, input { 
+            padding: 12px; border: 1px solid #ddd; border-radius: 10px; 
+            font-size: 16px; outline: none; flex: 1; min-width: 80px;
+        }
+
+        #itemQty { max-width: 65px; flex: 0 0 65px; } /* רוחב קבוע לכמות */
+        
+        /* השלמה אוטומטית */
+        .suggestions-wrapper { position: relative; flex: 1; min-width: 150px; }
+        .suggestions { 
+            position: absolute; top: 100%; left: 0; right: 0; 
+            background: white; border: 1px solid #ddd; border-radius: 10px;
+            max-height: 200px; overflow-y: auto; z-index: 2000; display: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .suggestion-item { padding: 12px; border-bottom: 1px solid #f0f0f0; cursor: pointer; }
+
+        /* רשימת פריטים */
+        ul { list-style: none; padding: 0; margin: 0; }
+        li { 
+            margin-bottom: 8px; padding: 12px; display: flex; align-items: center; 
+            border-radius: 12px; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-right: 5px solid #ddd; justify-content: space-between;
+        }
+
         .cat-meat { border-right-color: #e67e22; background: var(--meat); }
         .cat-dairy { border-right-color: #2980b9; background: var(--dairy); }
         .cat-cleaning { border-right-color: #8e44ad; background: var(--cleaning); }
         .cat-veg { border-right-color: #27ae60; background: var(--veg); }
         .cat-bakery { border-right-color: #f1c40f; background: var(--bakery); }
-        .collected { opacity: 0.5; text-decoration: line-through; filter: grayscale(1); background: #eee !important; border-right-color: #95a5a6 !important; }
+        
+        .collected { opacity: 0.5; text-decoration: line-through; filter: grayscale(0.8); background: #f8f9fa !important; border-right-color: #95a5a6 !important; }
 
-        .btn { padding: 12px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        .btn:active { transform: scale(0.95); }
-        .btn-add { background: var(--primary); color: white; width: 80px; }
+        .btn { padding: 10px 15px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; }
+        .btn:active { transform: scale(0.95); opacity: 0.8; }
+        .btn-add { background: var(--primary); color: white; min-width: 70px; }
+        .btn-new { background: var(--secondary); color: white; padding: 10px; }
     </style>
 </head>
 <body>
 
     <div class="top-bar">
         <select id="myListsDropdown" onchange="switchList(this.value)" style="flex: 1;"></select>
-        <button class="btn" style="background: #2ecc71; color: white;" onclick="createNewList()">+</button>
+        <button class="btn btn-new" onclick="createNewList()">+ רשימה</button>
     </div>
 
-    <div class="app-container" id="mainApp">
+    <div class="app-container">
         <div class="list-card">
             <div class="title-container">
-                <h1 id="listNameDisplay" class="list-title">טוען...</h1>
-                <span class="edit-icon" onclick="editListName()">✏️</span>
+                <h1 id="listNameDisplay" class="list-title">רשימה כללית</h1>
+                <span onclick="editListName()" style="cursor:pointer; padding: 5px;">✏️</span>
             </div>
             
             <div class="input-box">
-                <div class="row">
+                <div class="flex-row">
                     <select id="itemCategory" onchange="updateQuickSelect()">
                         <option value="general">📦 כללי</option>
-                        <option value="meat">🥩 בשר ועוף</option>
-                        <option value="dairy">🥛 מוצרי חלב</option>
-                        <option value="cleaning">✨ חומרי ניקיון</option>
-                        <option value="veg">🥦 פירות וירקות</option>
+                        <option value="meat">🥩 בשר</option>
+                        <option value="dairy">🥛 חלב</option>
+                        <option value="cleaning">✨ ניקיון</option>
+                        <option value="veg">🥦 ירקות</option>
                         <option value="bakery">🥐 מאפים</option>
                     </select>
-                    <select id="quickSelect" onchange="useQuickSelect(this.value)" style="display: none;"></select>
-                    <input type="number" id="itemQty" value="1" style="width: 50px;">
+                    <input type="number" id="itemQty" value="1" min="1">
+                    <select id="quickSelect" onchange="useQuickSelect(this.value)" style="display:none;"></select>
                 </div>
-                <div class="row" style="position: relative;">
-                    <input type="text" id="itemInput" placeholder="הקלד שם מוצר..." oninput="handleAutocomplete(this.value)">
+                <div class="flex-row">
+                    <div class="suggestions-wrapper">
+                        <input type="text" id="itemInput" placeholder="מוצר חדש..." oninput="handleAutocomplete(this.value)" autocomplete="off">
+                        <div id="suggestions" class="suggestions"></div>
+                    </div>
                     <button class="btn btn-add" onclick="addItem()">הוסף</button>
                 </div>
-                <div id="suggestions" class="suggestions"></div>
             </div>
         </div>
 
-        <h4 style="color: #7f8c8d; margin: 20px 0 10px;">צריך לקנות</h4>
+        <h4 style="color: #666; margin: 20px 0 10px 5px;">לקנות</h4>
         <ul id="shoppingList"></ul>
 
-        <h4 style="color: #7f8c8d; margin: 20px 0 10px;">כבר בסל</h4>
+        <h4 style="color: #666; margin: 20px 0 10px 5px;">בסל</h4>
         <ul id="collectedList"></ul>
     </div>
 
@@ -107,12 +134,12 @@
         let currentListId = "";
 
         const commonItems = {
-            meat: ["חזה עוף", "בשר טחון", "נקניקיות", "המבורגר", "סטייק"],
+            meat: ["חזה עוף", "בשר טחון", "נקניקיות", "שניצל", "פרגיות"],
             dairy: ["חלב", "גבינה צהובה", "קוטג'", "יוגורט", "חמאה", "שמנת"],
             cleaning: ["אקונומיקה", "נוזל כלים", "אבקת כביסה", "מרכך", "נייר טואלט"],
-            veg: ["עגבניה", "מלפפון", "בצל", "תפוח אדמה", "חסה", "בננה"],
-            bakery: ["לחם אחיד", "פיתות", "לחמניות", "חלה לשבת", "עוגיות"],
-            general: ["שמן", "סוכר", "מלח", "קפה", "תה", "פסטה", "אורז"]
+            veg: ["עגבניה", "מלפפון", "בצל", "תפוח אדמה", "חסה", "פלפל"],
+            bakery: ["לחם", "פיתות", "לחמניות", "חלה", "עוגיות"],
+            general: ["שמן", "סוכר", "מלח", "קפה", "אורז", "פסטה"]
         };
 
         function init() {
@@ -121,13 +148,11 @@
             currentListId = urlParams.get('list');
 
             if (!currentListId) {
-                if (myLists.length > 0) currentListId = myLists[0];
-                else {
-                    // יצירת רשימה כללית כברירת מחדל
-                    currentListId = 'list_general_default';
-                    database.ref('all_lists/' + currentListId + '/metadata').set({ name: "רשימה כללית" });
+                currentListId = myLists.length > 0 ? myLists[0] : 'list_general_default';
+                if (!myLists.includes(currentListId)) {
                     myLists.push(currentListId);
                     localStorage.setItem('myLists', JSON.stringify(myLists));
+                    database.ref('all_lists/'+currentListId+'/metadata').set({name: "רשימה כללית"});
                 }
             }
             updateListsDropdown();
@@ -135,85 +160,79 @@
         }
 
         function loadList(id) {
-            database.ref('all_lists/' + id + '/metadata/name').on('value', snap => {
-                document.getElementById('listNameDisplay').innerText = snap.val() || "רשימה ללא שם";
+            database.ref('all_lists/' + id + '/metadata/name').on('value', s => {
+                document.getElementById('listNameDisplay').innerText = s.val() || "רשימה";
             });
-            database.ref('all_lists/' + id + '/items').on('value', snap => renderItems(snap.val()));
+            database.ref('all_lists/' + id + '/items').on('value', s => renderItems(s.val()));
         }
 
         function updateQuickSelect() {
             const cat = document.getElementById('itemCategory').value;
             const qs = document.getElementById('quickSelect');
-            qs.innerHTML = '<option value="">-- בחר מוצר --</option>';
-            commonItems[cat].forEach(item => {
-                const opt = document.createElement('option');
-                opt.value = item; opt.text = item; qs.add(opt);
-            });
+            qs.innerHTML = '<option value="">-- בחר --</option>';
+            commonItems[cat].forEach(i => { const o = document.createElement('option'); o.value = i; o.text = i; qs.add(o); });
             qs.style.display = 'block';
         }
 
-        function useQuickSelect(val) { if(val) document.getElementById('itemInput').value = val; }
+        function useQuickSelect(v) { if(v) document.getElementById('itemInput').value = v; }
 
-        function handleAutocomplete(val) {
+        function handleAutocomplete(v) {
             const container = document.getElementById('suggestions');
-            if (val.length < 1) { container.style.display = 'none'; return; }
-            
-            const allItems = Object.values(commonItems).flat();
-            const filtered = allItems.filter(i => i.includes(val)).slice(0, 5);
-            
+            if (v.length < 1) { container.style.display = 'none'; return; }
+            const filtered = Object.values(commonItems).flat().filter(i => i.includes(v)).slice(0, 5);
             if (filtered.length > 0) {
                 container.innerHTML = filtered.map(i => `<div class="suggestion-item" onclick="selectSuggestion('${i}')">${i}</div>`).join('');
                 container.style.display = 'block';
             } else container.style.display = 'none';
         }
 
-        function selectSuggestion(val) {
-            document.getElementById('itemInput').value = val;
+        function selectSuggestion(v) {
+            document.getElementById('itemInput').value = v;
             document.getElementById('suggestions').style.display = 'none';
         }
 
         function addItem() {
             const text = document.getElementById('itemInput').value.trim();
-            const category = document.getElementById('itemCategory').value;
-            const qty = document.getElementById('itemQty').value;
             if (!text) return;
-            database.ref('all_lists/' + currentListId + '/items').push({ text, category, qty, collected: false });
+            database.ref('all_lists/' + currentListId + '/items').push({
+                text, category: document.getElementById('itemCategory').value,
+                qty: document.getElementById('itemQty').value, collected: false
+            });
             document.getElementById('itemInput').value = "";
             document.getElementById('suggestions').style.display = 'none';
         }
 
         function renderItems(data) {
-            const todoUl = document.getElementById('shoppingList');
-            const doneUl = document.getElementById('collectedList');
-            todoUl.innerHTML = ""; doneUl.innerHTML = "";
+            const todo = document.getElementById('shoppingList'), done = document.getElementById('collectedList');
+            todo.innerHTML = ""; done.innerHTML = "";
             for (let id in data) {
                 const item = data[id];
                 const li = document.createElement('li');
                 li.className = `cat-${item.category} ${item.collected ? 'collected' : ''}`;
                 li.innerHTML = `
-                    <div style="flex:1; cursor:pointer;" onclick="toggleItem('${id}', ${item.collected})">
+                    <div style="flex:1" onclick="toggleItem('${id}', ${item.collected})">
                         <b>${item.qty}</b> | ${item.text}
                     </div>
-                    <span onclick="deleteItem('${id}')">🗑️</span>
+                    <span onclick="deleteItem('${id}')" style="padding: 5px;">🗑️</span>
                 `;
-                if (item.collected) doneUl.appendChild(li); else todoUl.appendChild(li);
+                (item.collected ? done : todo).appendChild(li);
             }
         }
 
-        function toggleItem(id, status) { database.ref('all_lists/' + currentListId + '/items/' + id).update({ collected: !status }); }
-        function editListName() {
-            const newName = prompt("שם רשימה חדש:", document.getElementById('listNameDisplay').innerText);
-            if (newName) database.ref('all_lists/' + currentListId + '/metadata/name').set(newName);
-        }
-        function deleteItem(id) { database.ref('all_lists/' + currentListId + '/items/' + id).remove(); }
+        function toggleItem(id, s) { database.ref('all_lists/' + currentListId + '/items/' + id).update({ collected: !s }); }
+        function deleteItem(id) { if(confirm("למחוק?")) database.ref('all_lists/' + currentListId + '/items/' + id).remove(); }
         function switchList(id) { window.location.search = '?list=' + id; }
+        function editListName() {
+            const n = prompt("שם חדש:", document.getElementById('listNameDisplay').innerText);
+            if(n) database.ref('all_lists/'+currentListId+'/metadata/name').set(n);
+        }
         function createNewList() {
+            const n = prompt("שם הרשימה:", "חדשה");
+            if(!n) return;
             const id = 'list_' + Date.now();
-            const name = prompt("שם הרשימה החדשה:", "רשימה חדשה");
-            if (!name) return;
-            database.ref('all_lists/' + id + '/metadata').set({ name });
-            let lists = JSON.parse(localStorage.getItem('myLists')) || [];
-            lists.push(id); localStorage.setItem('myLists', JSON.stringify(lists));
+            database.ref('all_lists/' + id + '/metadata').set({ name: n });
+            let l = JSON.parse(localStorage.getItem('myLists')) || [];
+            l.push(id); localStorage.setItem('myLists', JSON.stringify(l));
             switchList(id);
         }
         function updateListsDropdown() {
