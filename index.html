@@ -1,67 +1,63 @@
 <!DOCTYPE html>
-<html dir="rtl" lang="he">
+<html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>רשימת הקניות של אורן</title>
+    <title>רשימת קניות משותפת</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; margin: 0; display: flex; justify-content: center; padding: 20px; }
-        .app-container { background-color: white; width: 100%; max-width: 400px; padding: 20px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        h1 { color: #2c3e50; text-align: center; font-size: 24px; }
-        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
-        input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; }
-        button#addBtn { background-color: #27ae60; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        ul { list-style: none; padding: 0; }
-        li { background: #fff; border-bottom: 1px solid #eee; padding: 12px; font-size: 18px; display: flex; justify-content: space-between; }
-        .clear-btn { background-color: #e74c3c; color: white; border: none; padding: 10px; border-radius: 8px; width: 100%; margin-top: 20px; cursor: pointer; }
+        body { font-family: Arial, sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; padding: 20px; }
+        .container { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+        input { width: 70%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+        button { padding: 10px; cursor: pointer; background-color: #28a745; color: white; border: none; border-radius: 5px; }
+        ul { list-style: none; padding: 0; margin-top: 20px; }
+        li { background: #eee; margin: 5px 0; padding: 10px; display: flex; justify-content: space-between; border-radius: 5px; align-items: center; }
+        .delete-btn { color: red; cursor: pointer; font-weight: bold; margin-right: 10px; }
+        .clear-btn { background-color: #dc3545; margin-top: 20px; width: 100%; }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <h1>הקניות שלי</h1>
-        
-        <div class="input-group">
-            <input type="text" id="itemInput" placeholder="מה להוסיף לסל?">
-            <button id="addBtn" onclick="addItem()">הוסף</button>
-        </div>
-
-        <ul id="shoppingList">
-            </ul>
-
+    <div class="container">
+        <h1>🛒 רשימת קניות</h1>
+        <input type="text" id="itemInput" placeholder="מה צריך לקנות?">
+        <button onclick="addItem()">הוסף</button>
+        <ul id="shoppingList"></ul>
         <button class="clear-btn" onclick="clearAll()">מחק את כל הרשימה</button>
-     </div>
-    <script>
-       // --- כאן תדביק את ה-config שקיבלת מ-Firebase ---
-       const firebaseConfig = {
-  // --- כאן תדביק את ה-config שקיבלת מ-Firebase ---
-       const firebaseConfig = {
-  apiKey: "AIzaSyCb7dApdjqPB6Fip9rW-QxoNbTZBow6rkQ",
-  authDomain: "shopping-list-7c4fa.firebaseapp.com",
-  databaseURL: "https://shopping-list-7c4fa-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "shopping-list-7c4fa",
-  storageBucket: "shopping-list-7c4fa.firebasestorage.app",
-  messagingSenderId: "482760938255",
-  appId: "1:482760938255:web:99e0dd53cb822a8327e47a",
-  measurementId: "G-MBRDXXLKKX"
+    </div>
 
-  // אתחול Firebase
+    <script>
+        // --- הגדרות Firebase שלך (מעודכן לאירופה) ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyAzY7vM6_O_v6S9_I1-F_X9_I1-F_X9_I1", // וודא שזה המפתח שלך
+            authDomain: "shopping-list-85f62.firebaseapp.com",
+            databaseURL: "https://shopping-list-85f62-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "shopping-list-85f62",
+            storageBucket: "shopping-list-85f62.appspot.com",
+            messagingSenderId: "367341514781",
+            appId: "1:367341514781:web:50f7f3f1a2075586618e9a"
+        };
+
+        // אתחול Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
         const listRef = database.ref('items');
 
-        // הוספת פריט לענן
+        // פונקציה להוספת פריט
         function addItem() {
             const input = document.getElementById('itemInput');
-            if (input.value.trim() === "") return;
+            const val = input.value.trim();
+            if (val === "") return;
             
             listRef.push({
-                text: input.value
+                text: val
             });
-            input.value = "";
+            input.value = ""; // ניקוי התיבה
         }
 
-        // האזנה לשינויים בענן (Real-time)
+        // האזנה לשינויים והצגה בזמן אמת
         listRef.on('value', (snapshot) => {
             const listElement = document.getElementById('shoppingList');
             listElement.innerHTML = ""; 
@@ -70,26 +66,25 @@
             for (let id in data) {
                 const li = document.createElement('li');
                 li.innerHTML = `
-                    <span>🛒 ${data[id].text}</span>
-                    <span style="color:red; cursor:pointer;" onclick="deleteItem('${id}')"> ❌</span>
+                    <span>${data[id].text}</span>
+                    <span class="delete-btn" onclick="deleteItem('${id}')">❌</span>
                 `;
                 listElement.appendChild(li);
             }
         });
 
-        // מחיקה מהענן
-   // מחיקה מהענן
+        // פונקציה למחיקת פריט בודד
         function deleteItem(id) {
-            if(confirm("למחוק את הפריט?")) {
-                database.ref('items/' + id).remove();
-            }
+            database.ref('items/' + id).remove();
         }
 
-        // פונקציה למחיקת כל הרשימה מהענן
+        // פונקציה למחיקת כל הרשימה
         function clearAll() {
             if (confirm("בטוח שרוצה למחוק את כל הרשימה?")) {
-                database.ref('items').remove();
+                listRef.remove();
             }
         }
-    </script> </body>
+    </script>
+
+</body>
 </html>
