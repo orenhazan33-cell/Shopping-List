@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>הקניות של אורן - Premium UX</title>
+    <title>הקניות של אורן - Ultimate FX</title>
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#1e272e">
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -19,21 +19,22 @@
         body { 
             font-family: 'Segoe UI', system-ui, sans-serif; 
             margin: 0; padding-bottom: 140px; min-height: 100vh;
-            background-color: #2d3436; background-attachment: fixed; background-size: cover; background-position: center;
-            transition: background-image 0.5s ease-in-out; direction: rtl; text-align: right; overflow-x: hidden;
+            background-color: #1e272e; background-attachment: fixed; background-size: cover; background-position: center;
+            transition: background-image 0.6s ease-in-out; direction: rtl; text-align: right; overflow-x: hidden;
         }
 
-        body.theme-super { background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1578916171728-46686eac8d58?auto=format&fit=crop&w=1080&q=80'); }
-        body.theme-birthday { background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1530103862676-de8892bf309c?auto=format&fit=crop&w=1080&q=80'); }
-        body.theme-wedding { background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1080&q=80'); }
-        body.theme-bar { background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?auto=format&fit=crop&w=1080&q=80'); }
+        /* רקעים כהים ומדויקים יותר לקריאות מושלמת */
+        body.theme-super { background-image: linear-gradient(rgba(15,20,25,0.7), rgba(15,20,25,0.85)), url('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1080&q=80'); }
+        body.theme-birthday { background-image: linear-gradient(rgba(20,10,20,0.65), rgba(20,10,20,0.8)), url('https://images.unsplash.com/photo-1530103862676-de8892bf309c?auto=format&fit=crop&w=1080&q=80'); }
+        body.theme-wedding { background-image: linear-gradient(rgba(30,20,10,0.7), rgba(30,20,10,0.85)), url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1080&q=80'); }
+        body.theme-bar { background-image: linear-gradient(rgba(10,20,40,0.75), rgba(10,20,40,0.9)), url('https://images.unsplash.com/photo-1601564264639-661cd8c1e843?auto=format&fit=crop&w=1080&q=80'); }
 
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 3000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(12px); }
         .app-modal { background: white; width: 90%; max-width: 440px; border-radius: 30px; padding: 35px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.5); }
 
         .top-nav { background: rgba(255,255,255,0.95); backdrop-filter: blur(15px); padding: 15px; display: flex; gap: 12px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.15); align-items: center; border-bottom: 3px solid var(--primary); }
         .app-container { width: 94%; max-width: 500px; margin: 25px auto; }
-        .control-panel { background: var(--glass); border-radius: 30px; padding: 25px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        .control-panel { background: var(--glass); border-radius: 30px; padding: 25px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
         .section-label { font-size: 13px; font-weight: 800; color: #636e72; margin-bottom: 6px; display: block; padding-right: 5px; }
 
         input, select { padding: 15px; border: 2px solid #dfe6e9; border-radius: 18px; font-size: 16px; outline: none; background: #fff; width: 100%; transition: 0.3s; color: #2d3436; font-weight: 600; }
@@ -49,30 +50,28 @@
         li { background: var(--glass); margin-bottom: 12px; padding: 20px; border-radius: 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border-right: 8px solid var(--primary); transition: 0.3s; }
         .collected { opacity: 0.5; filter: grayscale(1); transform: scale(0.98); border-right-color: #b2bec3; }
 
-        .budget-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(30, 39, 46, 0.95); backdrop-filter: blur(15px); color: white; padding: 20px; display: flex; justify-content: space-around; z-index: 1001; border-radius: 35px 35px 0 0; box-shadow: 0 -10px 30px rgba(0,0,0,0.4); border-top: 1px solid rgba(255,255,255,0.1); }
-        .suggestions-box { position: absolute; background: white; width: 100%; border-radius: 18px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); z-index: 2000; display: none; margin-top: 5px; border: 1px solid #dfe6e9; overflow: hidden; }
+        .budget-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20, 25, 30, 0.98); backdrop-filter: blur(15px); color: white; padding: 20px; display: flex; justify-content: space-around; z-index: 1001; border-radius: 35px 35px 0 0; box-shadow: 0 -10px 30px rgba(0,0,0,0.6); border-top: 1px solid rgba(255,255,255,0.1); }
+        .suggestions-box { position: absolute; background: white; width: 100%; border-radius: 18px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); z-index: 2000; display: none; margin-top: 5px; border: 1px solid #dfe6e9; max-height: 250px; overflow-y: auto; }
         .suggestion-item { padding: 15px; border-bottom: 1px solid #f1f2f6; cursor: pointer; display: flex; justify-content: space-between; font-weight: 700; color: #2d3436; }
 
-        /* --- מנוע האנימציות הגרפי והטקסטואלי --- */
+        /* --- מנוע אנימציות עוצמתי --- */
         #animation-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5000; overflow: hidden; display: flex; justify-content: center; align-items: center; }
         .graphic-anim { position: absolute; background-size: contain; background-repeat: no-repeat; opacity: 0; }
         
-        @keyframes floatUp { 0% { transform: translateY(110vh) scale(0.8); opacity: 1; } 100% { transform: translateY(-20vh) scale(1.1); opacity: 0; } }
-        @keyframes fallDown { 0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(110vh) rotate(360deg); opacity: 0; } }
-        @keyframes slideAcross { 0% { transform: translateX(110vw); opacity: 1; } 100% { transform: translateX(-110vw); opacity: 1; } }
+        @keyframes floatUp { 0% { transform: translateY(110vh) scale(0.5); opacity: 1; } 100% { transform: translateY(-20vh) scale(1.5); opacity: 0; } }
+        @keyframes fallDown { 0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(110vh) rotate(720deg); opacity: 0; } }
+        @keyframes slideAcross { 0% { transform: translateX(120vw); opacity: 1; } 100% { transform: translateX(-120vw); opacity: 1; } }
+        @keyframes popGlow { 0% { transform: scale(0); opacity: 0; } 50% { transform: scale(1.2); opacity: 1; filter: drop-shadow(0 0 30px gold); } 100% { transform: scale(1.5); opacity: 0; } }
         
-        /* עיצוב הטקסט הקופץ */
-        @keyframes textPop { 
-            0% { transform: scale(0.5); opacity: 0; } 
-            15% { transform: scale(1.1); opacity: 1; } 
-            80% { transform: scale(1); opacity: 1; } 
-            100% { transform: scale(1.15); opacity: 0; } 
-        }
+        /* עיצוב טקסט קופץ בולט במיוחד (Pill) */
+        @keyframes textPop { 0% { transform: scale(0.5); opacity: 0; } 15% { transform: scale(1.1); opacity: 1; } 80% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.15); opacity: 0; } }
         .anim-text {
-            font-size: 42px; font-weight: 900; color: #fff;
-            text-shadow: 0 4px 20px rgba(0,0,0,0.8), 0 0 10px rgba(255,255,255,0.3);
-            animation: textPop 3.5s ease-in-out forwards;
-            text-align: center; z-index: 5001; padding: 20px;
+            font-size: 32px; font-weight: 900; color: #fff;
+            background: rgba(0, 0, 0, 0.75); border: 2px solid rgba(255,255,255,0.2); /* רקע כהה להבלטה מושלמת */
+            padding: 20px 40px; border-radius: 50px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            animation: textPop 4s ease-in-out forwards;
+            text-align: center; z-index: 5001;
         }
     </style>
 </head>
@@ -163,10 +162,10 @@
             </div>
         </div>
 
-        <h3 style="margin: 35px 10px 10px; font-weight: 900; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">⏳ צריך לקנות</h3>
+        <h3 style="margin: 35px 10px 10px; font-weight: 900; color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,0.8);">⏳ צריך לקנות</h3>
         <ul id="shoppingList"></ul>
         
-        <h3 style="margin: 35px 10px 10px; font-weight: 900; color: #b2bec3; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">✅ כבר בעגלה</h3>
+        <h3 style="margin: 35px 10px 10px; font-weight: 900; color: #dfe6e9; text-shadow: 0 2px 8px rgba(0,0,0,0.8);">✅ כבר בעגלה</h3>
         <ul id="collectedList"></ul>
     </div>
 
@@ -191,29 +190,48 @@
         let currentListId = new URLSearchParams(window.location.search).get('list') || (JSON.parse(localStorage.getItem('myLists')) || ['list_general'])[0];
         let currentType = "super", learnedPrices = {};
 
+        // מאגר מוצרים מורחב מאוד למניעת חוסרים
         const templates = {
-            super: { theme: 'theme-super', title: 'סופר', cats: {meat:"🥩 בשר", dairy:"🥛 חלב", veg:"🥦 ירקות"}, items: {meat:["עוף", "בקר טחון"], dairy:["חלב", "גבינה לבנה"]} },
-            birthday: { theme: 'theme-birthday', title: 'יום הולדת', cats: {party:"🎈 ציוד למסיבה", sweet:"🍰 חטיפים ומתוקים"}, items: {party:["בלונים", "נרות"], sweet:["עוגה", "במבה"]} },
-            bar: { theme: 'theme-bar', title: 'בר מצווה', cats: {sweets:"🍬 סוכריות", relig:"✡️ קדושה"}, items: {relig:["כיפות"]} },
-            wedding: { theme: 'theme-wedding', title: 'חתונה', cats: {gift:"🎁 מתנות", log:"👰 לוגיסטיקה"}, items: {log:["טבעות", "פרחים"]} }
+            super: { 
+                theme: 'theme-super', title: 'סופר', 
+                cats: {meat:"🥩 בשר ודגים", dairy:"🥛 חלב וביצים", veg:"🥦 ירקות ופירות", dry:"🍝 יבשים ושימורים", clean:"🧼 ניקיון ופארם"}, 
+                items: {meat:["עוף שלם", "חזה עוף", "בקר טחון", "שניצל", "דג סלמון"], dairy:["חלב 3%", "ביצים L", "קוטג'", "גבינה צהובה", "יוגורט", "חמאה"], veg:["עגבניה", "מלפפון", "בצל", "תפוח אדמה", "לימון", "בננה"], dry:["פסטה", "אורז", "שמן זית", "קמח", "רסק עגבניות"], clean:["נייר טואלט", "סבון כלים", "שמפו", "אבקת כביסה"]} 
+            },
+            birthday: { 
+                theme: 'theme-birthday', title: 'יום הולדת', 
+                cats: {party:"🎈 ציוד למסיבה", sweet:"🍰 חטיפים ומתוקים", drinks:"🥤 שתייה"}, 
+                items: {party:["בלונים", "נרות", "צלחות חד\"פ", "כוסות חד\"פ", "מפיות", "מפת שולחן"], sweet:["עוגת יום הולדת", "במבה", "ביסלי", "תפוצ'יפס", "מרשמלו", "סוכריות"], drinks:["קולה", "מים מינרלים", "מיץ פטל", "ספרייט"]} 
+            },
+            bar: { 
+                theme: 'theme-bar', title: 'בר מצווה', 
+                cats: {relig:"✡️ קדושה", log:"🎉 הפקה ואורחים"}, 
+                items: {relig:["כיפות", "טלית", "סידור", "תפילין"], log:["הזמנות", "מתנות לאורחים", "סוכריות לזריקה"]} 
+            },
+            wedding: { 
+                theme: 'theme-wedding', title: 'חתונה', 
+                cats: {gift:"🎁 מתנות וטבעות", log:"👰 לוגיסטיקה ואירוע"}, 
+                items: {gift:["טבעת נישואין", "זר כלה", "מתנה לחתן"], log:["הזמנות לחתונה", "פתקי הושבה", "אלכוהול", "קישוטים לרכב"]} 
+            }
         };
 
-        const basePrices = { "חלב": 6.5, "ביצים": 13, "לחם": 8, "עוף": 35 };
+        const basePrices = { "חלב 3%": 6.5, "ביצים L": 13, "לחם": 8, "עוף שלם": 35, "קוטג'": 6.5, "נייר טואלט": 35, "קולה": 7, "במבה": 5 };
 
         function init() {
             loadListData(currentListId, false);
             updateDropdown();
-            database.ref('global_dictionary').on('value', s => learnedPrices = s.val() || {});
+            // משיכת המאגר הלומד
+            database.ref('global_dictionary').on('value', s => {
+                learnedPrices = s.val() || {};
+            });
         }
 
-        // --- מנוע האנימציות + טקסט דינמי ---
+        // --- מנוע האנימציות המוגבר (Full Screen Takeover) ---
         function triggerAnimation(type) {
             const container = document.getElementById('animation-container');
             container.innerHTML = ''; 
             
             if (navigator.vibrate) navigator.vibrate([50, 100, 50]);
 
-            // יצירת הטקסט הקופץ
             let msg = "";
             if (type === 'birthday') msg = "מתחילים לחגוג! 🎈";
             else if (type === 'wedding') msg = "מתכוננים ליום הגדול... 💍";
@@ -227,27 +245,27 @@
                 container.appendChild(textDiv);
             }
 
-            // יצירת הגרפיקה
             if (type === 'birthday') {
                 const balloonSvg = "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"%23ff4757\"><path d=\"M12,2C8.69,2,6,4.69,6,8c0,3.58,4.25,9.36,5.34,10.82C11.66,19.26,12.34,19.26,12.66,18.82C13.75,17.36,18,11.58,18,8 C18,4.69,15.31,2,12,2z\"/><path d=\"M12,20c-0.55,0-1,0.45-1,1v1c0,0.55,0.45,1,1,1s1-0.45,1-1v-1C13,20.45,12.55,20,12,20z\"/></svg>')";
-                for (let i = 0; i < 12; i++) {
+                for (let i = 0; i < 35; i++) { // כמות עצומה של בלונים
                     const b = document.createElement('div');
                     b.className = 'graphic-anim';
                     b.style.backgroundImage = balloonSvg;
-                    b.style.width = '60px'; b.style.height = '80px';
-                    b.style.left = Math.random() * 90 + 'vw';
-                    b.style.animation = `floatUp ${3 + Math.random() * 2}s ease-in forwards`;
+                    const size = 50 + Math.random() * 50;
+                    b.style.width = size + 'px'; b.style.height = (size * 1.3) + 'px';
+                    b.style.left = Math.random() * 100 + 'vw';
+                    b.style.animation = `floatUp ${3 + Math.random() * 3}s ease-in forwards`;
                     b.style.filter = `hue-rotate(${Math.random() * 360}deg)`; 
                     container.appendChild(b);
                 }
             } else if (type === 'wedding') {
-                for (let i = 0; i < 40; i++) {
+                for (let i = 0; i < 100; i++) { // 100 חתיכות קונפטי על כל המסך
                     const c = document.createElement('div');
                     c.className = 'graphic-anim';
                     c.style.background = Math.random() > 0.5 ? '#d4af37' : '#ffffff';
-                    c.style.width = '10px'; c.style.height = '20px';
+                    c.style.width = (5 + Math.random() * 10) + 'px'; c.style.height = (10 + Math.random() * 15) + 'px';
                     c.style.left = Math.random() * 100 + 'vw';
-                    c.style.animation = `fallDown ${3 + Math.random() * 3}s linear forwards`;
+                    c.style.animation = `fallDown ${2 + Math.random() * 4}s linear forwards`;
                     container.appendChild(c);
                 }
             } else if (type === 'super') {
@@ -255,12 +273,21 @@
                 const cart = document.createElement('div');
                 cart.className = 'graphic-anim';
                 cart.style.backgroundImage = cartSvg;
-                cart.style.width = '150px'; cart.style.height = '150px';
-                cart.style.top = '60%';
-                cart.style.animation = 'slideAcross 2.5s linear forwards';
+                cart.style.width = '250px'; cart.style.height = '250px'; // עגלה ענקית
+                cart.style.top = '50%';
+                cart.style.animation = 'slideAcross 3s linear forwards';
                 container.appendChild(cart);
+            } else if (type === 'bar') {
+                const starSvg = "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"gold\"><path d=\"M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z\"/></svg>')";
+                const star = document.createElement('div');
+                star.className = 'graphic-anim';
+                star.style.backgroundImage = starSvg;
+                star.style.width = '200px'; star.style.height = '200px';
+                star.style.top = '40%'; star.style.left = '50%';
+                star.style.animation = 'popGlow 4s ease-out forwards';
+                container.appendChild(star);
             }
-            setTimeout(() => { container.innerHTML = ''; }, 4500);
+            setTimeout(() => { container.innerHTML = ''; }, 5000);
         }
 
         function updateQuantityOptions() {
@@ -268,7 +295,7 @@
             const qtySelect = document.getElementById('itemQty');
             qtySelect.innerHTML = ''; 
 
-            if (cat === 'meat' || cat === 'veg' || cat === 'food') {
+            if (cat === 'meat' || cat === 'veg' || cat === 'food' || cat === 'dry') {
                 for (let i = 200; i <= 4000; i += 100) {
                     let text = i >= 1000 ? (i / 1000) + ' ק"ג' : i + ' גרם';
                     qtySelect.add(new Option(text, i / 1000)); 
@@ -336,7 +363,7 @@
                 box.innerHTML = filtered.map(k => `
                     <div class="suggestion-item" onclick="useQuick('${k}')">
                         <span>${k}</span> 
-                        <small style="color:#0984e3">${allItems[k]}₪</small>
+                        <small style="color:#0984e3">${allItems[k] > 0 ? allItems[k] + '₪' : '+'}</small>
                     </div>
                 `).join('');
                 box.style.display = 'block';
@@ -350,6 +377,7 @@
             document.getElementById('suggestions').style.display = 'none';
         }
 
+        // --- הוספה ולימוד אוטומטי למאגר הנתונים ---
         function addItem() {
             const text = document.getElementById('itemInput').value.trim();
             if(!text) return;
@@ -358,9 +386,10 @@
             const qtySelect = document.getElementById('itemQty');
             const qtyVal = parseFloat(qtySelect.value);
             const qtyText = qtySelect.options[qtySelect.selectedIndex].text;
-            
             const cat = document.getElementById('itemCat').value;
-            if(price > 0) database.ref('global_dictionary/' + text).set(price);
+            
+            // מוח לומד - שומר את המוצר במאגר. אם אין מחיר, נשמור 0 כדי שנזכור לפחות את השם!
+            database.ref('global_dictionary/' + text).set(price);
             
             database.ref('all_lists/'+currentListId+'/items').push({ 
                 text: text, price: price, qtyVal: qtyVal, qtyText: qtyText, qty: qtyText, category: cat, collected: false 
@@ -368,6 +397,7 @@
             
             if (navigator.vibrate) navigator.vibrate(50); 
             document.getElementById('itemInput').value = ""; document.getElementById('itemPrice').value = "";
+            document.getElementById('suggestions').style.display = 'none';
         }
 
         function createNewList() {
@@ -392,11 +422,13 @@
 
         function switchList(id) { loadListData(id, true); window.history.pushState({}, '', '?list=' + id); }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        
         function updateQuickSelect() {
             const cat = document.getElementById('itemCat').value;
             const items = templates[currentType].items[cat] || [];
             document.getElementById('quickSelect').innerHTML = '<option value="">בחר...</option>' + items.map(i => `<option value="${i}">${i}</option>`).join('');
         }
+
         function toggleStatus(id, s) { 
             if (!s && navigator.vibrate) navigator.vibrate([30, 50, 30]); 
             database.ref('all_lists/'+currentListId+'/items/'+id).update({collected: !s}); 
