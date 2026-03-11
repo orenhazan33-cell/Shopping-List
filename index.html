@@ -3,49 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>רשימת קניות משותפת</title>
+    <title>רשימת הקניות שלי</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; padding: 20px; }
-        .container { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
-        input { width: 70%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
-        button { padding: 10px; cursor: pointer; background-color: #28a745; color: white; border: none; border-radius: 5px; }
-        ul { list-style: none; padding: 0; margin-top: 20px; }
-        li { background: #eee; margin: 5px 0; padding: 10px; display: flex; justify-content: space-between; border-radius: 5px; align-items: center; }
-        .delete-btn { color: red; cursor: pointer; font-weight: bold; margin-right: 10px; }
-        .clear-btn { background-color: #dc3545; margin-top: 20px; width: 100%; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; padding: 20px; margin: 0; }
+        .app-container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 450px; text-align: center; }
+        h1 { color: #1a73e8; margin-bottom: 25px; }
+        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
+        input { flex: 1; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; outline: none; }
+        input:focus { border-color: #1a73e8; }
+        button#addBtn { padding: 12px 20px; background-color: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        ul { list-style: none; padding: 0; }
+        li { background: #fff; border-bottom: 1px solid #eee; padding: 15px; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
+        li:hover { background: #f8f9fa; }
+        .delete-btn { color: #dc3545; cursor: pointer; font-size: 18px; padding: 5px 10px; }
+        .clear-btn { background-color: #dc3545; color: white; border: none; padding: 12px; border-radius: 8px; width: 100%; margin-top: 20px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>🛒 רשימת קניות</h1>
-        <input type="text" id="itemInput" placeholder="מה צריך לקנות?">
-        <button onclick="addItem()">הוסף</button>
+    <div class="app-container">
+        <h1>🛒 הקניות שלי</h1>
+        
+        <div class="input-group">
+            <input type="text" id="itemInput" placeholder="מה להוסיף לסל?">
+            <button id="addBtn" onclick="addItem()">הוסף</button>
+        </div>
+
         <ul id="shoppingList"></ul>
+
         <button class="clear-btn" onclick="clearAll()">מחק את כל הרשימה</button>
     </div>
 
     <script>
-        // --- הגדרות Firebase שלך (מעודכן לאירופה) ---
-      const firebaseConfig = {
-            apiKey: "AIzaSyAzY7vM6_O_v6S9_I1-F_X9_I1-F_X9_I1",
-            authDomain: "shopping-list-85f62.firebaseapp.com",
-            databaseURL: "https://shopping-list-85f62-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "shopping-list-85f62",
-            storageBucket: "shopping-list-85f62.appspot.com",
-            messagingSenderId: "367341514781",
-            appId: "1:367341514781:web:50f7f3f1a2075586618e9a"
+        // --- הגדרות Firebase המדויקות שלך (מתוך image_d349fe) ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyCb7dApdjqPB6Fip9rW-QxoNbTZBow6rkQ",
+            authDomain: "shopping-list-7c4fa.firebaseapp.com",
+            databaseURL: "https://shopping-list-7c4fa-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "shopping-list-7c4fa",
+            storageBucket: "shopping-list-7c4fa.appspot.com",
+            messagingSenderId: "482760938255",
+            appId: "1:482760938255:web:99e0dd53cb822a8327e47a",
+            measurementId: "G-MBRDXXLKKX"
         };
 
-        // אתחול Firebase
+        // אתחול
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
         const listRef = database.ref('items');
 
-        // פונקציה להוספת פריט
+        // הוספת פריט
         function addItem() {
             const input = document.getElementById('itemInput');
             const val = input.value.trim();
@@ -54,14 +64,13 @@
             listRef.push({
                 text: val
             });
-            input.value = ""; // ניקוי התיבה
+            input.value = ""; 
         }
 
-        // האזנה לשינויים והצגה בזמן אמת
+        // הצגת פריטים בזמן אמת
         listRef.on('value', (snapshot) => {
             const listElement = document.getElementById('shoppingList');
             listElement.innerHTML = ""; 
-            
             const data = snapshot.val();
             for (let id in data) {
                 const li = document.createElement('li');
@@ -73,18 +82,19 @@
             }
         });
 
-        // פונקציה למחיקת פריט בודד
+        // מחיקת פריט
         function deleteItem(id) {
-            database.ref('items/' + id).remove();
+            if(confirm("למחוק את הפריט?")) {
+                database.ref('items/' + id).remove();
+            }
         }
 
-        // פונקציה למחיקת כל הרשימה
+        // ניקוי כל הרשימה
         function clearAll() {
             if (confirm("בטוח שרוצה למחוק את כל הרשימה?")) {
                 listRef.remove();
             }
         }
     </script>
-
 </body>
 </html>
