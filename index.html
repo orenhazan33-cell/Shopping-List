@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>רשימת הקניות של אורן</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; margin: 0; display: flex; justify-content: center; padding: 20px; }
+        .app-container { background-color: white; width: 100%; max-width: 400px; padding: 20px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; text-align: center; font-size: 24px; }
+        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
+        input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; }
+        button#addBtn { background-color: #27ae60; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        ul { list-style: none; padding: 0; }
+        li { background: #fff; border-bottom: 1px solid #eee; padding: 12px; font-size: 18px; display: flex; justify-content: space-between; }
+        .clear-btn { background-color: #e74c3c; color: white; border: none; padding: 10px; border-radius: 8px; width: 100%; margin-top: 20px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <h1>הקניות שלי</h1>
+        
+        <div class="input-group">
+            <input type="text" id="itemInput" placeholder="מה להוסיף לסל?">
+            <button id="addBtn" onclick="addItem()">הוסף</button>
+        </div>
+
+        <ul id="shoppingList">
+            </ul>
+
+        <button class="clear-btn" onclick="clearAll()">מחק את כל הרשימה</button>
+    </div>
+
+    <script>
+        // פונקציה שרצה ברגע שהדף נפתח
+        window.onload = function() {
+            loadList();
+        };
+
+        function addItem() {
+            const input = document.getElementById('itemInput');
+            if (input.value.trim() === "") return;
+
+            // יוצר את הפריט על המסך
+            createListItem(input.value);
+
+            // שומר את הרשימה המעודכנת
+            saveList();
+
+            // מנקה את התיבה
+            input.value = "";
+        }
+
+        function createListItem(text) {
+            const list = document.getElementById('shoppingList');
+            const li = document.createElement('li');
+            li.textContent = "🛒 " + text;
+            list.appendChild(li);
+        }
+
+        function saveList() {
+            const listItems = [];
+            document.querySelectorAll('#shoppingList li').forEach(li => {
+                listItems.push(li.textContent.replace("🛒 ", ""));
+            });
+            localStorage.setItem('myShoppingList', JSON.stringify(listItems));
+        }
+
+        function loadList() {
+            const savedData = localStorage.getItem('myShoppingList');
+            if (savedData) {
+                const listItems = JSON.parse(savedData);
+                listItems.forEach(item => createListItem(item));
+            }
+        }
+
+        function clearAll() {
+            if (confirm("בטוח שרוצה למחוק הכל?")) {
+                localStorage.removeItem('myShoppingList'); // מוחק מהזיכרון
+                document.getElementById('shoppingList').innerHTML = ""; // מוחק מהמסך
+            }
+        }
+    </script>
+
+</body>
+</html>
