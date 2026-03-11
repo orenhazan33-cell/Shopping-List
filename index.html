@@ -14,22 +14,19 @@
             --secondary: linear-gradient(135deg, #00b894 0%, #55efc4 100%);
             --share: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
             --card-bg: rgba(255, 255, 255, 0.95);
-            --text-main: #2d3436;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body { 
             font-family: 'Segoe UI', system-ui, sans-serif; 
-            margin: 0; padding-bottom: 130px; 
-            background-color: #f1f2f6;
-            background-attachment: fixed;
-            background-size: cover;
-            transition: all 0.5s ease;
-            direction: rtl; text-align: right;
+            margin: 0; padding-bottom: 140px; 
+            min-height: 100vh; background-color: #f1f2f6;
+            background-attachment: fixed; background-size: cover;
+            transition: all 0.5s ease; direction: rtl; text-align: right;
         }
 
-        /* --- רקעים לפי נושאים --- */
+        /* --- רקעים דינמיים --- */
         body.theme-super { background-image: radial-gradient(#d1d8e0 1px, transparent 1px); background-size: 20px 20px; }
         body.theme-birthday { 
             background: #f8a5c2;
@@ -41,162 +38,108 @@
             background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0.5c-.28 0-.5.22-.5.5v2c0 .28.22.5.5.5h19.5zM40 21c0-.28-.22-.5-.5-.5H20v2.5h19.5c.28 0 .5-.22.5-.5v-1.5z' fill='%23d4af37' fill-opacity='0.1'/%3E%3C/svg%3E");
             --primary: linear-gradient(135deg, #d4af37 0%, #aaa69d 100%);
         }
-        body.theme-bar { 
-            background: #d1ccc0;
-            background-image: radial-gradient(#3498db 0.5px, #d1ccc0 0.5px);
-            background-size: 10px 10px;
-            --primary: linear-gradient(135deg, #2980b9 0%, #2c3e50 100%);
-        }
+        body.theme-bar { background: #d1ccc0; --primary: linear-gradient(135deg, #2980b9 0%, #2c3e50 100%); }
 
-        /* --- Modals (Welcome Screen) --- */
-        .modal-overlay { 
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
-            background: rgba(0,0,0,0.8); z-index: 3000; display: none; 
-            align-items: center; justify-content: center; backdrop-filter: blur(10px); 
+        /* --- Mascot Style --- */
+        #mascot {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
+            font-size: 150px; z-index: 5000; pointer-events: none; transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .welcome-card { 
-            background: white; width: 90%; max-width: 420px; border-radius: 40px; 
-            padding: 40px 30px; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-            border: 4px solid transparent; border-image: var(--primary) 1;
-        }
+        #mascot.show { transform: translate(-50%, -50%) scale(1); animation: wobble 1s infinite; }
+        @keyframes wobble { 0%, 100% { transform: translate(-50%, -50%) rotate(0deg); } 25% { transform: translate(-50%, -50%) rotate(-10deg); } 75% { transform: translate(-50%, -50%) rotate(10deg); } }
 
-        /* --- UI Elements --- */
-        .top-nav { 
-            background: rgba(255,255,255,0.9); backdrop-filter: blur(5px);
-            padding: 15px; display: flex; gap: 12px; position: sticky; top: 0; z-index: 1000;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
-        }
-        .app-container { width: 92%; max-width: 500px; margin: 25px auto; }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 3000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(12px); }
+        .app-modal { background: white; width: 90%; max-width: 440px; border-radius: 40px; padding: 40px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.5); }
         
-        .control-panel { 
-            background: var(--card-bg); border-radius: 35px; padding: 25px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1); border-bottom: 8px solid #dfe6e9;
+        .welcome-title {
+            background: var(--primary); -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent; font-size: 38px; margin-top: 0;
         }
 
-        .section-header { 
-            font-size: 14px; color: var(--primary); font-weight: 800; 
-            text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; display: block;
-        }
+        .top-nav { background: rgba(255,255,255,0.9); backdrop-filter: blur(15px); padding: 18px; display: flex; gap: 12px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .app-container { width: 94%; max-width: 500px; margin: 25px auto; }
+        .control-panel { background: var(--card-bg); border-radius: 40px; padding: 25px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        
+        .btn { padding: 18px; border: none; border-radius: 22px; cursor: pointer; font-weight: 900; font-size: 17px; display: flex; align-items: center; justify-content: center; gap: 12px; transition: 0.3s; box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+        .btn-add { background: var(--primary); color: white; width: 100%; }
 
-        .title-row { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
-        .list-title-input { font-size: 26px; font-weight: 900; border: none; outline: none; background: transparent; flex: 1; color: #2d3436; }
-
-        input, select { 
-            padding: 16px; border: 2px solid #f1f2f6; border-radius: 20px; 
-            font-size: 16px; outline: none; background: #f8f9fa; width: 100%;
-            transition: all 0.3s;
-        }
-        input:focus { border-color: #0984e3; box-shadow: 0 0 10px rgba(9,132,227,0.1); background: #fff; }
-
-        .btn { 
-            padding: 18px; border: none; border-radius: 22px; cursor: pointer; 
-            font-weight: 800; font-size: 17px; transition: 0.3s;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-        }
-        .btn:active { transform: translateY(4px); box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .btn-add { background: var(--primary); color: white; margin-top: 10px; }
-        .btn-share { background: var(--share); color: white; width: 100%; margin-top: 10px; }
-
-        /* --- List Items --- */
         ul { list-style: none; padding: 0; margin: 30px 0; }
-        li { 
-            background: white; margin-bottom: 15px; padding: 22px; border-radius: 25px; 
-            display: flex; align-items: center; justify-content: space-between; 
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05); border-right: 10px solid transparent;
-            border-image: var(--primary) 10;
-        }
-        .collected { opacity: 0.4; filter: grayscale(1); border-right-color: #bdc3c7 !important; border-image: none !important; }
+        li { background: white; margin-bottom: 15px; padding: 22px; border-radius: 28px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 12px 20px rgba(0,0,0,0.04); border-right: 12px solid #0984e3; }
+        .collected { opacity: 0.45; filter: grayscale(1); }
 
-        /* --- Budget Dashboard --- */
-        .budget-bar { 
-            position: fixed; bottom: 0; left: 0; right: 0; 
-            background: #2d3436; color: white; padding: 25px; 
-            display: flex; justify-content: space-around; z-index: 1001;
-            border-radius: 40px 40px 0 0; box-shadow: 0 -10px 30px rgba(0,0,0,0.2);
-        }
-        .budget-val { font-size: 22px; color: #55efc4; font-weight: 900; }
+        .budget-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(45, 52, 54, 0.98); color: white; padding: 28px; display: flex; justify-content: space-around; z-index: 1001; border-radius: 45px 45px 0 0; }
+        .suggestions-box { position: absolute; background: white; width: 100%; border-radius: 25px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); z-index: 2000; display: none; margin-top: 60px; border: 1px solid #edf2f7; overflow: hidden; }
+        .suggestion-item { padding: 18px; border-bottom: 1px solid #f1f2f6; cursor: pointer; display: flex; justify-content: space-between; font-weight: 700; }
     </style>
 </head>
 <body class="theme-super">
 
+    <div id="mascot">🛒</div>
+
     <div id="welcomeModal" class="modal-overlay">
-        <div class="welcome-card">
-            <h1 style="margin-top:0; font-size:32px;">היי אורן! 👋</h1>
-            <p style="font-size:18px; color:#636e72;">העוזר האישי שלך מוכן לקניות. בוא נהפוך את הרשימה לחוויה.</p>
-            <div style="margin: 30px 0; text-align: right; background: #f8f9fa; padding: 20px; border-radius: 25px;">
-                <div style="margin-bottom:10px;">✨ <b>עיצוב דינמי:</b> רקעים מותאמים לכל אירוע.</div>
-                <div style="margin-bottom:10px;">🧠 <b>מוח לומד:</b> האפליקציה זוכרת את המחירים שלך.</div>
-                <div>📤 <b>שיתוף VIP:</b> שלח רשימות בקליק אחד.</div>
-            </div>
-            <button class="btn btn-add" style="width:100%;" onclick="closeWelcome()">בוא נתחיל בקניות</button>
+        <div class="app-modal">
+            <h1 class="welcome-title">היי אורן! 👋</h1>
+            <p style="font-size:19px; color:#2d3436; font-weight: 500;">העוזר האישי שלך לקניות מוכן.</p>
+            <button class="btn btn-add" onclick="closeWelcome()">בוא נתחיל!</button>
         </div>
     </div>
 
     <div id="newListModal" class="modal-overlay">
-        <div class="welcome-card">
-            <h2 style="margin-top:0;">יצירת רשימה חדשה</h2>
-            <span class="section-header">שם האירוע</span>
-            <input type="text" id="newListName" placeholder="למשל: יום הולדת לילד" style="margin-bottom:15px;">
-            <span class="section-header">סגנון עיצוב</span>
-            <select id="newListType" style="margin-bottom:25px;">
-                <option value="super">🛒 סופר (נקי)</option>
-                <option value="bar">✡️ בר מצווה (כחול כסף)</option>
-                <option value="wedding">👰 חתונה (זהב יוקרתי)</option>
-                <option value="birthday">🎈 יום הולדת (בלונים)</option>
-                <option value="family">⛺ אירוע משפחתי (טבע)</option>
+        <div class="app-modal">
+            <h2 style="margin-top:0;">רשימה חדשה</h2>
+            <input type="text" id="newListName" placeholder="שם הרשימה..." style="margin-bottom:15px; padding:18px; border-radius:22px; border:2px solid #eee; width:100%;">
+            <select id="newListType" style="margin-bottom:25px; padding:18px; border-radius:22px; border:2px solid #eee; width:100%;">
+                <option value="super">🛒 סופר</option>
+                <option value="bar">✡️ בר מצווה</option>
+                <option value="wedding">👰 חתונה</option>
+                <option value="birthday">🎈 יום הולדת</option>
             </select>
-            <div style="display:flex; gap:10px;">
-                <button class="btn btn-add" style="flex:2" onclick="createNewList()">צור רשימה</button>
-                <button class="btn" style="flex:1; background:#eee;" onclick="closeModal('newListModal')">ביטול</button>
+            <div style="display:flex; gap:12px;">
+                <button class="btn btn-add" style="flex:2" onclick="createNewList()">צור</button>
+                <button class="btn" style="flex:1; background:#f1f2f6;" onclick="closeModal('newListModal')">ביטול</button>
             </div>
         </div>
     </div>
 
     <div class="top-nav">
-        <select id="myListsDropdown" onchange="switchList(this.value)" style="flex:1; font-weight:bold;"></select>
-        <button class="btn btn-add" style="padding:0 25px; margin-top:0;" onclick="document.getElementById('newListModal').style.display='flex'">+</button>
+        <select id="myListsDropdown" onchange="switchList(this.value)" style="flex:1; border:none; background:none; font-weight:900;"></select>
+        <button class="btn btn-add" style="padding:0 28px; margin-top:0; width: auto;" onclick="document.getElementById('newListModal').style.display='flex'">+</button>
     </div>
 
     <div class="app-container">
         <div class="control-panel">
-            <div class="title-row">
-                <input type="text" id="listNameInput" class="list-title-input" onblur="saveListName(this.value)">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <input type="text" id="listNameInput" style="font-size:24px; font-weight:900; border:none; outline:none; background:none; flex:1;" onblur="saveListName(this.value)">
                 <span onclick="document.getElementById('listNameInput').focus()" style="cursor:pointer; font-size:22px;">✏️</span>
             </div>
-            
-            <div class="input-group">
-                <span class="section-header">מה מוסיפים?</span>
-                <div class="row">
-                    <select id="itemCat" onchange="updateQuickSelect()" style="flex:2"></select>
-                    <select id="quickSelect" onchange="useQuick(this.value)" style="flex:1; font-size:12px;"></select>
+            <div style="display:flex; flex-direction:column; gap:15px;">
+                <div style="display:flex; gap:10px;">
+                    <select id="itemCat" onchange="updateQuickSelect()" style="flex:2; padding:15px; border-radius:18px; border:2px solid #f1f2f6;"></select>
+                    <select id="quickSelect" onchange="useQuick(this.value)" style="flex:1; padding:15px; border-radius:18px; border:2px solid #f1f2f6;"><option value="">הצג</option></select>
                 </div>
-                <div class="row" style="position: relative;">
-                    <input type="text" id="itemInput" placeholder="שם המוצר..." oninput="handleAuto(this.value)" style="flex:3">
-                    <input type="number" id="itemPrice" placeholder="₪" style="flex:1; text-align:center;">
+                <div style="position: relative;">
+                    <input type="text" id="itemInput" placeholder="מה קונים?" oninput="handleAuto(this.value)" autocomplete="off" style="padding:18px; border-radius:22px; border:2px solid #f1f2f6; width:100%;">
+                    <div id="suggestions" class="suggestions-box"></div>
                 </div>
-                <div class="row">
-                    <input type="number" id="itemQty" value="1" style="max-width:80px; text-align:center;">
-                    <button class="btn btn-add" style="flex:1" onclick="addItem()">הוסף לרשימה</button>
+                <div style="display:flex; gap:10px;">
+                    <input type="number" id="itemPrice" placeholder="₪" style="flex:1; padding:18px; border-radius:22px; border:2px solid #f1f2f6; text-align:center;">
+                    <input type="number" id="itemQty" value="1" style="width:80px; padding:18px; border-radius:22px; border:2px solid #f1f2f6; text-align:center;">
                 </div>
-                <button class="btn btn-share" onclick="handleShareAction('list')">📤 שתף את הרשימה</button>
+                <button class="btn btn-add" onclick="addItem()">הוסף לרשימה</button>
+                <button class="btn" style="background:var(--share); color:white;" onclick="handleShareAction()">📤 שתף</button>
             </div>
         </div>
 
-        <h3 style="margin: 35px 10px 15px; font-weight: 900; color: #2d3436;">⏳ פריטים לקנייה</h3>
         <ul id="shoppingList"></ul>
-        
-        <h3 style="margin: 35px 10px 15px; font-weight: 900; color: #b2bec3;">✅ כבר בסל</h3>
         <ul id="collectedList"></ul>
     </div>
 
     <div class="budget-bar">
-        <div style="text-align:center;">צפי הוצאה<br><span id="sumP" class="budget-val" style="color:#74b9ff">0</span></div>
-        <div style="text-align:center;">בסל כרגע<br><span id="sumC" class="budget-val">0</span></div>
+        <div style="text-align:center;">צפי<br><span id="sumP" style="font-size:24px; color:#74b9ff; font-weight:900;">0</span></div>
+        <div style="text-align:center;">בסל<br><span id="sumC" style="font-size:24px; color:#55efc4; font-weight:900;">0</span></div>
     </div>
 
     <script>
-        // --- Firebase Config ---
         const firebaseConfig = {
             apiKey: "AIzaSyCb7dApdjqPB6Fip9rW-QxoNbTZBow6rkQ",
             authDomain: "shopping-list-7c4fa.firebaseapp.com",
@@ -213,30 +156,36 @@
         let currentType = "super", learnedPrices = {};
 
         const templates = {
-            super: { theme: 'theme-super', cats: {meat:"🥩 בשר", dairy:"🥛 חלב", veg:"🥦 ירקות", gen:"📦 כללי"}, items: {meat:["עוף","בשר","שניצל"], dairy:["חלב","גבינה"]} },
-            birthday: { theme: 'theme-birthday', cats: {party:"🎈 מסיבה", sweet:"🍰 מתוקים"}, items: {party:["בלונים","נרות"], sweet:["עוגה"]} },
-            bar: { theme: 'theme-bar', cats: {sweets:"🍬 סוכריות", relig:"✡️ קדושה"}, items: {sweets:["סוכריות לזריקה"], relig:["כיפות"]} },
-            wedding: { theme: 'theme-wedding', cats: {gift:"🎁 מתנות", log:"👰 לוגיסטיקה"}, items: {log:["טבעות","הזמנות"]} },
-            family: { theme: 'theme-family', cats: {food:"🍱 אוכל", log:"⛺ ציוד"}, items: {food:["פיתות","חומוס"], log:["מחצלת"]} }
+            super: { theme: 'theme-super', icon: '🛒', cats: {meat:"🥩 בשר", dairy:"🥛 חלב", veg:"🥦 ירקות", gen:"📦 כללי"}, items: {meat:["עוף","בשר"], dairy:["חלב","גבינה"]} },
+            birthday: { theme: 'theme-birthday', icon: '🎈', cats: {party:"🎈 מסיבה", sweet:"🍰 מתוקים"}, items: {party:["בלונים","נרות"], sweet:["עוגה"]} },
+            bar: { theme: 'theme-bar', icon: '✡️', cats: {sweets:"🍬 סוכריות", relig:"✡️ קדושה"}, items: {sweets:["סוכריות"], relig:["כיפות"]} },
+            wedding: { theme: 'theme-wedding', icon: '👰', cats: {gift:"🎁 מתנות", log:"👰 לוגיסטיקה"}, items: {log:["טבעות"]} }
         };
 
-        const basePrices = { "חלב": 6.5, "ביצים": 13, "לחם": 8, "עוף": 35, "עגבניה": 6 };
+        const basePrices = { "חלב": 6.5, "ביצים": 13, "לחם": 8, "עוף": 35 };
 
         function init() {
-            loadListData(currentListId);
+            loadListData(currentListId, false);
             updateDropdown();
-            database.ref('global_dictionary').on('value', s => learnedPrices = s.val() || {});
+            database.ref('global_dictionary').on('value', s => { learnedPrices = s.val() || {}; });
         }
 
-        function loadListData(id) {
+        function triggerMascot(icon) {
+            const m = document.getElementById('mascot');
+            m.innerText = icon; m.classList.add('show');
+            setTimeout(() => { m.classList.remove('show'); }, 1500);
+        }
+
+        function loadListData(id, showMascot = true) {
             database.ref('all_lists/'+currentListId+'/metadata').off();
             database.ref('all_lists/'+currentListId+'/items').off();
             currentListId = id;
             database.ref('all_lists/'+id+'/metadata').on('value', s => {
-                const meta = s.val() || { name: "רשימה כללית", type: "super" };
+                const meta = s.val() || { name: "רשימה", type: "super" };
                 document.getElementById('listNameInput').value = meta.name;
                 currentType = meta.type || "super";
                 document.body.className = templates[currentType].theme;
+                if(showMascot) triggerMascot(templates[currentType].icon);
                 document.getElementById('itemCat').innerHTML = Object.entries(templates[currentType].cats).map(([k,v]) => `<option value="${k}">${v}</option>`).join('');
                 updateQuickSelect();
             });
@@ -253,11 +202,29 @@
                 p += total; if(item.collected) c += total;
                 const li = document.createElement('li');
                 li.className = item.collected ? 'collected' : '';
-                li.innerHTML = `<div onclick="toggleStatus('${id}',${item.collected})" style="flex:1; font-weight:700;">${item.qty} x ${item.text} <span style="color:#2ecc71; margin-right:10px;">${total>0 ? total+'₪' : ''}</span></div><span onclick="del('${id}')" style="cursor:pointer; font-size:20px;">🗑️</span>`;
+                li.innerHTML = `<div onclick="toggleStatus('${id}',${item.collected})" style="flex:1; font-weight:800;">${item.qty} x ${item.text} <span>${total>0 ? total+'₪' : ''}</span></div><span onclick="del('${id}')">🗑️</span>`;
                 (item.collected ? done : todo).appendChild(li);
             }
             document.getElementById('sumP').innerText = p.toFixed(1) + " ₪";
             document.getElementById('sumC').innerText = c.toFixed(1) + " ₪";
+        }
+
+        function handleAuto(v) {
+            const box = document.getElementById('suggestions');
+            if(v.length < 1) { box.style.display = 'none'; return; }
+            const all = {...basePrices, ...learnedPrices};
+            const filtered = Object.keys(all).filter(k => k.includes(v));
+            if(filtered.length > 0) {
+                box.innerHTML = filtered.map(k => `<div class="suggestion-item" onclick="useQuick('${k}')"><span>${k}</span> <small>${all[k]}₪</small></div>`).join('');
+                box.style.display = 'block';
+            } else box.style.display = 'none';
+        }
+
+        function useQuick(v) {
+            const all = {...basePrices, ...learnedPrices};
+            document.getElementById('itemInput').value = v;
+            document.getElementById('itemPrice').value = all[v] || "";
+            document.getElementById('suggestions').style.display = 'none';
         }
 
         function addItem() {
@@ -269,17 +236,6 @@
             document.getElementById('itemInput').value = ""; document.getElementById('itemPrice').value = "";
         }
 
-        function handleAuto(v) {
-            if(v.length < 1) return;
-            const all = {...basePrices, ...learnedPrices};
-            for(let k in all) { if(k.includes(v)) { document.getElementById('itemPrice').value = all[k]; break; } }
-        }
-
-        function useQuick(v) { if(v) { document.getElementById('itemInput').value = v; handleAuto(v); } }
-        function switchList(id) { loadListData(id); window.history.pushState({}, '', '?list=' + id); }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        function closeWelcome() { localStorage.setItem('welcomeShown', 'true'); closeModal('welcomeModal'); }
-        
         function createNewList() {
             const name = document.getElementById('newListName').value;
             const type = document.getElementById('newListType').value;
@@ -291,11 +247,9 @@
             closeModal('newListModal'); updateDropdown(); switchList(id);
         }
 
-        function handleShareAction(type) {
-            const url = window.location.href;
-            navigator.share ? navigator.share({title:'הקניות שלי', url}) : (navigator.clipboard.writeText(url) && alert("הלינק הועתק!"));
-        }
-
+        function switchList(id) { loadListData(id, true); window.history.pushState({}, '', '?list=' + id); }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function closeWelcome() { localStorage.setItem('welcomeShown', 'true'); closeModal('welcomeModal'); }
         function updateQuickSelect() {
             const cat = document.getElementById('itemCat').value;
             const items = templates[currentType].items[cat] || [];
@@ -304,6 +258,8 @@
         function toggleStatus(id, s) { database.ref('all_lists/'+currentListId+'/items/'+id).update({collected: !s}); }
         function del(id) { if(confirm("למחוק?")) database.ref('all_lists/'+currentListId+'/items/'+id).remove(); }
         function saveListName(n) { database.ref('all_lists/'+currentListId+'/metadata/name').set(n); }
+        function handleShareAction() { navigator.share({title:'הקניות שלי', url: window.location.href}); }
+
         async function updateDropdown() {
             const d = document.getElementById('myListsDropdown');
             let l = JSON.parse(localStorage.getItem('myLists')) || []; d.innerHTML = "";
