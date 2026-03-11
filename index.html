@@ -3,91 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>הקניות של אורן - גרסה מלאה</title>
+    <title>הקניות של אורן - Pro</title>
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#4a90e2">
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
-        :root { --primary: #4a90e2; --secondary: #2ecc71; --danger: #e74c3c; --share: #6c5ce7; }
+        :root {
+            --primary: #4a90e2; --secondary: #2ecc71; --danger: #e74c3c; --share: #6c5ce7;
+            --super-bg: #f4f7f9; --birthday-bg: #f5eef8; --family-bg: #eafaf1; --wedding-bg: #fffbf0; --bar-bg: #e0f7fa;
+        }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; padding-bottom: 110px; background: #f4f7f9; direction: rtl; text-align: right; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; padding-bottom: 110px; background: var(--super-bg); direction: rtl; text-align: right; transition: 0.3s; }
         
-        /* מסך ברוכים הבאים */
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 3000; display: none; align-items: center; justify-content: center; }
-        .welcome-card { background: white; width: 92%; max-width: 400px; border-radius: 25px; padding: 25px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
-        .feature-item { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; text-align: right; font-size: 14px; }
+        .welcome-card { background: white; width: 92%; max-width: 400px; border-radius: 25px; padding: 25px; text-align: center; }
         
-        .btn { padding: 12px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.2s; }
-        .btn-install { background: var(--secondary); color: white; width: 100%; margin-bottom: 10px; }
-        .btn-start { background: var(--primary); color: white; width: 100%; }
-        .btn-add { background: var(--primary); color: white; flex: 2; }
-        .btn-share { background: var(--share); color: white; font-size: 13px; width: 100%; margin-top: 10px; }
-
         .top-nav { background: white; padding: 10px; display: flex; gap: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
         .app-container { width: 95%; max-width: 500px; margin: 15px auto; }
-        .control-panel { background: white; border-radius: 20px; padding: 18px; box-shadow: 0 8px 25px rgba(0,0,0,0.05); border-top: 5px solid var(--primary); }
         
-        .input-group { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+        .control-panel { background: white; border-radius: 20px; padding: 18px; box-shadow: 0 8px 25px rgba(0,0,0,0.05); border-top: 6px solid var(--primary); }
+        .title-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
+        .list-title-input { font-size: 20px; font-weight: bold; border: none; outline: none; background: transparent; width: 85%; }
+
+        .input-group { display: flex; flex-direction: column; gap: 10px; }
         .row { display: flex; gap: 8px; align-items: center; }
         select, input { padding: 12px; border: 2px solid #f0f0f0; border-radius: 12px; font-size: 16px; outline: none; flex: 1; text-align: right; }
         
-        ul { list-style: none; padding: 0; margin: 20px 0; }
-        li { background: white; margin-bottom: 8px; padding: 15px; border-radius: 15px; display: flex; align-items: center; justify-content: space-between; border-right: 6px solid var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
+        .btn { padding: 12px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; }
+        .btn-add { background: var(--primary); color: white; flex: 2; }
+
+        ul { list-style: none; padding: 0; margin: 15px 0; }
+        li { background: white; margin-bottom: 8px; padding: 15px; border-radius: 15px; display: flex; align-items: center; gap: 12px; border-right: 6px solid var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
         .collected { opacity: 0.4; text-decoration: line-through; filter: grayscale(1); background: #f8f8f8 !important; }
 
-        .budget-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #2c3e50; color: white; padding: 15px; display: flex; justify-content: space-around; font-weight: bold; z-index: 1001; }
+        .budget-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #2c3e50; color: white; padding: 18px; display: flex; justify-content: space-around; font-weight: bold; z-index: 1001; }
         
-        /* השלמה אוטומטית */
-        .suggestions-box { position: absolute; background: white; width: 100%; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 2000; display: none; margin-top: 45px; }
-        .suggestion-item { padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; }
+        .suggestions-box { position: absolute; background: white; width: 100%; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); z-index: 2000; display: none; margin-top: 45px; }
+        .suggestion-item { padding: 12px; border-bottom: 1px solid #eee; cursor: pointer; display: flex; justify-content: space-between; }
+        
+        /* Theme Classes */
+        .theme-birthday { background: var(--birthday-bg); --primary: #9b59b6; }
+        .theme-family { background: var(--family-bg); --primary: #27ae60; }
+        .theme-wedding { background: var(--wedding-bg); --primary: #d4af37; }
+        .theme-bar { background: var(--bar-bg); --primary: #00acc1; }
     </style>
 </head>
 <body>
 
     <div id="welcomeModal" class="modal-overlay">
         <div class="welcome-card">
-            <h2 style="color: var(--primary); margin-top: 0;">היי! ברוכים הבאים 👋</h2>
-            <div class="feature-item"><span>🧠</span> <strong>למידה עצמית:</strong> המערכת זוכרת מחירים ומוצרים.</div>
-            <div class="feature-item"><span>🔔</span> <strong>תזכורת שכחה:</strong> תקבלו התראה אם מוצר עומד להיגמר.</div>
-            <div class="feature-item"><span>📊</span> <strong>ניהול תקציב:</strong> חישוב עלות הסל בזמן אמת.</div>
-            <div class="feature-item"><span>👥</span> <strong>שיתוף:</strong> סנכרון מלא עם כל בני הבית.</div>
-            
-            <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
-            
-            <button id="installBtn" class="btn btn-install" onclick="installPWA()">📲 התקן אפליקציה למסך הבית</button>
-            <button class="btn btn-start" onclick="closeWelcome()">בואו ניכנס</button>
+            <h2>ברוכים הבאים! 👋</h2>
+            <p>אפליקציית הקניות החכמה של אורן מוכנה עבורכם.</p>
+            <button class="btn" style="background:var(--primary); color:white; width:100%;" onclick="closeWelcome()">בואו ניכנס</button>
         </div>
     </div>
 
     <div class="top-nav">
         <select id="myListsDropdown" onchange="switchList(this.value)" style="flex:1; border-radius: 10px;"></select>
-        <button class="btn" style="background: var(--secondary); color: white; padding: 0 15px;" onclick="showNewList()">+</button>
+        <button class="btn" style="background: var(--secondary); color: white; padding: 0 18px;" onclick="showNewListModal()">+</button>
     </div>
 
     <div class="app-container">
         <div class="control-panel">
-            <input type="text" id="listNameInput" style="font-size:20px; font-weight:bold; border:none; width:100%; outline:none;" onblur="saveListName(this.value)">
+            <div class="title-row">
+                <input type="text" id="listNameInput" class="list-title-input" onblur="saveListName(this.value)">
+                <span onclick="document.getElementById('listNameInput').focus()" style="cursor:pointer; font-size: 18px;">✏️</span>
+            </div>
             
             <div class="input-group">
                 <div class="row">
-                    <select id="itemCat"></select>
-                    <input type="number" id="itemPrice" placeholder="₪ מחיר" style="max-width: 90px;">
+                    <select id="itemCat" onchange="updateQuickSelect()"></select>
+                    <select id="quickSelect" onchange="useQuick(this.value)" style="max-width: 90px; font-size: 12px; color: #666;">
+                        <option value="">הצג מוצרים</option>
+                    </select>
                 </div>
                 <div class="row" style="position: relative;">
-                    <input type="text" id="itemInput" placeholder="מה קונים?" oninput="handleAuto(this.value)" autocomplete="off">
+                    <input type="text" id="itemInput" placeholder="מה לקנות?" oninput="handleAuto(this.value)" autocomplete="off">
                     <div id="suggestions" class="suggestions-box"></div>
-                    <input type="number" id="itemQty" value="1" style="max-width: 60px;">
+                    <input type="number" id="itemPrice" placeholder="₪ מחיר" style="max-width: 80px;">
                 </div>
-                <button class="btn btn-add" onclick="addItem()">הוסף לרשימה</button>
-                <button class="btn btn-share" onclick="shareCurrentList()">📤 שתף רשימה עם בני הבית</button>
+                <div class="row">
+                    <input type="number" id="itemQty" value="1" style="max-width: 60px;">
+                    <button class="btn btn-add" onclick="addItem()">הוסף</button>
+                </div>
             </div>
         </div>
 
-        <h4 style="margin:20px 5px 10px; color:#666;">⏳ צריך לקנות</h4>
         <ul id="shoppingList"></ul>
-        
-        <h4 style="margin:20px 5px 10px; color:#666;">✅ כבר בסל</h4>
         <ul id="collectedList"></ul>
     </div>
 
@@ -109,37 +112,104 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
         let currentListId = new URLSearchParams(window.location.search).get('list') || (JSON.parse(localStorage.getItem('myLists')) || ['list_general'])[0];
-        let deferredPrompt;
+        let learnedPrices = {};
 
-        const prices = { "חלב": 6.5, "ביצים": 13, "לחם": 8, "עוף": 35, "עגבניה": 6, "מלפפון": 5 };
-
-        window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
-
-        window.onload = function() {
-            if (!localStorage.getItem('welcomeShown')) {
-                document.getElementById('welcomeModal').style.display = 'flex';
-            }
-            init();
+        // --- מחירון בסיסי מורחב ---
+        const basePrices = {
+            "חלב": 6.5, "ביצים": 13, "לחם": 8, "עוף": 35, "עגבניה": 6, "מלפפון": 5, "קוטג": 6, "גבינה צהובה": 15, "שמן": 12, "אורז": 9, "סוכר": 5, "קפה": 30, "נייר טואלט": 32, "שמפו": 18, "סבון כלים": 10, "קולה": 7, "תפוח אדמה": 4
         };
 
-        function closeWelcome() {
-            localStorage.setItem('welcomeShown', 'true');
-            document.getElementById('welcomeModal').style.display = 'none';
-        }
+        const templates = {
+            super: { theme: '', cats: {meat:"🥩 בשר", dairy:"🥛 חלב", veg:"🥦 ירקות", clean:"🧼 ניקיון", gen:"📦 כללי"}, items: {meat:["עוף","בשר טחון","שניצל"], dairy:["חלב","קוטג'","יוגורט"], clean:["אקונומיקה","מרכך","נייר טואלט"], veg:["בצל","עגבניה","מלפפון"]} },
+            birthday: { theme: 'theme-birthday', cats: {party:"🎈 מסיבה", sweet:"🍰 מתוקים", drink:"🥤 שתייה"}, items: {party:["בלונים","מפה חד-פעמית"], sweet:["עוגה","במבה","שוקולד"]} },
+            bar: { theme: 'theme-bar', cats: {sweets:"🍬 סוכריות", relig:"✡️ תשמישי קדושה", log:"🎉 הפקה"}, items: {sweets:["סוכריות לזריקה","שקיות הפתעה"], relig:["כיפות","סידורים"]} }
+        };
 
         function init() {
+            // טעינת מחירים שהאפליקציה למדה ממך בעבר
+            database.ref('global_dictionary').on('value', s => { learnedPrices = s.val() || {}; });
+
             database.ref('all_lists/'+currentListId+'/metadata').on('value', s => {
                 const meta = s.val() || { name: "רשימה כללית", type: "super" };
                 document.getElementById('listNameInput').value = meta.name;
-                const cats = { super: {meat:"🥩 בשר", dairy:"🥛 חלב", veg:"🥦 ירקות", gen:"📦 כללי"} };
-                document.getElementById('itemCat').innerHTML = Object.entries(cats.super).map(([k,v]) => `<option value="${k}">${v}</option>`).join('');
+                const type = meta.type || "super";
+                document.body.className = templates[type] ? templates[type].theme : '';
+                document.getElementById('itemCat').innerHTML = Object.entries(templates[type].cats).map(([k,v]) => `<option value="${k}">${v}</option>`).join('');
+                updateQuickSelect();
             });
             database.ref('all_lists/'+currentListId+'/items').on('value', s => render(s.val()));
-            updateDrop();
+            updateDropdown();
         }
 
         function handleAuto(v) {
             const box = document.getElementById('suggestions');
             if(v.length < 1) { box.style.display = 'none'; return; }
-            const filtered = Object.keys(prices).filter(k => k.includes(v));
-            if(filtered.length >
+            const allItems = {...basePrices, ...learnedPrices};
+            const filtered = Object.keys(allItems).filter(k => k.includes(v));
+            if(filtered.length > 0) {
+                box.innerHTML = filtered.map(k => `<div class="suggestion-item" onclick="useQuick('${k}')"><span>${k}</span><small>${allItems[k]}₪</small></div>`).join('');
+                box.style.display = 'block';
+            } else box.style.display = 'none';
+        }
+
+        function useQuick(v) {
+            if(!v) return;
+            const allItems = {...basePrices, ...learnedPrices};
+            document.getElementById('itemInput').value = v;
+            document.getElementById('itemPrice').value = allItems[v] || "";
+            document.getElementById('suggestions').style.display = 'none';
+        }
+
+        function addItem() {
+            const text = document.getElementById('itemInput').value.trim();
+            const price = parseFloat(document.getElementById('itemPrice').value) || 0;
+            if(!text) return;
+            
+            // למידה: שמירת המחיר החדש לעתיד
+            if(price > 0) database.ref('global_dictionary/' + text).set(price);
+
+            database.ref('all_lists/'+currentListId+'/items').push({
+                text, price, qty: document.getElementById('itemQty').value, category: document.getElementById('itemCat').value, collected: false
+            });
+            document.getElementById('itemInput').value = ""; document.getElementById('itemPrice').value = "";
+        }
+
+        function render(data) {
+            const todo = document.getElementById('shoppingList'), done = document.getElementById('collectedList');
+            todo.innerHTML = ""; done.innerHTML = "";
+            let p = 0, c = 0;
+            for (let id in data) {
+                const item = data[id];
+                const total = (item.price || 0) * (item.qty || 1);
+                p += total; if(item.collected) c += total;
+                const li = document.createElement('li');
+                li.className = item.collected ? 'collected' : '';
+                li.innerHTML = `<div onclick="toggleStatus('${id}',${item.collected})" style="flex:1"><b>${item.qty}</b> | ${item.text} ${total>0?`<span style="color:var(--secondary)">(${total}₪)</span>`:''}</div><span onclick="del('${id}')" style="cursor:pointer">🗑️</span>`;
+                (item.collected ? done : todo).appendChild(li);
+            }
+            document.getElementById('sumP').innerText = p.toFixed(1);
+            document.getElementById('sumC').innerText = c.toFixed(1);
+        }
+
+        function updateQuickSelect() {
+            const type = new URLSearchParams(window.location.search).get('type') || "super"; // או מהמטאדתה
+            const cat = document.getElementById('itemCat').value;
+            // משיכת פריטים מתאימים ל"הצג"
+            const currentTemplate = templates[document.body.className.replace('theme-','') || 'super'];
+            const items = currentTemplate.items[cat] || [];
+            document.getElementById('quickSelect').innerHTML = '<option value="">הצג מוצרים</option>' + items.map(i => `<option value="${i}">${i}</option>`).join('');
+        }
+
+        function toggleStatus(id, s) { database.ref('all_lists/'+currentListId+'/items/'+id).update({collected: !s}); }
+        function del(id) { if(confirm("למחוק?")) database.ref('all_lists/'+currentListId+'/items/'+id).remove(); }
+        function saveListName(n) { database.ref('all_lists/'+currentListId+'/metadata/name').set(n); }
+        function switchList(id) { window.location.search = '?list=' + id; }
+        function closeWelcome() { localStorage.setItem('welcomeShown', 'true'); document.getElementById('welcomeModal').style.display = 'none'; }
+        
+        function showNewListModal() {
+            const n = prompt("שם הרשימה:"), t = prompt("סוג (super/birthday/bar/wedding):", "super");
+            if(!n) return; const id = 'list_'+Date.now();
+            database.ref('all_lists/'+id+'/metadata').set({name:n, type:t || "super"});
+            let l = JSON.parse(localStorage.getItem('myLists')) || []; l.push(id);
+            localStorage.setItem('myLists', JSON.stringify(l)); switchList(id);
+        }
