@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>הקניות של אורן - Premium UX</title>
+    <title>הקניות של אורן - Ultimate Voice</title>
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#1e272e">
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -11,7 +11,7 @@
     <style>
         :root { --primary: #0984e3; --secondary: #00b894; --danger: #ff4757; --glass: rgba(255, 255, 255, 0.95); }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; padding-bottom: 140px; min-height: 100vh; background-color: #1e272e; background-attachment: fixed; background-size: cover; background-position: center; transition: background-image 0.6s ease-in-out; direction: rtl; text-align: right; overflow-x: hidden; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; padding-bottom: 140px; min-height: 100vh; background-color: #1e272e; background-attachment: fixed; background-size: cover; background-position: center; transition: background-image 0.6s; direction: rtl; text-align: right; overflow-x: hidden; }
 
         body.theme-super { background-image: linear-gradient(rgba(15,20,25,0.7), rgba(15,20,25,0.85)), url('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1080&q=80'); }
         body.theme-birthday { background-image: linear-gradient(rgba(20,10,20,0.65), rgba(20,10,20,0.8)), url('https://images.unsplash.com/photo-1530103862676-de8892bf309c?auto=format&fit=crop&w=1080&q=80'); }
@@ -29,6 +29,11 @@
         input, select { padding: 15px; border: 2px solid #dfe6e9; border-radius: 18px; font-size: 16px; outline: none; background: #fff; width: 100%; transition: 0.3s; color: #2d3436; font-weight: 600; }
         input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(9,132,227,0.15); }
         
+        .input-wrapper { position: relative; width: 100%; }
+        #micBtn { position: absolute; left: 8px; top: 50%; transform: translateY(-50%); background: #f1f2f6; border: none; font-size: 20px; cursor: pointer; padding: 8px; border-radius: 50%; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
+        @keyframes pulseMic { 0% { box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.7); background: rgba(255, 71, 87, 0.2); } 70% { box-shadow: 0 0 15px 10px rgba(255, 71, 87, 0); background: rgba(255, 71, 87, 0.4); } 100% { box-shadow: 0 0 0 0 rgba(255, 71, 87, 0); background: rgba(255, 71, 87, 0.2); } }
+        .recording { animation: pulseMic 1.5s infinite !important; border: 1px solid var(--danger) !important; }
+
         .btn { padding: 16px; border: none; border-radius: 18px; cursor: pointer; font-weight: 900; font-size: 17px; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s; }
         .btn:active { transform: scale(0.96); }
         .btn-add { background: var(--primary); color: white; width: 100%; }
@@ -58,7 +63,6 @@
         @keyframes textPop { 0% { transform: scale(0.5); opacity: 0; } 15% { transform: scale(1.1); opacity: 1; } 80% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.15); opacity: 0; } }
         .anim-text { font-size: 32px; font-weight: 900; color: #fff; background: rgba(0, 0, 0, 0.75); border: 2px solid rgba(255,255,255,0.2); padding: 20px 40px; border-radius: 50px; animation: textPop 4s ease-in-out forwards; text-align: center; z-index: 5001; }
 
-        /* עיצוב רשימת הפיצ'רים */
         .feature-item { display: flex; align-items: flex-start; gap: 15px; margin-bottom: 20px; text-align: right; }
         .feature-icon { font-size: 28px; background: #f1f2f6; padding: 10px; border-radius: 15px; }
         .feature-text h4 { margin: 0 0 5px 0; color: #2d3436; font-size: 16px; }
@@ -85,6 +89,13 @@
             <p style="color: #636e72; font-size: 14px; margin-bottom: 25px;">המערכת שלנו חכמה ולומדת איתך. הנה כמה דברים ששווה להכיר:</p>
             
             <div class="feature-item">
+                <div class="feature-icon">🎤</div>
+                <div class="feature-text">
+                    <h4>הכתבה קולית (חדש!)</h4>
+                    <p>לחץ על המיקרופון ופשוט תגיד מה אתה צריך. המערכת תזהה ותכתוב עבורך.</p>
+                </div>
+            </div>
+            <div class="feature-item">
                 <div class="feature-icon">🧠</div>
                 <div class="feature-text">
                     <h4>מוח לומד מחירים</h4>
@@ -105,14 +116,6 @@
                     <p>שתף את הרשימה בקליק, וראה בדיוק איזה חבר או בן משפחה הוסיף כל מוצר.</p>
                 </div>
             </div>
-            <div class="feature-item">
-                <div class="feature-icon">⚖️</div>
-                <div class="feature-text">
-                    <h4>משקלים אוטומטיים</h4>
-                    <p>בחרת בשר או ירקות? הכמות תשתנה אוטומטית לקפיצות של משקל (גרמים/ק"ג).</p>
-                </div>
-            </div>
-
             <button class="btn btn-add" style="margin-top: 15px;" onclick="closeOnboarding()">יאללה, בוא נתחיל לקנות! 🛒</button>
         </div>
     </div>
@@ -170,7 +173,6 @@
     </div>
 
     <div class="app-container">
-        
         <h2 id="greetingMsg" style="color: white; margin-top: 0; margin-bottom: 20px; font-weight: 900; text-shadow: 0 4px 10px rgba(0,0,0,0.6); font-size: 26px;"></h2>
 
         <div class="control-panel">
@@ -195,9 +197,10 @@
                 </div>
                 
                 <div>
-                    <span class="section-label">שם המוצר</span>
-                    <div style="position: relative;">
-                        <input type="text" id="itemInput" placeholder="מה תרצה לקנות?" oninput="handleAuto(this.value)" autocomplete="off">
+                    <span class="section-label">שם המוצר (הקלד או לחץ על המיקרופון)</span>
+                    <div class="input-wrapper">
+                        <input type="text" id="itemInput" placeholder="מה תרצה לקנות?" oninput="handleAuto(this.value)" autocomplete="off" style="padding-left: 45px;">
+                        <button id="micBtn" onclick="startVoiceInput()" title="הכתבה קולית">🎤</button>
                         <div id="suggestions" class="suggestions-box"></div>
                     </div>
                 </div>
@@ -231,28 +234,13 @@
     </div>
 
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyCb7dApdjqPB6Fip9rW-QxoNbTZBow6rkQ",
-            authDomain: "shopping-list-7c4fa.firebaseapp.com",
-            databaseURL: "https://shopping-list-7c4fa-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "shopping-list-7c4fa",
-            storageBucket: "shopping-list-7c4fa.firebasestorage.app",
-            messagingSenderId: "482760938255",
-            appId: "1:482760938255:web:99e0dd53cb822a8327e47a"
-        };
+        const firebaseConfig = { apiKey: "AIzaSyCb7dApdjqPB6Fip9rW-QxoNbTZBow6rkQ", authDomain: "shopping-list-7c4fa.firebaseapp.com", databaseURL: "https://shopping-list-7c4fa-default-rtdb.europe-west1.firebasedatabase.app", projectId: "shopping-list-7c4fa", storageBucket: "shopping-list-7c4fa.firebasestorage.app", messagingSenderId: "482760938255", appId: "1:482760938255:web:99e0dd53cb822a8327e47a" };
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
-        
         let currentListId = new URLSearchParams(window.location.search).get('list') || (JSON.parse(localStorage.getItem('myLists')) || ['list_general'])[0];
-        let currentType = "super", learnedPrices = {};
-        
-        let currentUserName = localStorage.getItem('myAppName') || '';
+        let currentType = "super", learnedPrices = {}, currentUserName = localStorage.getItem('myAppName') || '';
 
-        const categoryColors = {
-            meat: "#ff4757", dairy: "#74b9ff", veg: "#2ecc71", dry: "#e1b12c", clean: "#a29bfe", general: "#b2bec3",
-            party: "#fd79a8", sweet: "#e84393", drinks: "#00cec9", relig: "#fbc531", log: "#6c5ce7", gift: "#ff7675"
-        };
-
+        const categoryColors = { meat: "#ff4757", dairy: "#74b9ff", veg: "#2ecc71", dry: "#e1b12c", clean: "#a29bfe", general: "#b2bec3", party: "#fd79a8", sweet: "#e84393", drinks: "#00cec9", relig: "#fbc531", log: "#6c5ce7", gift: "#ff7675" };
         const templates = {
             super: { theme: 'theme-super', title: 'סופר', cats: {meat:"🥩 בשר ודגים", dairy:"🥛 חלב וביצים", veg:"🥦 ירקות ופירות", dry:"🍝 יבשים ושימורים", clean:"🧼 ניקיון ופארם", general:"📦 כללי"}, items: {meat:["עוף שלם", "בקר טחון"], dairy:["חלב 3%", "ביצים L"], veg:["עגבניה", "מלפפון"], dry:["פסטה", "אורז"], clean:["נייר טואלט"]} },
             birthday: { theme: 'theme-birthday', title: 'יום הולדת', cats: {party:"🎈 ציוד למסיבה", sweet:"🍰 מתוקים", drinks:"🥤 שתייה", general:"📦 כללי"}, items: {party:["בלונים", "נרות"], sweet:["עוגת יום הולדת", "במבה"], drinks:["קולה", "מים"]} },
@@ -261,142 +249,104 @@
         };
 
         function init() {
-            if (!currentUserName) {
-                document.getElementById('nameModal').style.display = 'flex';
-            } else {
-                updateGreeting();
-            }
-
-            loadListData(currentListId, false);
-            updateDropdown();
+            if (!currentUserName) { document.getElementById('nameModal').style.display = 'flex'; } else { updateGreeting(); }
+            loadListData(currentListId, false); updateDropdown();
             database.ref('global_dictionary').on('value', s => { learnedPrices = s.val() || {}; updateQuickSelect(); });
         }
 
-        // --- הברכה החכמה תלוית השעה ---
+        // --- הכתבה קולית (Voice Recognition) ---
+        function startVoiceInput() {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                alert("הדפדפן שלך לא תומך בהכתבה קולית. נסה להשתמש ב-Chrome."); return;
+            }
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'he-IL';
+            recognition.interimResults = false;
+            
+            const micBtn = document.getElementById('micBtn');
+            micBtn.classList.add('recording');
+            showToast("אני מקשיב... 👂");
+
+            recognition.start();
+
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById('itemInput').value = transcript;
+                handleAuto(transcript); // מפעיל את ההשלמה האוטומטית
+            };
+
+            recognition.onerror = function(event) { showToast("לא הצלחתי לשמוע 😕"); };
+            recognition.onend = function() { micBtn.classList.remove('recording'); };
+        }
+
         function updateGreeting() {
             if (!currentUserName) return;
-            const hour = new Date().getHours();
-            let greeting = ""; let emoji = "";
-            
-            if(hour >= 5 && hour < 12) { greeting = "בוקר טוב"; emoji = "☀️"; }
-            else if(hour >= 12 && hour < 18) { greeting = "צהריים טובים"; emoji = "🌤️"; }
-            else if(hour >= 18 && hour < 22) { greeting = "ערב טוב"; emoji = "🌙"; }
-            else { greeting = "לילה טוב"; emoji = "🦉"; }
-            
+            const hour = new Date().getHours(); let greeting = ""; let emoji = "";
+            if(hour >= 5 && hour < 12) { greeting = "בוקר טוב"; emoji = "☀️"; } else if(hour >= 12 && hour < 18) { greeting = "צהריים טובים"; emoji = "🌤️"; }
+            else if(hour >= 18 && hour < 22) { greeting = "ערב טוב"; emoji = "🌙"; } else { greeting = "לילה טוב"; emoji = "🦉"; }
             document.getElementById('greetingMsg').innerHTML = `${greeting}, ${currentUserName} ${emoji}`;
         }
 
-        // מעבר משם המשתמש לתקציר היכולות
         function saveUserName() {
             const nameInput = document.getElementById('userNameInput').value.trim();
-            if(nameInput) {
-                currentUserName = nameInput;
-                localStorage.setItem('myAppName', currentUserName);
-                closeModal('nameModal');
-                // פתיחת מסך הפיצ'רים מיד לאחר הכנסת השם
-                document.getElementById('featuresModal').style.display = 'flex';
-            } else { alert("אנא הכנס את שמך"); }
+            if(nameInput) { currentUserName = nameInput; localStorage.setItem('myAppName', currentUserName); closeModal('nameModal'); document.getElementById('featuresModal').style.display = 'flex'; } else { alert("אנא הכנס את שמך"); }
         }
 
-        function closeOnboarding() {
-            closeModal('featuresModal');
-            updateGreeting(); // עדכון הברכה אחרי שהחלון נסגר
-            showToast("מוכנים לצאת לדרך! 🚀");
-        }
-
-        function showToast(msg) {
-            const t = document.getElementById('toastMsg');
-            t.innerText = msg; t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 3000);
-        }
+        function closeOnboarding() { closeModal('featuresModal'); updateGreeting(); showToast("מוכנים לצאת לדרך! 🚀"); }
+        function showToast(msg) { const t = document.getElementById('toastMsg'); t.innerText = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
 
         function triggerAnimation(type) {
             const container = document.getElementById('animation-container'); container.innerHTML = ''; 
             if (navigator.vibrate) navigator.vibrate([50, 100, 50]);
             let msg = "";
-            if (type === 'birthday') msg = "מתחילים לחגוג! 🎈";
-            else if (type === 'wedding') msg = "מתכוננים ליום הגדול... 💍";
-            else if (type === 'super') msg = (currentUserName ? currentUserName + ", " : "") + "מכינים את העגלה... 🛒";
-            else if (type === 'bar') msg = "מזל טוב לחתן! ✡️";
-            
-            if (msg) {
-                const textDiv = document.createElement('div'); textDiv.className = 'anim-text'; textDiv.innerText = msg;
-                container.appendChild(textDiv);
-            }
+            if (type === 'birthday') msg = "מתחילים לחגוג! 🎈"; else if (type === 'wedding') msg = "מתכוננים ליום הגדול... 💍";
+            else if (type === 'super') msg = (currentUserName ? currentUserName + ", " : "") + "מכינים את העגלה... 🛒"; else if (type === 'bar') msg = "מזל טוב לחתן! ✡️";
+            if (msg) { const textDiv = document.createElement('div'); textDiv.className = 'anim-text'; textDiv.innerText = msg; container.appendChild(textDiv); }
 
             if (type === 'birthday') {
                 const svg = "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"%23ff4757\"><path d=\"M12,2C8.69,2,6,4.69,6,8c0,3.58,4.25,9.36,5.34,10.82C11.66,19.26,12.34,19.26,12.66,18.82C13.75,17.36,18,11.58,18,8 C18,4.69,15.31,2,12,2z\"/></svg>')";
-                for (let i = 0; i < 35; i++) { 
-                    const b = document.createElement('div'); b.className = 'graphic-anim'; b.style.backgroundImage = svg;
-                    const size = 50+Math.random()*50; b.style.width = size+'px'; b.style.height = (size*1.3)+'px';
-                    b.style.left = Math.random()*100+'vw'; b.style.animation = `floatUp ${3+Math.random()*3}s ease-in forwards`;
-                    b.style.filter = `hue-rotate(${Math.random()*360}deg)`; container.appendChild(b);
-                }
+                for (let i = 0; i < 35; i++) { const b = document.createElement('div'); b.className = 'graphic-anim'; b.style.backgroundImage = svg; const size = 50+Math.random()*50; b.style.width = size+'px'; b.style.height = (size*1.3)+'px'; b.style.left = Math.random()*100+'vw'; b.style.animation = `floatUp ${3+Math.random()*3}s ease-in forwards`; b.style.filter = `hue-rotate(${Math.random()*360}deg)`; container.appendChild(b); }
             } else if (type === 'super') {
                 const svg = "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"%23ffffff\"><path d=\"M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z\"/></svg>')";
-                const cart = document.createElement('div'); cart.className = 'graphic-anim'; cart.style.backgroundImage = svg;
-                cart.style.width = '250px'; cart.style.height = '250px'; cart.style.top = '50%';
-                cart.style.animation = 'slideAcross 3s linear forwards'; container.appendChild(cart);
+                const cart = document.createElement('div'); cart.className = 'graphic-anim'; cart.style.backgroundImage = svg; cart.style.width = '250px'; cart.style.height = '250px'; cart.style.top = '50%'; cart.style.animation = 'slideAcross 3s linear forwards'; container.appendChild(cart);
             }
             setTimeout(() => { container.innerHTML = ''; }, 5000);
         }
 
         function updateQuantityOptions() {
-            const cat = document.getElementById('itemCat').value;
-            const qtySelect = document.getElementById('itemQty');
-            qtySelect.innerHTML = ''; 
-            if (cat === 'meat' || cat === 'veg' || cat === 'food' || cat === 'dry') {
-                for (let i = 200; i <= 4000; i += 100) { let text = i >= 1000 ? (i/1000) + ' ק"ג' : i + ' גרם'; qtySelect.add(new Option(text, i/1000)); }
+            const cat = document.getElementById('itemCat').value, qtySelect = document.getElementById('itemQty'); qtySelect.innerHTML = ''; 
+            if (cat === 'meat' || cat === 'veg' || cat === 'food' || cat === 'dry') { for (let i = 200; i <= 4000; i += 100) { let text = i >= 1000 ? (i/1000) + ' ק"ג' : i + ' גרם'; qtySelect.add(new Option(text, i/1000)); }
             } else { for (let i = 1; i <= 20; i++) qtySelect.add(new Option(i + " יח'", i)); }
         }
 
         function updateQuickSelect() {
-            const cat = document.getElementById('itemCat').value;
-            const baseItems = templates[currentType].items[cat] || [];
-            let dynamicItems = [];
-            for (let itemName in learnedPrices) {
-                let data = learnedPrices[itemName];
-                if (typeof data === 'object' && data.category === cat && !baseItems.includes(itemName)) dynamicItems.push(itemName);
-            }
-            const allItems = [...baseItems, ...dynamicItems];
-            document.getElementById('quickSelect').innerHTML = '<option value="">בחר...</option>' + allItems.map(i => `<option value="${i}">${i}</option>`).join('');
+            const cat = document.getElementById('itemCat').value, baseItems = templates[currentType].items[cat] || []; let dynamicItems = [];
+            for (let itemName in learnedPrices) { let data = learnedPrices[itemName]; if (typeof data === 'object' && data.category === cat && !baseItems.includes(itemName)) dynamicItems.push(itemName); }
+            const allItems = [...baseItems, ...dynamicItems]; document.getElementById('quickSelect').innerHTML = '<option value="">בחר...</option>' + allItems.map(i => `<option value="${i}">${i}</option>`).join('');
         }
 
         function loadListData(id, showAnim = true) {
             database.ref('all_lists/'+currentListId+'/metadata').off(); database.ref('all_lists/'+currentListId+'/items').off(); currentListId = id;
             database.ref('all_lists/'+id+'/metadata').on('value', s => {
-                const meta = s.val() || { name: "רשימה", type: "super" };
-                document.getElementById('listNameInput').value = meta.name; currentType = meta.type || "super";
-                document.body.className = templates[currentType].theme;
-                if(showAnim) triggerAnimation(currentType);
-                document.getElementById('itemCat').innerHTML = Object.entries(templates[currentType].cats).map(([k,v]) => `<option value="${k}">${v}</option>`).join('');
-                updateQuantityOptions(); updateQuickSelect();
+                const meta = s.val() || { name: "רשימה", type: "super" }; document.getElementById('listNameInput').value = meta.name; currentType = meta.type || "super";
+                document.body.className = templates[currentType].theme; if(showAnim) triggerAnimation(currentType);
+                document.getElementById('itemCat').innerHTML = Object.entries(templates[currentType].cats).map(([k,v]) => `<option value="${k}">${v}</option>`).join(''); updateQuantityOptions(); updateQuickSelect();
             });
             database.ref('all_lists/'+id+'/items').on('value', s => render(s.val()));
         }
 
         function render(data) {
-            const todo = document.getElementById('shoppingList'), done = document.getElementById('collectedList');
-            todo.innerHTML = ""; done.innerHTML = ""; let p = 0, c = 0;
+            const todo = document.getElementById('shoppingList'), done = document.getElementById('collectedList'); todo.innerHTML = ""; done.innerHTML = ""; let p = 0, c = 0;
             if (!data) { document.getElementById('sumP').innerText = "0.0"; document.getElementById('sumC').innerText = "0.0"; return; }
-
-            let itemsArr = [];
-            for (let id in data) {
-                let item = data[id]; item.id = id; itemsArr.push(item);
-                const numericQty = parseFloat(item.qtyVal) || parseFloat(item.qty) || 1;
-                const total = (item.price || 0) * numericQty; p += total; if(item.collected) c += total;
-            }
-
+            let itemsArr = []; for (let id in data) { let item = data[id]; item.id = id; itemsArr.push(item); const numericQty = parseFloat(item.qtyVal) || parseFloat(item.qty) || 1; const total = (item.price || 0) * numericQty; p += total; if(item.collected) c += total; }
             itemsArr.sort((a, b) => b.id.localeCompare(a.id));
-
             let uncollected = itemsArr.filter(item => !item.collected), collected = itemsArr.filter(item => item.collected), grouped = {};
             uncollected.forEach(item => { let catKey = item.category || 'general'; if (!grouped[catKey]) grouped[catKey] = []; grouped[catKey].push(item); });
-
             const currentCats = templates[currentType].cats || {};
             for (let catKey in grouped) {
                 let catName = currentCats[catKey] || '📦 כללי', catColor = categoryColors[catKey] || "#0984e3";
-                let catLi = document.createElement('li'); catLi.className = 'category-header'; catLi.innerText = catName; catLi.style.borderRightColor = catColor; 
-                todo.appendChild(catLi);
+                let catLi = document.createElement('li'); catLi.className = 'category-header'; catLi.innerText = catName; catLi.style.borderRightColor = catColor; todo.appendChild(catLi);
                 grouped[catKey].forEach(item => todo.appendChild(createItemLi(item)));
             }
             collected.forEach(item => done.appendChild(createItemLi(item)));
@@ -404,19 +354,10 @@
         }
 
         function createItemLi(item) {
-            const numericQty = parseFloat(item.qtyVal) || parseFloat(item.qty) || 1, displayText = item.qtyText || item.qty || '1', total = (item.price || 0) * numericQty;
-            let itemColor = categoryColors[item.category] || "#0984e3";
+            const numericQty = parseFloat(item.qtyVal) || parseFloat(item.qty) || 1, displayText = item.qtyText || item.qty || '1', total = (item.price || 0) * numericQty; let itemColor = categoryColors[item.category] || "#0984e3";
             const authorBadge = item.addedBy ? `<div class="author-badge">👤 נוסף ע"י: ${item.addedBy}</div>` : '';
-            const li = document.createElement('li'); li.className = item.collected ? 'collected' : '';
-            if(!item.collected) li.style.borderRightColor = itemColor;
-            
-            li.innerHTML = `
-                <div onclick="toggleStatus('${item.id}',${item.collected})" style="flex:1; font-weight:800; color:#2d3436; font-size:17px;">
-                    <div><span style="color:var(--primary); font-size:15px; margin-left:5px;">${displayText}</span> ${item.text} <span style="color:#2ecc71; margin-right:12px;">${total>0 ? total.toFixed(1)+'₪' : ''}</span></div>
-                    ${authorBadge}
-                </div>
-                <span onclick="del('${item.id}')" style="cursor:pointer; font-size:24px; color:#ff4757; opacity:0.8; padding:5px;">🗑️</span>
-            `;
+            const li = document.createElement('li'); li.className = item.collected ? 'collected' : ''; if(!item.collected) li.style.borderRightColor = itemColor;
+            li.innerHTML = `<div onclick="toggleStatus('${item.id}',${item.collected})" style="flex:1; font-weight:800; color:#2d3436; font-size:17px;"><div><span style="color:var(--primary); font-size:15px; margin-left:5px;">${displayText}</span> ${item.text} <span style="color:#2ecc71; margin-right:12px;">${total>0 ? total.toFixed(1)+'₪' : ''}</span></div>${authorBadge}</div><span onclick="del('${item.id}')" style="cursor:pointer; font-size:24px; color:#ff4757; opacity:0.8; padding:5px;">🗑️</span>`;
             return li;
         }
 
@@ -424,16 +365,14 @@
             const box = document.getElementById('suggestions'); if(v.length < 1) { box.style.display = 'none'; return; }
             let allItemsMap = {}; for(let key in learnedPrices) { let data = learnedPrices[key]; allItemsMap[key] = typeof data === 'object' ? data.price : data; }
             const filtered = Object.keys(allItemsMap).filter(k => k.includes(v));
-            if(filtered.length > 0) { box.innerHTML = filtered.map(k => `<div class="suggestion-item" onclick="useQuick('${k}')"><span>${k}</span><small style="color:#0984e3">${allItemsMap[k] > 0 ? allItemsMap[k] + '₪' : '+'}</small></div>`).join(''); box.style.display = 'block'; } 
-            else { box.style.display = 'none'; }
+            if(filtered.length > 0) { box.innerHTML = filtered.map(k => `<div class="suggestion-item" onclick="useQuick('${k}')"><span>${k}</span><small style="color:#0984e3">${allItemsMap[k] > 0 ? allItemsMap[k] + '₪' : '+'}</small></div>`).join(''); box.style.display = 'block'; } else { box.style.display = 'none'; }
         }
 
         function useQuick(v) { document.getElementById('itemInput').value = v; let data = learnedPrices[v]; document.getElementById('itemPrice').value = (typeof data === 'object' ? data.price : data) || ""; document.getElementById('suggestions').style.display = 'none'; }
 
         function addItem() {
             const text = document.getElementById('itemInput').value.trim(); if(!text) return;
-            const price = parseFloat(document.getElementById('itemPrice').value) || 0, qtySelect = document.getElementById('itemQty'), qtyVal = parseFloat(qtySelect.value), qtyText = qtySelect.options[qtySelect.selectedIndex].text, cat = document.getElementById('itemCat').value;
-            const author = currentUserName || "אורח";
+            const price = parseFloat(document.getElementById('itemPrice').value) || 0, qtySelect = document.getElementById('itemQty'), qtyVal = parseFloat(qtySelect.value), qtyText = qtySelect.options[qtySelect.selectedIndex].text, cat = document.getElementById('itemCat').value, author = currentUserName || "אורח";
             database.ref('global_dictionary/' + text).set({ price: price, category: cat });
             database.ref('all_lists/'+currentListId+'/items').push({ text: text, price: price, qtyVal: qtyVal, qtyText: qtyText, qty: qtyText, category: cat, collected: false, addedBy: author });
             if (navigator.vibrate) navigator.vibrate(50); 
@@ -443,14 +382,12 @@
         function createNewList() {
             const name = document.getElementById('newListName').value, type = document.getElementById('newListType').value; if(!name) return;
             const id = 'list_' + Date.now(); database.ref('all_lists/'+id+'/metadata').set({name, type});
-            let l = JSON.parse(localStorage.getItem('myLists')) || []; l.push(id); localStorage.setItem('myLists', JSON.stringify(l));
-            closeModal('newListModal'); updateDropdown(); switchList(id);
+            let l = JSON.parse(localStorage.getItem('myLists')) || []; l.push(id); localStorage.setItem('myLists', JSON.stringify(l)); closeModal('newListModal'); updateDropdown(); switchList(id);
         }
 
         function confirmDeleteList() {
             let lists = JSON.parse(localStorage.getItem('myLists')) || []; if (lists.length <= 1) { alert("לא ניתן למחוק את הרשימה האחרונה!"); closeModal('deleteModal'); return; }
-            lists = lists.filter(id => id !== currentListId); localStorage.setItem('myLists', JSON.stringify(lists));
-            database.ref('all_lists/' + currentListId).remove();
+            lists = lists.filter(id => id !== currentListId); localStorage.setItem('myLists', JSON.stringify(lists)); database.ref('all_lists/' + currentListId).remove();
             closeModal('deleteModal'); showToast("הרשימה נמחקה בהצלחה 🗑️"); switchList(lists[0], false); updateDropdown(); 
         }
 
@@ -459,7 +396,6 @@
         function toggleStatus(id, s) { if (!s && navigator.vibrate) navigator.vibrate([30, 50, 30]); database.ref('all_lists/'+currentListId+'/items/'+id).update({collected: !s}); }
         function del(id) { if(confirm("למחוק פריט זה?")) database.ref('all_lists/'+currentListId+'/items/'+id).remove(); }
         function saveListName(n) { database.ref('all_lists/'+currentListId+'/metadata/name').set(n); updateDropdown(); }
-        
         function shareCurrentList() { if (navigator.share) { navigator.share({ title: 'הקניות שלי', text: 'הצטרף לרשימת הקניות המשותפת שלנו!', url: window.location.href }); } else { alert("העתק את הלינק כדי לשתף את הרשימה"); } closeModal('shareModal'); }
         function shareAppOnly() { const baseUrl = window.location.origin + window.location.pathname; if (navigator.share) { navigator.share({ title: 'אפליקציית קניות', text: 'בוא לנסות את אפליקציית הקניות החדשה שארגנתי!', url: baseUrl }); } else { alert("העתק את הלינק: " + baseUrl); } closeModal('shareModal'); }
 
