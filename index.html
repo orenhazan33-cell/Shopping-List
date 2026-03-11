@@ -2,43 +2,119 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>רשימת הקניות שלי</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>רשימה חכמה - סידור ידני</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; padding: 20px; margin: 0; }
-        .app-container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 450px; text-align: center; }
-        h1 { color: #1a73e8; margin-bottom: 25px; }
-        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
-        input { flex: 1; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; outline: none; }
-        input:focus { border-color: #1a73e8; }
-        button#addBtn { padding: 12px 20px; background-color: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        :root {
+            --meat-color: #ffcc80;
+            --veg-color: #c8e6c9;
+            --general-color: #ffffff;
+            --primary: #4a90e2;
+            --secondary: #2ecc71;
+            --danger: #e74c3c;
+            --shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        body { 
+            font-family: 'Segoe UI', system-ui, sans-serif; 
+            background: #f4f7f6; 
+            margin: 0; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-height: 100vh;
+        }
+        
+        .top-bar { 
+            background: white; width: 100%; max-width: 500px; padding: 15px; 
+            box-shadow: var(--shadow); border-radius: 0 0 20px 20px;
+            position: sticky; top: 0; z-index: 100;
+        }
+
+        .btn { 
+            padding: 12px; border: none; border-radius: 12px; cursor: pointer; 
+            font-weight: bold; transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 5px;
+        }
+
+        .btn:active { transform: scale(0.92); filter: brightness(0.9); }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-success { background: var(--secondary); color: white; width: 100%; margin-top: 10px; }
+        .btn-outline-danger { background: white; color: var(--danger); border: 1px solid var(--danger); }
+
+        .app-container { width: 92%; max-width: 480px; margin: 20px 0; }
+        .list-card { background: white; padding: 20px; border-radius: 20px; box-shadow: var(--shadow); }
+        
+        .title-input { font-size: 22px; font-weight: 800; border: none; width: 100%; margin-bottom: 15px; outline: none; }
+
+        .input-box { background: #f8f9fa; padding: 15px; border-radius: 15px; margin-bottom: 20px; }
+        .row { display: flex; gap: 8px; margin-bottom: 10px; }
+        
+        select, input[type="text"], input[type="number"] { padding: 12px; border: 1px solid #ddd; border-radius: 10px; font-size: 16px; }
+
         ul { list-style: none; padding: 0; }
-        li { background: #fff; border-bottom: 1px solid #eee; padding: 15px; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
-        li:hover { background: #f8f9fa; }
-        .delete-btn { color: #dc3545; cursor: pointer; font-size: 18px; padding: 5px 10px; }
-        .clear-btn { background-color: #dc3545; color: white; border: none; padding: 12px; border-radius: 8px; width: 100%; margin-top: 20px; cursor: pointer; font-weight: bold; }
+        li { 
+            margin-bottom: 10px; padding: 12px; display: flex; align-items: center; 
+            border-radius: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            background: white; position: relative; transition: top 0.3s ease;
+        }
+
+        .cat-meat { border-right: 6px solid #e67e22; background: var(--meat-color); }
+        .cat-veg { border-right: 6px solid #27ae60; background: var(--veg-color); }
+        .cat-general { border-right: 6px solid #bdc3c7; }
+        .collected { opacity: 0.5; text-decoration: line-through; filter: grayscale(1); }
+
+        .sort-controls { display: flex; flex-direction: column; margin-left: 10px; }
+        .sort-btn { background: none; border: none; cursor: pointer; font-size: 14px; padding: 2px; color: #7f8c8d; }
+
+        .item-main { flex: 1; display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .qty { background: rgba(0,0,0,0.1); padding: 2px 8px; border-radius: 10px; font-size: 12px; }
+        
+        .delete-btn { color: var(--danger); font-size: 18px; margin-right: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <h1>🛒 הקניות שלי</h1>
-        
-        <div class="input-group">
-            <input type="text" id="itemInput" placeholder="מה להוסיף לסל?">
-            <button id="addBtn" onclick="addItem()">הוסף</button>
+    <div class="top-bar">
+        <div class="row">
+            <select id="myListsDropdown" onchange="switchList(this.value)" style="flex: 2; height: 45px;"></select>
+            <button class="btn btn-outline-danger" onclick="deleteCurrentList()">🗑️</button>
+        </div>
+        <button class="btn btn-success" onclick="createNewList()">+ רשימה חדשה</button>
+    </div>
+
+    <div class="app-container" id="mainApp" style="display: none;">
+        <div class="list-card">
+            <input type="text" id="listNameDisplay" class="title-input" onchange="renameList(this.value)">
+            
+            <div class="input-box">
+                <div class="row">
+                    <select id="itemCategory" style="flex: 1.5;">
+                        <option value="general">📦 כללי</option>
+                        <option value="meat">🥩 בשר</option>
+                        <option value="veg">🥦 ירקות</option>
+                    </select>
+                    <input type="number" id="itemQty" value="1" min="1" style="width: 50px;">
+                </div>
+                <div class="row">
+                    <input type="text" id="itemInput" placeholder="מה להוסיף?" style="flex: 1;">
+                    <button class="btn btn-primary" onclick="addItem()">הוסף</button>
+                </div>
+            </div>
+            <button class="btn" style="background: #6c5ce7; color: white; width: 100%;" onclick="shareCurrentList()">📤 שתף רשימה</button>
         </div>
 
+        <h4 style="margin: 20px 0 10px 0; color: #7f8c8d;">צריך לקנות</h4>
         <ul id="shoppingList"></ul>
 
-        <button class="clear-btn" onclick="clearAll()">מחק את כל הרשימה</button>
+        <h4 style="margin: 20px 0 10px 0; color: #7f8c8d;">כבר בסל</h4>
+        <ul id="collectedList"></ul>
     </div>
 
     <script>
-        // --- הגדרות Firebase המדויקות שלך (מתוך image_d349fe) ---
         const firebaseConfig = {
             apiKey: "AIzaSyCb7dApdjqPB6Fip9rW-QxoNbTZBow6rkQ",
             authDomain: "shopping-list-7c4fa.firebaseapp.com",
@@ -46,55 +122,141 @@
             projectId: "shopping-list-7c4fa",
             storageBucket: "shopping-list-7c4fa.appspot.com",
             messagingSenderId: "482760938255",
-            appId: "1:482760938255:web:99e0dd53cb822a8327e47a",
-            measurementId: "G-MBRDXXLKKX"
+            appId: "1:482760938255:web:99e0dd53cb822a8327e47a"
         };
 
-        // אתחול
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
-        const listRef = database.ref('items');
+        let currentListId = "";
 
-        // הוספת פריט
-        function addItem() {
-            const input = document.getElementById('itemInput');
-            const val = input.value.trim();
-            if (val === "") return;
-            
-            listRef.push({
-                text: val
+        function init() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const listFromUrl = urlParams.get('list');
+            let myLists = JSON.parse(localStorage.getItem('myLists')) || [];
+
+            if (listFromUrl) {
+                if (!myLists.includes(listFromUrl)) myLists.push(listFromUrl);
+                localStorage.setItem('myLists', JSON.stringify(myLists));
+                currentListId = listFromUrl;
+            } else if (myLists.length > 0) {
+                currentListId = myLists[0];
+            } else {
+                createNewList();
+                return;
+            }
+            updateListsDropdown();
+            loadList(currentListId);
+        }
+
+        function createNewList() {
+            const name = prompt("שם הרשימה:");
+            if (!name) return;
+            const id = 'list_' + Date.now();
+            database.ref('all_lists/' + id + '/metadata').set({ name });
+            let lists = JSON.parse(localStorage.getItem('myLists')) || [];
+            lists.push(id);
+            localStorage.setItem('myLists', JSON.stringify(lists));
+            window.location.search = '?list=' + id;
+        }
+
+        function loadList(id) {
+            document.getElementById('mainApp').style.display = 'block';
+            database.ref('all_lists/' + id + '/metadata/name').on('value', snap => {
+                document.getElementById('listNameDisplay').value = snap.val();
             });
-            input.value = ""; 
+            // שינוי כאן: אנחנו מושכים את הפריטים מסודרים לפי ה-index שלהם
+            database.ref('all_lists/' + id + '/items').orderByChild('order').on('value', snap => renderItems(snap.val()));
         }
 
-        // הצגת פריטים בזמן אמת
-        listRef.on('value', (snapshot) => {
-            const listElement = document.getElementById('shoppingList');
-            listElement.innerHTML = ""; 
-            const data = snapshot.val();
-            for (let id in data) {
+        function addItem() {
+            const text = document.getElementById('itemInput').value.trim();
+            const qty = document.getElementById('itemQty').value;
+            const category = document.getElementById('itemCategory').value;
+            if (!text) return;
+
+            // מוסיף לסוף הרשימה
+            const order = Date.now(); 
+            database.ref('all_lists/' + currentListId + '/items').push({ text, qty, category, order, collected: false });
+            document.getElementById('itemInput').value = "";
+        }
+
+        function renderItems(data) {
+            const todoUl = document.getElementById('shoppingList');
+            const doneUl = document.getElementById('collectedList');
+            todoUl.innerHTML = ""; doneUl.innerHTML = "";
+
+            if (!data) return;
+
+            // הפיכת האובייקט למערך כדי שנוכל לעבוד עם מיקומים
+            const itemsArray = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+            itemsArray.sort((a, b) => a.order - b.order);
+
+            itemsArray.forEach((item, index) => {
                 const li = document.createElement('li');
-                li.innerHTML = `
-                    <span>${data[id].text}</span>
-                    <span class="delete-btn" onclick="deleteItem('${id}')">❌</span>
+                li.className = `cat-${item.category} ${item.collected ? 'collected' : ''}`;
+                
+                // כפתורי סידור - מופיעים רק בפריטים שעדיין לא נאספו
+                const sortHtml = item.collected ? '' : `
+                    <div class="sort-controls">
+                        <button class="sort-btn" onclick="moveItem('${item.id}', ${item.order}, -1)">▲</button>
+                        <button class="sort-btn" onclick="moveItem('${item.id}', ${item.order}, 1)">▼</button>
+                    </div>
                 `;
-                listElement.appendChild(li);
-            }
-        });
 
-        // מחיקת פריט
-        function deleteItem(id) {
-            if(confirm("למחוק את הפריט?")) {
-                database.ref('items/' + id).remove();
+                li.innerHTML = `
+                    ${sortHtml}
+                    <div class="item-main" onclick="toggleItem('${item.id}', ${item.collected})">
+                        <span class="qty">${item.qty}</span>
+                        <span>${item.text}</span>
+                    </div>
+                    <span class="delete-btn" onclick="deleteItem('${item.id}')">🗑️</span>
+                `;
+                if (item.collected) doneUl.appendChild(li);
+                else todoUl.appendChild(li);
+            });
+        }
+
+        async function moveItem(id, currentOrder, direction) {
+            const snap = await database.ref('all_lists/' + currentListId + '/items').orderByChild('order').once('value');
+            const items = [];
+            snap.forEach(child => { items.push({ id: child.key, order: child.val().order }); });
+
+            const currentIndex = items.findIndex(i => i.id === id);
+            const targetIndex = currentIndex + direction;
+
+            if (targetIndex >= 0 && targetIndex < items.length) {
+                const targetItem = items[targetIndex];
+                // החלפת המיקומים (Order) בין שני הפריטים
+                database.ref('all_lists/' + currentListId + '/items/' + id).update({ order: targetItem.order });
+                database.ref('all_lists/' + currentListId + '/items/' + targetItem.id).update({ order: currentOrder });
             }
         }
 
-        // ניקוי כל הרשימה
-        function clearAll() {
-            if (confirm("בטוח שרוצה למחוק את כל הרשימה?")) {
-                listRef.remove();
-            }
+        function toggleItem(id, status) { database.ref('all_lists/' + currentListId + '/items/' + id).update({ collected: !status }); }
+        function deleteItem(id) { if(confirm("למחוק פריט?")) database.ref('all_lists/' + currentListId + '/items/' + id).remove(); }
+        function switchList(id) { window.location.search = '?list=' + id; }
+        function renameList(n) { database.ref('all_lists/' + currentListId + '/metadata/name').set(n); }
+        function shareCurrentList() {
+            const url = window.location.origin + window.location.pathname + '?list=' + currentListId;
+            navigator.clipboard.writeText(url).then(() => alert("לינק הועתק!"));
         }
+        function updateListsDropdown() {
+            const d = document.getElementById('myListsDropdown'); d.innerHTML = "";
+            JSON.parse(localStorage.getItem('myLists') || "[]").forEach(id => {
+                database.ref('all_lists/' + id + '/metadata/name').once('value', s => {
+                    const o = document.createElement('option'); o.value = id; o.text = s.val() || "רשימה";
+                    if (id === currentListId) o.selected = true; d.add(o);
+                });
+            });
+        }
+        function deleteCurrentList() {
+            if(!confirm("להסיר רשימה זו מהתפריט?")) return;
+            let l = JSON.parse(localStorage.getItem('myLists')).filter(i => i !== currentListId);
+            localStorage.setItem('myLists', JSON.stringify(l));
+            window.location.search = l.length > 0 ? '?list=' + l[0] : '';
+        }
+
+        init();
     </script>
 </body>
 </html>
