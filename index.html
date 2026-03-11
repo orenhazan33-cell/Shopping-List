@@ -32,56 +32,62 @@
         <button class="clear-btn" onclick="clearAll()">מחק את כל הרשימה</button>
     </div>
 
-    <script>
-        // פונקציה שרצה ברגע שהדף נפתח
-        window.onload = function() {
-            loadList();
-        };
+  // --- כאן תדביק את ה-config שקיבלת מ-Firebase ---
+       const firebaseConfig = {
+  apiKey: "AIzaSyCb7dApdjqPB6Fip9rW-QxoNbTZBow6rkQ",
+  authDomain: "shopping-list-7c4fa.firebaseapp.com",
+  databaseURL: "https://shopping-list-7c4fa-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "shopping-list-7c4fa",
+  storageBucket: "shopping-list-7c4fa.firebasestorage.app",
+  messagingSenderId: "482760938255",
+  appId: "1:482760938255:web:99e0dd53cb822a8327e47a",
+  measurementId: "G-MBRDXXLKKX"
 
+  // אתחול Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const listRef = database.ref('items');
+
+        // הוספת פריט לענן
         function addItem() {
             const input = document.getElementById('itemInput');
             if (input.value.trim() === "") return;
-
-            // יוצר את הפריט על המסך
-            createListItem(input.value);
-
-            // שומר את הרשימה המעודכנת
-            saveList();
-
-            // מנקה את התיבה
+            
+            listRef.push({
+                text: input.value
+            });
             input.value = "";
         }
 
-        function createListItem(text) {
-            const list = document.getElementById('shoppingList');
-            const li = document.createElement('li');
-            li.textContent = "🛒 " + text;
-            list.appendChild(li);
-        }
+        // האזנה לשינויים בענן (Real-time)
+        listRef.on('value', (snapshot) => {
+            const listElement = document.getElementById('shoppingList');
+            listElement.innerHTML = ""; 
+            
+            const data = snapshot.val();
+            for (let id in data) {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <span>🛒 ${data[id].text}</span>
+                    <span style="color:red; cursor:pointer;" onclick="deleteItem('${id}')"> ❌</span>
+                `;
+                listElement.appendChild(li);
+            }
+        });
 
-        function saveList() {
-            const listItems = [];
-            document.querySelectorAll('#shoppingList li').forEach(li => {
-                listItems.push(li.textContent.replace("🛒 ", ""));
-            });
-            localStorage.setItem('myShoppingList', JSON.stringify(listItems));
-        }
-
-        function loadList() {
-            const savedData = localStorage.getItem('myShoppingList');
-            if (savedData) {
-                const listItems = JSON.parse(savedData);
-                listItems.forEach(item => createListItem(item));
+        // מחיקה מהענן
+   // מחיקה מהענן
+        function deleteItem(id) {
+            if(confirm("למחוק את הפריט?")) {
+                database.ref('items/' + id).remove();
             }
         }
 
+        // פונקציה למחיקת כל הרשימה מהענן
         function clearAll() {
-            if (confirm("בטוח שרוצה למחוק הכל?")) {
-                localStorage.removeItem('myShoppingList'); // מוחק מהזיכרון
-                document.getElementById('shoppingList').innerHTML = ""; // מוחק מהמסך
+            if (confirm("בטוח שרוצה למחוק את כל הרשימה?")) {
+                database.ref('items').remove();
             }
         }
-    </script>
-
-</body>
+    </script> </body>
 </html>
