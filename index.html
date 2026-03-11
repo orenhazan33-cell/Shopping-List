@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>הקניות של אורן</title>
+    <title>הקניות של אורן - גרסה מלאה</title>
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#4a90e2">
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -37,24 +37,29 @@
     </div>
     <div class="app-container">
         <div class="control-panel">
-            <input type="text" id="listNameInput" style="font-size:20px; font-weight:bold; border:none; width:100%; margin-bottom:10px;" onblur="saveListName(this.value)">
+            <input type="text" id="listNameInput" style="font-size:20px; font-weight:bold; border:none; width:100%; margin-bottom:10px; text-align:right;" onblur="saveListName(this.value)">
             <div class="input-group">
                 <div class="row">
-                    <select id="itemCat" onchange="updateQuickList()"></select>
-                    <input type="number" id="itemPrice" placeholder="₪ מחיר" style="max-width: 80px;">
+                    <select id="itemCat" onchange="updateUI()"></select>
+                    <select id="quickSelect" onchange="useQuick(this.value)" style="max-width: 90px; font-size: 13px; color: #666;">
+                        <option value="">הצג</option>
+                    </select>
                 </div>
                 <div class="row">
                     <input type="text" id="itemInput" placeholder="מה לקנות?" oninput="checkPrice(this.value)" autocomplete="off">
-                    <input type="number" id="itemQty" value="1" style="max-width: 55px;">
+                    <input type="number" id="itemPrice" placeholder="₪ מחיר" style="max-width: 70px;">
                 </div>
-                <button class="btn btn-add" onclick="addItem()">הוסף</button>
+                <div class="row">
+                    <input type="number" id="itemQty" value="1" style="max-width: 65px;">
+                    <button class="btn btn-add" onclick="addItem()">הוסף לרשימה</button>
+                </div>
             </div>
         </div>
         <ul id="shoppingList"></ul>
         <ul id="collectedList"></ul>
     </div>
     <div class="budget-bar">
-        <div>סה"כ: <span id="sumP">0</span> ₪</div>
+        <div>צפי: <span id="sumP">0</span> ₪</div>
         <div>בסל: <span id="sumC">0</span> ₪</div>
     </div>
 
@@ -74,10 +79,23 @@
 
         if ('serviceWorker' in navigator) { window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js')); }
 
-        const prices = { "חלב": 6.5, "ביצים": 13, "לחם": 8, "עוף": 35, "עגבניה": 6, "מלפפון": 5, "קוטג": 6 };
-        const cats = { super: {meat:"🥩 בשר", dairy:"🥛 חלב", veg:"🥦 ירקות", gen:"📦 כללי"}, birthday: {party:"🎈 מסיבה", sweet:"🍰 מתוקים"} };
+        const prices = { "חלב": 6.5, "ביצים": 13, "לחם": 8, "עוף": 35, "עגבניה": 6, "מלפפון": 5, "קוטג": 6, "גבינה": 14 };
+        const cats = { 
+            super: {meat:"🥩 בשר", dairy:"🥛 חלב", veg:"🥦 ירקות", gen:"📦 כללי"}, 
+            birthday: {party:"🎈 מסיבה", sweet:"🍰 מתוקים", drinks:"🥤 שתייה"} 
+        };
+        const quickItems = {
+            meat: ["עוף", "בשר טחון", "שניצל", "סטייק"],
+            dairy: ["חלב", "גבינה צהובה", "קוטג'", "חמאה"],
+            veg: ["עגבניה", "מלפפון", "בצל", "תפוח אדמה"],
+            gen: ["שמן", "סוכר", "קפה", "אורז"],
+            party: ["בלונים", "מפות", "נרות"],
+            sweet: ["עוגה", "חטיפים", "ממתקים"],
+            drinks: ["קולה", "מיץ", "מים"]
+        };
 
         function checkPrice(v) { for (let k in prices) { if (v.includes(k)) { document.getElementById('itemPrice').value = prices[k]; return; } } }
+        function useQuick(v) { if(v) { document.getElementById('itemInput').value = v; checkPrice(v); } }
         
         function init() {
             database.ref('all_lists/'+currentListId+'/metadata').on('value', s => {
@@ -85,9 +103,17 @@
                 document.getElementById('listNameInput').value = meta.name;
                 const sel = document.getElementById('itemCat');
                 sel.innerHTML = Object.entries(cats[meta.type] || cats.super).map(([k,v]) => `<option value="${k}">${v}</option>`).join('');
+                updateUI();
             });
             database.ref('all_lists/'+currentListId+'/items').on('value', s => render(s.val()));
             updateDrop();
+        }
+
+        function updateUI() {
+            const cat = document.getElementById('itemCat').value;
+            const qs = document.getElementById('quickSelect');
+            const items = quickItems[cat] || [];
+            qs.innerHTML = '<option value="">הצג</option>' + items.map(i => `<option value="${i}">${i}</option>`).join('');
         }
 
         function render(data) {
@@ -100,7 +126,7 @@
                 p += total; if(item.collected) c += total;
                 const li = document.createElement('li');
                 li.className = item.collected ? 'collected' : '';
-                li.innerHTML = `<div onclick="toggle('${id}', ${item.collected})" style="flex:1"><b>${item.qty}</b> | ${item.text} ${total > 0 ? `<span style="color:#2ecc71">(${total}₪)</span>` : ''}</div><span onclick="del('${id}')">🗑️</span>`;
+                li.innerHTML = `<div onclick="toggle('${id}', ${item.collected})" style="flex:1"><b>${item.qty}</b> | ${item.text} ${total > 0 ? `<span style="color:#2ecc71; font-weight:bold;">(${total}₪)</span>` : ''}</div><span onclick="del('${id}')" style="cursor:pointer">🗑️</span>`;
                 (item.collected ? done : todo).appendChild(li);
             }
             document.getElementById('sumP').innerText = p.toFixed(1);
