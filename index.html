@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>הקניות של אורן - Gold Edition</title>
+    <title>הקניות של אורן - Dark Premium</title>
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#1e272e">
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -21,44 +21,66 @@
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 3000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(12px); padding: 15px; }
         .app-modal { background: white; width: 100%; max-width: 440px; border-radius: 30px; padding: 35px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.5); max-height: 90vh; overflow-y: auto; }
         
-        .top-nav { background: rgba(255,255,255,0.95); backdrop-filter: blur(15px); padding: 10px 15px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.15); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 5px; }
-        #greetingMsg { width: 100%; font-size: 16px; font-weight: 900; color: var(--primary); margin-bottom: 5px; }
-        
-        #progress-container { width: 100%; height: 5px; background: rgba(255,255,255,0.2); position: sticky; top: 82px; z-index: 999; }
+        .top-nav { background: rgba(255,255,255,0.95); backdrop-filter: blur(15px); padding: 10px 15px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: space-between; gap: 5px; }
+        #progress-container { width: 100%; height: 5px; background: rgba(255,255,255,0.2); position: sticky; top: 60px; z-index: 999; }
         #progress-bar { height: 100%; width: 0%; background: var(--secondary); transition: width 0.5s ease-out; box-shadow: 0 0 10px var(--secondary); }
         
-        .app-container { width: 94%; max-width: 500px; margin: 15px auto 25px auto; }
-        .control-panel { background: var(--glass); border-radius: 30px; padding: 20px 25px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
-        .section-label { font-size: 13px; font-weight: 800; color: #636e72; margin-bottom: 6px; display: block; padding-right: 5px; }
+        .app-container { width: 94%; max-width: 500px; margin: 25px auto; }
+        
+        /* הברכה בגדול ובולט מעל הפאנל */
+        .greeting-box { text-align: center; margin-bottom: 20px; }
+        #greetingMsg { font-size: 30px; font-weight: 900; color: #ffffff; text-shadow: 0 4px 15px rgba(0,0,0,0.8); margin: 0; letter-spacing: 0.5px; }
+        
+        /* לוח בקרה שחור-יוקרתי (Midnight Glass) */
+        .control-panel { 
+            background: linear-gradient(135deg, rgba(30, 39, 46, 0.95), rgba(45, 52, 54, 0.98)); 
+            border: 1px solid rgba(255,255,255,0.15); 
+            border-radius: 30px; 
+            padding: 20px 25px; 
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5); 
+            color: white;
+        }
+        .control-panel .section-label { color: #b2bec3; } /* צבע אפור-בהיר לטקסטים בפאנל הכהה */
+        .control-panel span.panel-title { color: #ffffff !important; font-weight: 900; font-size: 18px; }
+        
         input, select { padding: 15px; border: 2px solid #dfe6e9; border-radius: 18px; font-size: 16px; outline: none; background: #fff; width: 100%; transition: 0.3s; color: #2d3436; font-weight: 600; }
-        input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(9,132,227,0.15); }
+        input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(9,132,227,0.3); }
+        
         .btn { padding: 16px; border: none; border-radius: 18px; cursor: pointer; font-weight: 900; font-size: 17px; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s; }
         .btn:active { transform: scale(0.96); }
-        .btn-add { background: var(--primary); color: white; width: 100%; }
+        .btn-add { background: var(--primary); color: white; width: 100%; box-shadow: 0 5px 15px rgba(9,132,227,0.3); }
         .btn-danger { background: var(--danger); color: white; padding: 12px 15px; border-radius: 15px; font-size: 14px; }
         .btn-secondary { background: #f1f2f6; color: #2d3436; width: 100%; }
         
         ul { list-style: none; padding: 0; margin: 20px 0; }
         li { background: var(--glass); margin-bottom: 12px; padding: 20px; border-radius: 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border-right: 8px solid var(--primary); transition: 0.3s; }
         .collected { opacity: 0.5; filter: grayscale(1); transform: scale(0.98); border-right-color: #b2bec3 !important; }
-        li.category-header { background: rgba(0, 0, 0, 0.7); color: #fff; border: 1px solid rgba(255,255,255,0.1); border-right: 6px solid var(--secondary); width: max-content; padding: 8px 20px; border-radius: 20px; font-size: 14px; font-weight: 900; margin: 40px 10px 15px 0; box-shadow: 0 5px 15px rgba(0,0,0,0.4); display: block; backdrop-filter: blur(10px); }
+        li.category-header { background: rgba(0, 0, 0, 0.75); color: #fff; border: 1px solid rgba(255,255,255,0.1); border-right: 6px solid var(--secondary); width: max-content; padding: 8px 20px; border-radius: 20px; font-size: 14px; font-weight: 900; margin: 40px 10px 15px 0; box-shadow: 0 5px 15px rgba(0,0,0,0.4); display: block; backdrop-filter: blur(10px); }
         .author-badge { font-size: 11px; color: #636e72; margin-top: 6px; font-weight: 600; background: rgba(0,0,0,0.05); padding: 4px 8px; border-radius: 10px; display: inline-block; }
+        
         .budget-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20, 25, 30, 0.98); backdrop-filter: blur(15px); color: white; padding: 20px; display: flex; justify-content: space-around; z-index: 1001; border-radius: 35px 35px 0 0; border-top: 1px solid rgba(255,255,255,0.1); }
         .suggestions-box { position: absolute; background: white; width: 100%; border-radius: 18px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); z-index: 2000; display: none; margin-top: 5px; border: 1px solid #dfe6e9; max-height: 250px; overflow-y: auto; }
         .suggestion-item { padding: 15px; border-bottom: 1px solid #f1f2f6; cursor: pointer; display: flex; justify-content: space-between; font-weight: 700; color: #2d3436; }
+        
         #toastMsg { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: rgba(30, 39, 46, 0.98); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 15px 30px; border-radius: 30px; font-size: 16px; font-weight: 900; box-shadow: 0 15px 35px rgba(0,0,0,0.4); z-index: 6000; transition: top 0.4s ease; text-align: center; white-space: nowrap; }
         #toastMsg.show { top: 30px; }
         #offlineBadge { display: none; background: #ff4757; color: white; text-align: center; padding: 5px; font-size: 12px; font-weight: bold; position: sticky; top: 0; z-index: 2000; }
+        
         #animation-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5000; overflow: hidden; display: flex; justify-content: center; align-items: center; }
         .graphic-anim { position: absolute; background-size: contain; background-repeat: no-repeat; opacity: 0; }
         
         @keyframes floatUp { 0% { transform: translateY(110vh) scale(0.5); opacity: 1; } 100% { transform: translateY(-20vh) scale(1.5); opacity: 0; } }
-        @keyframes slideAcross { 0% { transform: translateX(120vw); opacity: 1; } 100% { transform: translateX(-120vw); opacity: 1; } }
         @keyframes textPop { 0% { transform: scale(0.5); opacity: 0; } 15% { transform: scale(1.1); opacity: 1; } 80% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.15); opacity: 0; } }
-        @keyframes runToCheckout { 0% { transform: translateX(120vw) scale(1) rotate(5deg); } 50% { transform: translateX(0vw) scale(1.2) rotate(-5deg); } 100% { transform: translateX(-120vw) scale(1) rotate(5deg); } }
         
+        /* אנימציית העגלה הווקטורית המקצועית */
+        @keyframes cartGlide { 
+            0% { transform: translateX(120vw) scale(0.8); opacity: 0; } 
+            20% { opacity: 1; }
+            50% { transform: translateX(0vw) scale(1.1); } 
+            100% { transform: translateX(-120vw) scale(0.9); opacity: 0; } 
+        }
         .anim-text { font-size: 32px; font-weight: 900; color: #fff; background: rgba(0, 0, 0, 0.75); border: 2px solid rgba(255,255,255,0.2); padding: 20px 40px; border-radius: 50px; animation: textPop 4s ease-in-out forwards; text-align: center; z-index: 5001; }
-        .checkout-anim { font-size: 80px; position: absolute; top: 40%; animation: runToCheckout 3.5s ease-in-out forwards; z-index: 5001; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5)); }
+        .checkout-svg { width: 160px; height: 160px; position: absolute; top: 40%; animation: cartGlide 3s cubic-bezier(0.25, 1, 0.5, 1) forwards; z-index: 5001; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.6)); }
     </style>
 </head>
 <body class="theme-super">
@@ -107,9 +129,9 @@
         <div class="app-modal">
             <h2 style="margin-top:0;">רשימה חדשה</h2>
             <div style="text-align: right;">
-                <span class="section-label">שם הרשימה:</span>
+                <span class="section-label" style="color:#636e72;">שם הרשימה:</span>
                 <input type="text" id="newListName" placeholder="למשל: קניות לשבת" style="margin-bottom:15px;">
-                <span class="section-label">סוג האירוע:</span>
+                <span class="section-label" style="color:#636e72;">סוג האירוע:</span>
                 <select id="newListType" style="margin-bottom:25px;">
                     <option value="super">🛒 קניות בסופר</option>
                     <option value="bar">✡️ אירוע בר מצווה</option>
@@ -125,7 +147,6 @@
     </div>
 
     <div class="top-nav">
-        <div id="greetingMsg"></div>
         <select id="myListsDropdown" onchange="switchList(this.value)" style="flex:1; font-weight:900; border:none; background:none; font-size: 17px; color: #2d3436; margin: 0; padding: 0;"></select>
         <button class="btn" style="padding:5px; background:transparent; font-size: 18px; box-shadow:none; color: #636e72;" onclick="renameCurrentList()" title="ערוך שם">✏️</button>
         <button class="btn btn-add" style="padding:0 18px; margin:0; width: auto; font-size: 22px; height: 38px;" onclick="document.getElementById('newListModal').style.display='flex'">+</button>
@@ -134,9 +155,13 @@
     <div id="progress-container"><div id="progress-bar"></div></div>
 
     <div class="app-container">
+        <div class="greeting-box">
+            <h2 id="greetingMsg"></h2>
+        </div>
+
         <div class="control-panel">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom: 2px solid #f1f2f6; padding-bottom: 15px; gap: 5px;">
-                <span style="font-weight: 900; color: #2d3436; font-size: 18px;">פעולות רשימה:</span>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom: 15px; gap: 5px;">
+                <span class="panel-title">פעולות רשימה:</span>
                 <button class="btn-secondary" style="width: auto; padding: 8px 12px; border-radius: 12px; box-shadow:none; font-size:14px;" title="שכפל רשימה כתבנית" onclick="duplicateCurrentList()">📋 שכפל</button>
                 <button class="btn-danger" style="padding: 8px 12px; border-radius: 12px;" title="מחק רשימה" onclick="document.getElementById('deleteModal').style.display='flex'">🗑️ מחק</button>
             </div>
@@ -172,8 +197,8 @@
                     </div>
                 </div>
                 
-                <button class="btn btn-add" onclick="addItem()">הוסף לרשימה</button>
-                <button class="btn" style="background:#6c5ce7; color:white; width:100%;" onclick="document.getElementById('shareModal').style.display='flex'">📤 אפשרויות שיתוף</button>
+                <button class="btn btn-add" onclick="addItem()" style="margin-top: 5px;">הוסף לרשימה</button>
+                <button class="btn" style="background:rgba(255,255,255,0.1); color:white; width:100%; border: 1px solid rgba(255,255,255,0.2);" onclick="document.getElementById('shareModal').style.display='flex'">📤 אפשרויות שיתוף</button>
             </div>
         </div>
 
@@ -182,7 +207,7 @@
         
         <div style="display: flex; justify-content: space-between; align-items: center; margin: 35px 10px 10px;">
             <h3 style="margin: 0; font-weight: 900; color: #dfe6e9; text-shadow: 0 2px 8px rgba(0,0,0,0.8);">✅ כבר בעגלה</h3>
-            <button class="btn-secondary" style="width: auto; padding: 6px 12px; border-radius: 10px; font-size: 13px;" onclick="clearCollectedItems()">🧹 רוקן עגלה</button>
+            <button class="btn-secondary" style="width: auto; padding: 6px 12px; border-radius: 10px; font-size: 13px; box-shadow: 0 5px 10px rgba(0,0,0,0.3);" onclick="clearCollectedItems()">🧹 רוקן עגלה</button>
         </div>
         <ul id="collectedList"></ul>
     </div>
@@ -242,12 +267,27 @@
             setTimeout(() => { container.innerHTML = ''; }, 4000);
         }
 
+        // --- אנימציה וקטורית מקצועית ---
         function triggerCheckoutAnim() {
             const container = document.getElementById('animation-container'); container.innerHTML = ''; 
-            const cart = document.createElement('div'); cart.className = 'checkout-anim'; cart.innerText = '🏃‍♂️🛒'; container.appendChild(cart);
+            
+            // יצירת אלמנט SVG איכותי במקום אימוג'י
+            const svgCart = `
+            <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                <g fill="#00b894">
+                    <path d="M22.5 54c-2.5 0-4.5 2-4.5 4.5s2 4.5 4.5 4.5 4.5-2 4.5-4.5-2-4.5-4.5-4.5zm26 0c-2.5 0-4.5 2-4.5 4.5s2 4.5 4.5 4.5 4.5-2 4.5-4.5-2-4.5-4.5-4.5zM60.3 16.5H16.8l-1.6-7.8C14.8 6.5 12.8 5 10.6 5H4c-1.1 0-2 .9-2 2s.9 2 2 2h6.6l6 29c.4 2.1 2.3 3.6 4.5 3.6h31.8c2 0 3.8-1.3 4.3-3.2l5.7-20.5c.5-1.5-.6-3.4-2.6-3.4z"/>
+                </g>
+                <path d="M23 23h24M25 32h20M27 41h16" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+            </svg>`;
+            
+            const cartDiv = document.createElement('div'); 
+            cartDiv.className = 'checkout-svg'; 
+            cartDiv.innerHTML = svgCart; 
+            container.appendChild(cartDiv);
+            
             showToast("הכל נאסף! אפשר לגשת לקופה 🎉");
             if(navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 100]);
-            setTimeout(() => { container.innerHTML = ''; }, 3500);
+            setTimeout(() => { container.innerHTML = ''; }, 3000);
         }
 
         function updateQuantityOptions() {
@@ -270,7 +310,7 @@
                 document.getElementById('itemCat').innerHTML = Object.entries(templates[currentType].cats).map(([k,v]) => `<option value="${k}">${v}</option>`).join(''); updateQuantityOptions(); updateQuickSelect();
             });
             
-            let isFirstRender = true; // דגל למניעת אנימציית קופה בטעינה ראשונית
+            let isFirstRender = true; 
             database.ref('all_lists/'+id+'/items').on('value', s => {
                 currentItemsData = s.val(); render(currentItemsData, isFirstRender); isFirstRender = false;
             });
