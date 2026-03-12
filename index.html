@@ -70,11 +70,11 @@
         
         .cart-sheet { position: fixed; bottom: 0; left: 0; right: 0; height: 75vh; background: #1e272e; z-index: 5000; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); border-radius: 35px 35px 0 0; box-shadow: 0 -20px 60px rgba(0,0,0,0.8); display: flex; flex-direction: column; border-top: 1px solid rgba(255,255,255,0.1); }
         .cart-sheet.open { transform: translateY(0); }
-        .cart-sheet-header { padding: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; }
+        .cart-sheet-header { padding: 15px 25px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: background 0.2s; }
+        .cart-sheet-header:active { background: rgba(255,255,255,0.05); }
         .cart-sheet-content { flex: 1; overflow-y: auto; padding: 0 15px 20px; }
-        .close-cart-btn { background: rgba(255,255,255,0.1); border: none; color: white; width: 40px; height: 40px; border-radius: 20px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         
-        /* כפתור UNDO מרחף קבוע (Z-Index מדויק) */
+        /* כפתור UNDO מרחף קבוע */
         #undoBtn { position: fixed; bottom: 85px; right: 20px; background: rgba(45, 52, 54, 0.95); color: #dfe6e9; padding: 10px 18px; border-radius: 20px; font-weight: 700; font-size: 14px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 3000; transition: all 0.3s ease; opacity: 0; pointer-events: none; display: flex; align-items: center; gap: 8px; backdrop-filter: blur(5px); max-width: 60%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         #undoBtn.show { transform: translateY(0); opacity: 1; pointer-events: all; cursor: pointer; }
         #undoBtn:active { transform: scale(0.95); background: rgba(30, 39, 46, 0.95); }
@@ -227,11 +227,13 @@
     </div>
 
     <div id="cartSheet" class="cart-sheet">
-        <div class="cart-sheet-header">
+        <div style="width: 100%; padding-top: 12px; cursor: pointer;" onclick="toggleCartSheet()">
+            <div style="width: 40px; height: 5px; background: rgba(255,255,255,0.2); border-radius: 5px; margin: 0 auto;"></div>
+        </div>
+        <div class="cart-sheet-header" onclick="toggleCartSheet()">
             <h3 style="margin:0; color:white; font-size:20px; font-weight:900;">🛒 כבר בעגלה</h3>
             <div style="display:flex; gap:10px; align-items:center;">
                 <button class="btn-secondary" style="width: auto; padding: 6px 12px; border-radius: 10px; font-size: 13px; margin:0;" onclick="clearCollectedItems(); event.stopPropagation();">🧹 רוקן</button>
-                <button class="close-cart-btn" onclick="toggleCartSheet(); event.stopPropagation();">✖</button>
             </div>
         </div>
         <div class="cart-sheet-content">
@@ -242,6 +244,7 @@
     <script>
         const firebaseConfig = { apiKey: "AIzaSyCb7dApdjqPB6Fip9rW-QxoNbTZBow6rkQ", authDomain: "shopping-list-7c4fa.firebaseapp.com", databaseURL: "https://shopping-list-7c4fa-default-rtdb.europe-west1.firebasedatabase.app", projectId: "shopping-list-7c4fa", storageBucket: "shopping-list-7c4fa.firebasestorage.app", messagingSenderId: "482760938255", appId: "1:482760938255:web:99e0dd53cb822a8327e47a" };
         firebase.initializeApp(firebaseConfig); const database = firebase.database();
+        
         let currentListId = new URLSearchParams(window.location.search).get('list') || (JSON.parse(localStorage.getItem('myLists')) || ['list_general'])[0];
         let currentType = "super", learnedCategories = {}, currentUserName = localStorage.getItem('myAppName') || '', currentItemsData = null;
         
@@ -250,6 +253,7 @@
         let initialLoadDone = false;
         let lastCollectedItemId = null;
         let isCartOpen = false;
+        let wasOffline = false; 
 
         const categoryColors = { meat: "#ff4757", dairy: "#74b9ff", veg: "#2ecc71", dry: "#e1b12c", clean: "#a29bfe", general: "#b2bec3", party: "#fd79a8", sweet: "#e84393", drinks: "#00cec9", relig: "#fbc531", log: "#6c5ce7", gift: "#ff7675" };
         const templates = {
@@ -261,7 +265,21 @@
 
         function init() {
             if (!currentUserName) { document.getElementById('nameModal').style.display = 'flex'; } else { updateGreeting(); }
-            database.ref('.info/connected').on('value', snap => { const isOnline = snap.val(); document.getElementById('offlineBadge').style.display = isOnline ? 'none' : 'block'; if(isOnline && currentUserName) showToast("מחובר לרשת ✔️"); });
+            
+            database.ref('.info/connected').on('value', snap => { 
+                const isOnline = snap.val(); 
+                document.getElementById('offlineBadge').style.display = isOnline ? 'none' : 'block'; 
+                
+                if (isOnline) {
+                    if (wasOffline && currentUserName) {
+                        showToast("חזרנו לרשת - מסונכרן ✔️", true);
+                    }
+                    wasOffline = false;
+                } else {
+                    wasOffline = true;
+                }
+            });
+
             loadListData(currentListId, false); updateDropdown();
             database.ref('global_dictionary').on('value', s => { learnedCategories = s.val() || {}; updateQuickSelect(); });
         }
@@ -314,8 +332,14 @@
 
         function updateQuantityOptions() {
             const cat = document.getElementById('itemCat').value, qtySelect = document.getElementById('itemQty'); qtySelect.innerHTML = ''; 
-            if (cat === 'meat' || cat === 'veg' || cat === 'food' || cat === 'dry') { for (let i = 200; i <= 4000; i += 100) { let text = i >= 1000 ? (i/1000) + ' ק"ג' : i + ' גרם'; qtySelect.add(new Option(text, i/1000)); }
-            } else { for (let i = 1; i <= 20; i++) qtySelect.add(new Option(i + " יח'", i)); }
+            if (cat === 'meat' || cat === 'veg') { 
+                for (let i = 200; i <= 4000; i += 100) { let text = i >= 1000 ? (i/1000) + ' ק"ג' : i + ' גרם'; qtySelect.add(new Option(text, i/1000)); }
+            } else if (cat === 'dry') {
+                for (let i = 1; i <= 20; i++) qtySelect.add(new Option(i + " יח'", i));
+                for (let i = 200; i <= 4000; i += 100) { let text = i >= 1000 ? (i/1000) + ' ק"ג' : i + ' גרם'; qtySelect.add(new Option(text, i/1000)); }
+            } else { 
+                for (let i = 1; i <= 20; i++) qtySelect.add(new Option(i + " יח'", i)); 
+            }
         }
 
         function updateQuickSelect() {
@@ -521,6 +545,7 @@
         
         function shareCurrentList() { if (navigator.share) { navigator.share({ title: 'הקניות שלי', text: 'הצטרף לרשימת הקניות המשותפת שלנו!', url: window.location.href }); } else { alert("העתק את הלינק כדי לשתף"); } closeModal('shareModal'); }
         function shareAppOnly() { const baseUrl = window.location.origin + window.location.pathname; if (navigator.share) { navigator.share({ title: 'אפליקציית קניות', text: 'בוא לנסות את אפליקציית הקניות החדשה שארגנתי!', url: baseUrl }); } else { alert("העתק את הלינק: " + baseUrl); } closeModal('shareModal'); }
+        
         function shareAsText() {
             if(!currentItemsData) return; let grouped = {};
             for(let key in currentItemsData) { let item = currentItemsData[key]; if(!item.collected) { let catKey = item.category || 'general'; if(!grouped[catKey]) grouped[catKey] = []; grouped[catKey].push(`${item.text} (${item.qtyText || '1'})`); } }
@@ -528,7 +553,10 @@
             let textMsg = `🛒 *נשאר לקנות - ${currentName}*\n\n`; const currentCats = templates[currentType].cats || {};
             for(let cat in grouped) { textMsg += `*${currentCats[cat] || '📦 כללי'}*\n• ` + grouped[cat].join('\n• ') + `\n\n`; }
             if(Object.keys(grouped).length === 0) textMsg = "הכל כבר נאסף! אין מה לקנות 🎉";
-            window.open('https://wa.me/?text=' + encodeURIComponent(textMsg), '_blank'); closeModal('shareModal');
+            
+            window.open('https://wa.me/?text=' + encodeURIComponent(textMsg), '_top');
+            
+            closeModal('shareModal');
         }
 
         async function updateDropdown() {
