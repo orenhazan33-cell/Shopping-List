@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>הקניות של אורן - Ultimate UX</title>
+    <title>הקניות של אורן - Production Release</title>
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#1e272e">
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -11,12 +11,12 @@
     <style>
         :root { --primary: #0984e3; --secondary: #00b894; --danger: #ff4757; --glass: rgba(255, 255, 255, 0.95); }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; padding-bottom: 140px; min-height: 100vh; background-color: #1e272e; background-attachment: fixed; background-size: cover; background-position: center; transition: background-image 0.6s ease-in-out; direction: rtl; text-align: right; overflow-x: hidden; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; padding-bottom: 60px; min-height: 100vh; background-color: #1e272e; background-attachment: fixed; background-size: cover; background-position: center; transition: background-image 0.6s ease-in-out; direction: rtl; text-align: right; overflow-x: hidden; }
         
-        body.theme-super { background-image: linear-gradient(rgba(15,20,25,0.4), rgba(15,20,25,0.6)), url('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1080&q=80'); }
-        body.theme-birthday { background-image: linear-gradient(rgba(20,10,20,0.4), rgba(20,10,20,0.6)), url('https://images.unsplash.com/photo-1530103862676-de8892bf309c?auto=format&fit=crop&w=1080&q=80'); }
-        body.theme-wedding { background-image: linear-gradient(rgba(30,20,10,0.4), rgba(30,20,10,0.6)), url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1080&q=80'); }
-        body.theme-bar { background-image: linear-gradient(rgba(10,20,40,0.5), rgba(10,20,40,0.7)), url('https://images.unsplash.com/photo-1601564264639-661cd8c1e843?auto=format&fit=crop&w=1080&q=80'); }
+        body.theme-super { background-image: linear-gradient(rgba(15,20,25,0.4), rgba(15,20,25,0.7)), url('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1080&q=80'); }
+        body.theme-birthday { background-image: linear-gradient(rgba(20,10,20,0.4), rgba(20,10,20,0.7)), url('https://images.unsplash.com/photo-1530103862676-de8892bf309c?auto=format&fit=crop&w=1080&q=80'); }
+        body.theme-wedding { background-image: linear-gradient(rgba(30,20,10,0.4), rgba(30,20,10,0.7)), url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1080&q=80'); }
+        body.theme-bar { background-image: linear-gradient(rgba(10,20,40,0.5), rgba(10,20,40,0.8)), url('https://images.unsplash.com/photo-1601564264639-661cd8c1e843?auto=format&fit=crop&w=1080&q=80'); }
         
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 3000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(12px); padding: 15px; }
         .app-modal { background: white; width: 100%; max-width: 440px; border-radius: 30px; padding: 35px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.5); max-height: 90vh; overflow-y: auto; }
@@ -31,7 +31,7 @@
         #greetingMsg { font-size: 30px; font-weight: 900; color: #ffffff; text-shadow: 0 4px 15px rgba(0,0,0,0.8); margin: 0; letter-spacing: 0.5px; }
         
         .control-panel { background: linear-gradient(135deg, rgba(30, 39, 46, 0.95), rgba(45, 52, 54, 0.98)); border: 1px solid rgba(255,255,255,0.15); border-radius: 30px; padding: 20px 25px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); color: white; }
-        .control-panel .section-label { color: #b2bec3; }
+        .control-panel .section-label { color: #b2bec3; font-size: 13px; font-weight: 800; margin-bottom: 6px; display: block; padding-right: 5px; }
         .control-panel span.panel-title { color: #ffffff !important; font-weight: 900; font-size: 18px; }
         
         input, select { padding: 15px; border: 2px solid #dfe6e9; border-radius: 18px; font-size: 16px; outline: none; background: #fff; width: 100%; transition: 0.3s; color: #2d3436; font-weight: 600; }
@@ -49,51 +49,38 @@
         li.category-header { background: rgba(0, 0, 0, 0.75); color: #fff; border: 1px solid rgba(255,255,255,0.1); border-right: 6px solid var(--secondary); width: max-content; padding: 8px 20px; border-radius: 20px; font-size: 14px; font-weight: 900; margin: 40px 10px 15px 0; box-shadow: 0 5px 15px rgba(0,0,0,0.4); display: block; backdrop-filter: blur(10px); }
         .author-badge { font-size: 11px; color: #636e72; margin-top: 6px; font-weight: 600; background: rgba(0,0,0,0.05); padding: 4px 8px; border-radius: 10px; display: inline-block; }
         
-        .budget-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(20, 25, 30, 0.98); backdrop-filter: blur(15px); color: white; padding: 20px; display: flex; justify-content: space-around; z-index: 1001; border-radius: 35px 35px 0 0; border-top: 1px solid rgba(255,255,255,0.1); }
         .suggestions-box { position: absolute; background: white; width: 100%; border-radius: 18px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); z-index: 2000; display: none; margin-top: 5px; border: 1px solid #dfe6e9; max-height: 250px; overflow-y: auto; }
         .suggestion-item { padding: 15px; border-bottom: 1px solid #f1f2f6; cursor: pointer; display: flex; justify-content: space-between; font-weight: 700; color: #2d3436; }
         
-        #toastMsg { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: rgba(30, 39, 46, 0.98); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 15px 30px; border-radius: 30px; font-size: 16px; font-weight: 900; box-shadow: 0 15px 35px rgba(0,0,0,0.4); z-index: 6000; transition: top 0.4s ease; text-align: center; white-space: nowrap; }
+        #toastMsg { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: rgba(30, 39, 46, 0.98); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 15px 30px; border-radius: 30px; font-size: 16px; font-weight: 900; box-shadow: 0 15px 35px rgba(0,0,0,0.4); z-index: 6000; transition: top 0.4s ease; text-align: center; white-space: nowrap; max-width: 90%; }
         #toastMsg.show { top: 30px; }
+        
+        #toastMsg.live-alert { background: linear-gradient(135deg, #00b894, #00cec9); border: 2px solid #fff; box-shadow: 0 15px 35px rgba(0,184,148,0.5); }
+
         #offlineBadge { display: none; background: #ff4757; color: white; text-align: center; padding: 5px; font-size: 12px; font-weight: bold; position: sticky; top: 0; z-index: 2000; }
         
         #animation-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5000; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0); transition: background 0.5s; }
-        #animation-container.active { background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); }
+        #animation-container.active { background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); }
         
-        .graphic-anim { position: absolute; background-size: contain; background-repeat: no-repeat; opacity: 0; }
-        @keyframes floatUp { 0% { transform: translateY(110vh) scale(0.5); opacity: 1; } 100% { transform: translateY(-20vh) scale(1.5); opacity: 0; } }
         @keyframes textPop { 0% { transform: scale(0.5); opacity: 0; } 15% { transform: scale(1.1); opacity: 1; } 80% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.15); opacity: 0; } }
         .anim-text { font-size: 32px; font-weight: 900; color: #fff; background: rgba(0, 0, 0, 0.75); border: 2px solid rgba(255,255,255,0.2); padding: 20px 40px; border-radius: 50px; animation: textPop 4s ease-in-out forwards; text-align: center; z-index: 5001; }
         
-        /* עיצוב ואנימציית חלון ההצלחה (השלמת הקנייה) */
-        @keyframes successBadgePop {
-            0% { transform: scale(0.5); opacity: 0; }
-            15% { transform: scale(1.05); opacity: 1; }
+        @keyframes successCartPop {
+            0% { transform: scale(0.5) translateY(50px); opacity: 0; }
+            15% { transform: scale(1.05) translateY(0); opacity: 1; }
             25% { transform: scale(1); opacity: 1; }
             85% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(1.2); opacity: 0; }
+            100% { transform: scale(1.2) translateY(-30px); opacity: 0; }
         }
         @keyframes drawCheck {
             0% { stroke-dasharray: 0, 100; }
             100% { stroke-dasharray: 100, 100; }
         }
-        .success-badge {
-            background: linear-gradient(135deg, #1e272e, #2d3436);
-            border: 2px solid var(--secondary);
-            border-radius: 30px;
-            padding: 40px 30px;
-            text-align: center;
-            box-shadow: 0 30px 60px rgba(0,184,148,0.25);
-            animation: successBadgePop 4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-            z-index: 5002;
-            width: 90%;
-            max-width: 400px;
-        }
-        .success-icon { width: 100px; height: 100px; margin: 0 auto 15px; }
-        .success-icon circle { fill: rgba(0,184,148,0.1); stroke: var(--secondary); stroke-width: 4; }
-        .success-icon path { fill: none; stroke: var(--secondary); stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 100, 100; animation: drawCheck 1s ease-out 0.5s both; }
-        .success-title { color: white; font-size: 28px; font-weight: 900; margin: 0 0 10px 0; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
-        .success-subtitle { color: var(--secondary); font-size: 18px; font-weight: 700; margin: 0; }
+        .success-badge { text-align: center; animation: successCartPop 4s cubic-bezier(0.25, 1, 0.5, 1) forwards; z-index: 5002; width: 100%; }
+        .success-icon { width: 160px; height: 160px; margin: 0 auto 10px; filter: drop-shadow(0 10px 20px rgba(0,184,148,0.4)); }
+        .cart-check { stroke-dasharray: 100, 100; animation: drawCheck 1s ease-out 0.6s both; }
+        .success-title { color: white; font-size: 32px; font-weight: 900; margin: 0 0 10px 0; text-shadow: 0 4px 15px rgba(0,0,0,0.8); }
+        .success-subtitle { color: var(--secondary); font-size: 20px; font-weight: 700; margin: 0; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
     </style>
 </head>
 <body class="theme-super">
@@ -174,14 +161,16 @@
 
         <div class="control-panel">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom: 15px; gap: 5px;">
-                <span class="panel-title">פעולות רשימה:</span>
-                <button class="btn-secondary" style="width: auto; padding: 8px 12px; border-radius: 12px; box-shadow:none; font-size:14px;" title="שכפל רשימה כתבנית" onclick="duplicateCurrentList()">📋 שכפל</button>
-                <button class="btn-danger" style="padding: 8px 12px; border-radius: 12px;" title="מחק רשימה" onclick="document.getElementById('deleteModal').style.display='flex'">🗑️ מחק</button>
+                <span class="panel-title">הוספת מוצרים</span>
+                <div style="display:flex; gap: 8px;">
+                    <button class="btn-secondary" style="width: auto; padding: 6px 10px; border-radius: 10px; box-shadow:none; font-size:13px;" title="שכפל רשימה" onclick="duplicateCurrentList()">📋 שכפל</button>
+                    <button class="btn-danger" style="padding: 6px 10px; border-radius: 10px; font-size:13px;" title="מחק רשימה" onclick="document.getElementById('deleteModal').style.display='flex'">🗑️</button>
+                </div>
             </div>
             
             <div style="display:flex; flex-direction:column; gap:15px;">
                 <div style="display:flex; gap:10px;">
-                    <div style="flex:2">
+                    <div style="flex:1">
                         <span class="section-label">קטגוריה</span>
                         <select id="itemCat" onchange="updateQuantityOptions(); updateQuickSelect();"></select>
                     </div>
@@ -191,27 +180,20 @@
                     </div>
                 </div>
                 
-                <div>
-                    <span class="section-label">שם המוצר</span>
-                    <div style="position: relative;">
-                        <input type="text" id="itemInput" placeholder="מה תרצה לקנות?" oninput="handleAuto(this.value)" autocomplete="off">
-                        <div id="suggestions" class="suggestions-box"></div>
-                    </div>
-                </div>
-                
                 <div style="display:flex; gap:10px;">
-                    <div style="flex:1;">
-                        <span class="section-label">מחיר (₪)</span>
-                        <input type="number" id="itemPrice" placeholder="0" style="text-align:center;">
+                    <div style="flex:2; position: relative;">
+                        <span class="section-label">שם המוצר</span>
+                        <input type="text" id="itemInput" placeholder="מה חסר?" oninput="handleAuto(this.value)" autocomplete="off">
+                        <div id="suggestions" class="suggestions-box"></div>
                     </div>
                     <div style="flex:1;">
                         <span class="section-label">כמות</span>
-                        <select id="itemQty" style="text-align:center; direction: ltr;"></select>
+                        <select id="itemQty" style="text-align:center; direction: ltr; padding: 15px 5px;"></select>
                     </div>
                 </div>
                 
                 <button class="btn btn-add" onclick="addItem()" style="margin-top: 5px;">הוסף לרשימה</button>
-                <button class="btn" style="background:rgba(255,255,255,0.1); color:white; width:100%; border: 1px solid rgba(255,255,255,0.2);" onclick="document.getElementById('shareModal').style.display='flex'">📤 אפשרויות שיתוף</button>
+                <button class="btn" style="background:rgba(255,255,255,0.1); color:white; width:100%; border: 1px solid rgba(255,255,255,0.2); font-size: 15px; padding: 12px;" onclick="document.getElementById('shareModal').style.display='flex'">📤 אפשרויות שיתוף</button>
             </div>
         </div>
 
@@ -225,17 +207,15 @@
         <ul id="collectedList"></ul>
     </div>
 
-    <div class="budget-bar">
-        <div style="text-align:center; flex:1; border-left: 1px solid rgba(255,255,255,0.1);">צפי הוצאה<br><span id="sumP" style="font-size:24px; color:#74b9ff; font-weight:900;">0</span></div>
-        <div style="text-align:center; flex:1;">בסל כרגע<br><span id="sumC" style="font-size:24px; color:#55efc4; font-weight:900;">0</span></div>
-    </div>
-
     <script>
         const firebaseConfig = { apiKey: "AIzaSyCb7dApdjqPB6Fip9rW-QxoNbTZBow6rkQ", authDomain: "shopping-list-7c4fa.firebaseapp.com", databaseURL: "https://shopping-list-7c4fa-default-rtdb.europe-west1.firebasedatabase.app", projectId: "shopping-list-7c4fa", storageBucket: "shopping-list-7c4fa.firebasestorage.app", messagingSenderId: "482760938255", appId: "1:482760938255:web:99e0dd53cb822a8327e47a" };
         firebase.initializeApp(firebaseConfig); const database = firebase.database();
         let currentListId = new URLSearchParams(window.location.search).get('list') || (JSON.parse(localStorage.getItem('myLists')) || ['list_general'])[0];
-        let currentType = "super", learnedPrices = {}, currentUserName = localStorage.getItem('myAppName') || '', currentItemsData = null;
+        let currentType = "super", learnedCategories = {}, currentUserName = localStorage.getItem('myAppName') || '', currentItemsData = null;
+        
         let wasComplete = false;
+        let knownItemIds = new Set();
+        let initialLoadDone = false;
 
         const categoryColors = { meat: "#ff4757", dairy: "#74b9ff", veg: "#2ecc71", dry: "#e1b12c", clean: "#a29bfe", general: "#b2bec3", party: "#fd79a8", sweet: "#e84393", drinks: "#00cec9", relig: "#fbc531", log: "#6c5ce7", gift: "#ff7675" };
         const templates = {
@@ -251,7 +231,7 @@
                 const isOnline = snap.val(); document.getElementById('offlineBadge').style.display = isOnline ? 'none' : 'block'; if(isOnline && currentUserName) showToast("מחובר לרשת ✔️");
             });
             loadListData(currentListId, false); updateDropdown();
-            database.ref('global_dictionary').on('value', s => { learnedPrices = s.val() || {}; updateQuickSelect(); });
+            database.ref('global_dictionary').on('value', s => { learnedCategories = s.val() || {}; updateQuickSelect(); });
         }
 
         function updateGreeting() {
@@ -268,7 +248,13 @@
             else { alert("אנא הכנס את שמך"); }
         }
 
-        function showToast(msg) { const t = document.getElementById('toastMsg'); t.innerText = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
+        function showToast(msg, isLiveAlert = false) { 
+            const t = document.getElementById('toastMsg'); 
+            t.innerText = msg; 
+            if(isLiveAlert) t.classList.add('live-alert'); else t.classList.remove('live-alert');
+            t.classList.add('show'); 
+            setTimeout(() => { t.classList.remove('show'); t.classList.remove('live-alert'); }, isLiveAlert ? 4500 : 3000); 
+        }
 
         function triggerAnimation(type) {
             const container = document.getElementById('animation-container'); container.innerHTML = ''; container.classList.remove('active');
@@ -280,30 +266,24 @@
             setTimeout(() => { container.innerHTML = ''; }, 4000);
         }
 
-        // --- פופ-אפ חכם ואלגנטי במקום האימוג'י ---
         function triggerCheckoutAnim() {
             const container = document.getElementById('animation-container'); 
-            container.innerHTML = ''; 
-            container.classList.add('active'); // מחשיך מעט את הרקע
-            
+            container.innerHTML = ''; container.classList.add('active'); 
             const badgeHTML = `
                 <div class="success-badge">
                     <svg class="success-icon" viewBox="0 0 100 100">
-                        <circle cx="50" cy="50" r="45"></circle>
-                        <path d="M25 50 L42 67 L75 34"></path>
+                        <path d="M10 20 L20 20 L30 65 L80 65 L90 30 L25 30" fill="none" stroke="var(--secondary)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="35" cy="80" r="6" fill="var(--secondary)"/>
+                        <circle cx="75" cy="80" r="6" fill="var(--secondary)"/>
+                        <path class="cart-check" d="M35 45 L48 58 L75 22" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                     <h2 class="success-title">הקנייה הושלמה!</h2>
                     <p class="success-subtitle">העגלה מלאה, אפשר לגשת לקופה</p>
                 </div>
             `;
-            
             container.innerHTML = badgeHTML;
             if(navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
-            
-            setTimeout(() => { 
-                container.innerHTML = ''; 
-                container.classList.remove('active');
-            }, 4000);
+            setTimeout(() => { container.innerHTML = ''; container.classList.remove('active'); }, 4000);
         }
 
         function updateQuantityOptions() {
@@ -314,12 +294,16 @@
 
         function updateQuickSelect() {
             const cat = document.getElementById('itemCat').value, baseItems = templates[currentType].items[cat] || []; let dynamicItems = [];
-            for (let itemName in learnedPrices) { let data = learnedPrices[itemName]; if (typeof data === 'object' && data.category === cat && !baseItems.includes(itemName)) dynamicItems.push(itemName); }
+            for (let itemName in learnedCategories) { let data = learnedCategories[itemName]; if (typeof data === 'object' && data.category === cat && !baseItems.includes(itemName)) dynamicItems.push(itemName); }
             const allItems = [...baseItems, ...dynamicItems]; document.getElementById('quickSelect').innerHTML = '<option value="">בחר...</option>' + allItems.map(i => `<option value="${i}">${i}</option>`).join('');
         }
 
         function loadListData(id, showAnim = true) {
-            database.ref('all_lists/'+currentListId+'/metadata').off(); database.ref('all_lists/'+currentListId+'/items').off(); currentListId = id;
+            database.ref('all_lists/'+currentListId+'/metadata').off(); database.ref('all_lists/'+currentListId+'/items').off(); 
+            currentListId = id;
+            initialLoadDone = false;
+            knownItemIds.clear();
+
             database.ref('all_lists/'+id+'/metadata').on('value', s => {
                 const meta = s.val() || { name: "רשימה", type: "super" }; currentType = meta.type || "super";
                 document.body.className = templates[currentType].theme; if(showAnim) triggerAnimation(currentType);
@@ -328,18 +312,33 @@
             
             let isFirstRender = true; 
             database.ref('all_lists/'+id+'/items').on('value', s => {
-                currentItemsData = s.val(); render(currentItemsData, isFirstRender); isFirstRender = false;
+                currentItemsData = s.val(); 
+                
+                if(initialLoadDone && currentItemsData) {
+                    for(let key in currentItemsData) {
+                        if(!knownItemIds.has(key)) {
+                            let newItem = currentItemsData[key];
+                            if(newItem.addedBy && newItem.addedBy !== currentUserName) {
+                                showToast(`🔔 ${newItem.addedBy} הרגע הוסיף/ה: ${newItem.text}`, true);
+                                if(navigator.vibrate) navigator.vibrate([100, 50, 100]);
+                            }
+                        }
+                    }
+                }
+                
+                knownItemIds.clear();
+                if(currentItemsData) { for(let key in currentItemsData) knownItemIds.add(key); }
+                initialLoadDone = true;
+
+                render(currentItemsData, isFirstRender); isFirstRender = false;
             });
         }
 
         function render(data, isFirstRender = false) {
-            const todo = document.getElementById('shoppingList'), done = document.getElementById('collectedList'); todo.innerHTML = ""; done.innerHTML = ""; let p = 0, c = 0;
-            if (!data) { 
-                document.getElementById('sumP').innerText = "0.0"; document.getElementById('sumC').innerText = "0.0"; 
-                document.getElementById('progress-bar').style.width = "0%"; wasComplete = false; return; 
-            }
+            const todo = document.getElementById('shoppingList'), done = document.getElementById('collectedList'); todo.innerHTML = ""; done.innerHTML = "";
+            if (!data) { document.getElementById('progress-bar').style.width = "0%"; wasComplete = false; return; }
             
-            let itemsArr = []; for (let id in data) { let item = data[id]; item.id = id; itemsArr.push(item); const numericQty = parseFloat(item.qtyVal) || parseFloat(item.qty) || 1; const total = (item.price || 0) * numericQty; p += total; if(item.collected) c += total; }
+            let itemsArr = []; for (let id in data) { let item = data[id]; item.id = id; itemsArr.push(item); }
             itemsArr.sort((a, b) => b.id.localeCompare(a.id));
             
             let uncollected = itemsArr.filter(item => !item.collected), collected = itemsArr.filter(item => item.collected), grouped = {};
@@ -360,33 +359,32 @@
                 grouped[catKey].forEach(item => todo.appendChild(createItemLi(item)));
             }
             collected.forEach(item => done.appendChild(createItemLi(item)));
-            document.getElementById('sumP').innerText = p.toFixed(1); document.getElementById('sumC').innerText = c.toFixed(1);
         }
 
         function createItemLi(item) {
-            const numericQty = parseFloat(item.qtyVal) || parseFloat(item.qty) || 1, displayText = item.qtyText || item.qty || '1', total = (item.price || 0) * numericQty; let itemColor = categoryColors[item.category] || "#0984e3";
+            const displayText = item.qtyText || item.qty || '1'; let itemColor = categoryColors[item.category] || "#0984e3";
             const authorBadge = item.addedBy ? `<div class="author-badge">👤 ${item.addedBy}</div>` : '';
             const li = document.createElement('li'); li.className = item.collected ? 'collected' : ''; if(!item.collected) li.style.borderRightColor = itemColor;
-            li.innerHTML = `<div onclick="toggleStatus('${item.id}',${item.collected})" style="flex:1; font-weight:800; color:#2d3436; font-size:17px;"><div><span style="color:var(--primary); font-size:15px; margin-left:5px;">${displayText}</span> ${item.text} <span style="color:#2ecc71; margin-right:12px;">${total>0 ? total.toFixed(1)+'₪' : ''}</span></div>${authorBadge}</div><span onclick="del('${item.id}')" style="cursor:pointer; font-size:24px; color:#ff4757; opacity:0.8; padding:5px;">🗑️</span>`;
+            li.innerHTML = `<div onclick="toggleStatus('${item.id}',${item.collected})" style="flex:1; font-weight:800; color:#2d3436; font-size:17px;"><div><span style="color:var(--primary); font-size:15px; margin-left:5px;">${displayText}</span> ${item.text}</div>${authorBadge}</div><span onclick="del('${item.id}')" style="cursor:pointer; font-size:24px; color:#ff4757; opacity:0.8; padding:5px;">🗑️</span>`;
             return li;
         }
 
         function handleAuto(v) {
             const box = document.getElementById('suggestions'); if(v.length < 1) { box.style.display = 'none'; return; }
-            let allItemsMap = {}; for(let key in learnedPrices) { let data = learnedPrices[key]; allItemsMap[key] = typeof data === 'object' ? data.price : data; }
+            let allItemsMap = {}; for(let key in learnedCategories) { let data = learnedCategories[key]; allItemsMap[key] = typeof data === 'object' ? data.category : 'general'; }
             const filtered = Object.keys(allItemsMap).filter(k => k.includes(v));
-            if(filtered.length > 0) { box.innerHTML = filtered.map(k => `<div class="suggestion-item" onclick="useQuick('${k}')"><span>${k}</span><small style="color:#0984e3">${allItemsMap[k] > 0 ? allItemsMap[k] + '₪' : '+'}</small></div>`).join(''); box.style.display = 'block'; } else { box.style.display = 'none'; }
+            if(filtered.length > 0) { box.innerHTML = filtered.map(k => `<div class="suggestion-item" onclick="useQuick('${k}')"><span>${k}</span></div>`).join(''); box.style.display = 'block'; } else { box.style.display = 'none'; }
         }
 
-        function useQuick(v) { document.getElementById('itemInput').value = v; let data = learnedPrices[v]; document.getElementById('itemPrice').value = (typeof data === 'object' ? data.price : data) || ""; document.getElementById('suggestions').style.display = 'none'; }
+        function useQuick(v) { document.getElementById('itemInput').value = v; document.getElementById('suggestions').style.display = 'none'; }
 
         function addItem() {
             const text = document.getElementById('itemInput').value.trim(); if(!text) return;
-            const price = parseFloat(document.getElementById('itemPrice').value) || 0, qtySelect = document.getElementById('itemQty'), qtyVal = parseFloat(qtySelect.value), qtyText = qtySelect.options[qtySelect.selectedIndex].text, cat = document.getElementById('itemCat').value, author = currentUserName || "אורח";
-            database.ref('global_dictionary/' + text).set({ price: price, category: cat });
-            database.ref('all_lists/'+currentListId+'/items').push({ text: text, price: price, qtyVal: qtyVal, qtyText: qtyText, qty: qtyText, category: cat, collected: false, addedBy: author });
+            const qtySelect = document.getElementById('itemQty'), qtyVal = parseFloat(qtySelect.value), qtyText = qtySelect.options[qtySelect.selectedIndex].text, cat = document.getElementById('itemCat').value, author = currentUserName || "אורח";
+            database.ref('global_dictionary/' + text).set({ category: cat });
+            database.ref('all_lists/'+currentListId+'/items').push({ text: text, qtyVal: qtyVal, qtyText: qtyText, qty: qtyText, category: cat, collected: false, addedBy: author });
             if (navigator.vibrate) navigator.vibrate(50); 
-            document.getElementById('itemInput').value = ""; document.getElementById('itemPrice').value = ""; document.getElementById('suggestions').style.display = 'none';
+            document.getElementById('itemInput').value = ""; document.getElementById('suggestions').style.display = 'none';
         }
 
         function createNewList() {
