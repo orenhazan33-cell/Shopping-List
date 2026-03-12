@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>הקניות של אורן - Dark Premium</title>
+    <title>הקניות של אורן - Ultimate UX</title>
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#1e272e">
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -27,20 +27,11 @@
         
         .app-container { width: 94%; max-width: 500px; margin: 25px auto; }
         
-        /* הברכה בגדול ובולט מעל הפאנל */
         .greeting-box { text-align: center; margin-bottom: 20px; }
         #greetingMsg { font-size: 30px; font-weight: 900; color: #ffffff; text-shadow: 0 4px 15px rgba(0,0,0,0.8); margin: 0; letter-spacing: 0.5px; }
         
-        /* לוח בקרה שחור-יוקרתי (Midnight Glass) */
-        .control-panel { 
-            background: linear-gradient(135deg, rgba(30, 39, 46, 0.95), rgba(45, 52, 54, 0.98)); 
-            border: 1px solid rgba(255,255,255,0.15); 
-            border-radius: 30px; 
-            padding: 20px 25px; 
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5); 
-            color: white;
-        }
-        .control-panel .section-label { color: #b2bec3; } /* צבע אפור-בהיר לטקסטים בפאנל הכהה */
+        .control-panel { background: linear-gradient(135deg, rgba(30, 39, 46, 0.95), rgba(45, 52, 54, 0.98)); border: 1px solid rgba(255,255,255,0.15); border-radius: 30px; padding: 20px 25px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); color: white; }
+        .control-panel .section-label { color: #b2bec3; }
         .control-panel span.panel-title { color: #ffffff !important; font-weight: 900; font-size: 18px; }
         
         input, select { padding: 15px; border: 2px solid #dfe6e9; border-radius: 18px; font-size: 16px; outline: none; background: #fff; width: 100%; transition: 0.3s; color: #2d3436; font-weight: 600; }
@@ -66,21 +57,43 @@
         #toastMsg.show { top: 30px; }
         #offlineBadge { display: none; background: #ff4757; color: white; text-align: center; padding: 5px; font-size: 12px; font-weight: bold; position: sticky; top: 0; z-index: 2000; }
         
-        #animation-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5000; overflow: hidden; display: flex; justify-content: center; align-items: center; }
-        .graphic-anim { position: absolute; background-size: contain; background-repeat: no-repeat; opacity: 0; }
+        #animation-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5000; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0); transition: background 0.5s; }
+        #animation-container.active { background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); }
         
+        .graphic-anim { position: absolute; background-size: contain; background-repeat: no-repeat; opacity: 0; }
         @keyframes floatUp { 0% { transform: translateY(110vh) scale(0.5); opacity: 1; } 100% { transform: translateY(-20vh) scale(1.5); opacity: 0; } }
         @keyframes textPop { 0% { transform: scale(0.5); opacity: 0; } 15% { transform: scale(1.1); opacity: 1; } 80% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.15); opacity: 0; } }
-        
-        /* אנימציית העגלה הווקטורית המקצועית */
-        @keyframes cartGlide { 
-            0% { transform: translateX(120vw) scale(0.8); opacity: 0; } 
-            20% { opacity: 1; }
-            50% { transform: translateX(0vw) scale(1.1); } 
-            100% { transform: translateX(-120vw) scale(0.9); opacity: 0; } 
-        }
         .anim-text { font-size: 32px; font-weight: 900; color: #fff; background: rgba(0, 0, 0, 0.75); border: 2px solid rgba(255,255,255,0.2); padding: 20px 40px; border-radius: 50px; animation: textPop 4s ease-in-out forwards; text-align: center; z-index: 5001; }
-        .checkout-svg { width: 160px; height: 160px; position: absolute; top: 40%; animation: cartGlide 3s cubic-bezier(0.25, 1, 0.5, 1) forwards; z-index: 5001; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.6)); }
+        
+        /* עיצוב ואנימציית חלון ההצלחה (השלמת הקנייה) */
+        @keyframes successBadgePop {
+            0% { transform: scale(0.5); opacity: 0; }
+            15% { transform: scale(1.05); opacity: 1; }
+            25% { transform: scale(1); opacity: 1; }
+            85% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.2); opacity: 0; }
+        }
+        @keyframes drawCheck {
+            0% { stroke-dasharray: 0, 100; }
+            100% { stroke-dasharray: 100, 100; }
+        }
+        .success-badge {
+            background: linear-gradient(135deg, #1e272e, #2d3436);
+            border: 2px solid var(--secondary);
+            border-radius: 30px;
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0,184,148,0.25);
+            animation: successBadgePop 4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            z-index: 5002;
+            width: 90%;
+            max-width: 400px;
+        }
+        .success-icon { width: 100px; height: 100px; margin: 0 auto 15px; }
+        .success-icon circle { fill: rgba(0,184,148,0.1); stroke: var(--secondary); stroke-width: 4; }
+        .success-icon path { fill: none; stroke: var(--secondary); stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 100, 100; animation: drawCheck 1s ease-out 0.5s both; }
+        .success-title { color: white; font-size: 28px; font-weight: 900; margin: 0 0 10px 0; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        .success-subtitle { color: var(--secondary); font-size: 18px; font-weight: 700; margin: 0; }
     </style>
 </head>
 <body class="theme-super">
@@ -258,7 +271,7 @@
         function showToast(msg) { const t = document.getElementById('toastMsg'); t.innerText = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
 
         function triggerAnimation(type) {
-            const container = document.getElementById('animation-container'); container.innerHTML = ''; 
+            const container = document.getElementById('animation-container'); container.innerHTML = ''; container.classList.remove('active');
             if (navigator.vibrate) navigator.vibrate([50, 100, 50]);
             let msg = "";
             if (type === 'birthday') msg = "מתחילים לחגוג! 🎈"; else if (type === 'wedding') msg = "מתכוננים ליום הגדול... 💍";
@@ -267,27 +280,30 @@
             setTimeout(() => { container.innerHTML = ''; }, 4000);
         }
 
-        // --- אנימציה וקטורית מקצועית ---
+        // --- פופ-אפ חכם ואלגנטי במקום האימוג'י ---
         function triggerCheckoutAnim() {
-            const container = document.getElementById('animation-container'); container.innerHTML = ''; 
+            const container = document.getElementById('animation-container'); 
+            container.innerHTML = ''; 
+            container.classList.add('active'); // מחשיך מעט את הרקע
             
-            // יצירת אלמנט SVG איכותי במקום אימוג'י
-            const svgCart = `
-            <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-                <g fill="#00b894">
-                    <path d="M22.5 54c-2.5 0-4.5 2-4.5 4.5s2 4.5 4.5 4.5 4.5-2 4.5-4.5-2-4.5-4.5-4.5zm26 0c-2.5 0-4.5 2-4.5 4.5s2 4.5 4.5 4.5 4.5-2 4.5-4.5-2-4.5-4.5-4.5zM60.3 16.5H16.8l-1.6-7.8C14.8 6.5 12.8 5 10.6 5H4c-1.1 0-2 .9-2 2s.9 2 2 2h6.6l6 29c.4 2.1 2.3 3.6 4.5 3.6h31.8c2 0 3.8-1.3 4.3-3.2l5.7-20.5c.5-1.5-.6-3.4-2.6-3.4z"/>
-                </g>
-                <path d="M23 23h24M25 32h20M27 41h16" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
-            </svg>`;
+            const badgeHTML = `
+                <div class="success-badge">
+                    <svg class="success-icon" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45"></circle>
+                        <path d="M25 50 L42 67 L75 34"></path>
+                    </svg>
+                    <h2 class="success-title">הקנייה הושלמה!</h2>
+                    <p class="success-subtitle">העגלה מלאה, אפשר לגשת לקופה</p>
+                </div>
+            `;
             
-            const cartDiv = document.createElement('div'); 
-            cartDiv.className = 'checkout-svg'; 
-            cartDiv.innerHTML = svgCart; 
-            container.appendChild(cartDiv);
+            container.innerHTML = badgeHTML;
+            if(navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
             
-            showToast("הכל נאסף! אפשר לגשת לקופה 🎉");
-            if(navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 100]);
-            setTimeout(() => { container.innerHTML = ''; }, 3000);
+            setTimeout(() => { 
+                container.innerHTML = ''; 
+                container.classList.remove('active');
+            }, 4000);
         }
 
         function updateQuantityOptions() {
