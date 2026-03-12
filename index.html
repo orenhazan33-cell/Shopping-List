@@ -11,14 +11,14 @@
     <style>
         :root { --primary: #0984e3; --secondary: #00b894; --danger: #ff4757; --glass: rgba(255, 255, 255, 0.95); }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; padding-bottom: 60px; min-height: 100vh; background-color: #1e272e; background-attachment: fixed; background-size: cover; background-position: center; transition: background-image 0.6s ease-in-out; direction: rtl; text-align: right; overflow-x: hidden; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; padding-bottom: 120px; min-height: 100vh; background-color: #1e272e; background-attachment: fixed; background-size: cover; background-position: center; transition: background-image 0.6s ease-in-out; direction: rtl; text-align: right; overflow-x: hidden; }
         
         body.theme-super { background-image: linear-gradient(rgba(15,20,25,0.4), rgba(15,20,25,0.7)), url('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1080&q=80'); }
         body.theme-birthday { background-image: linear-gradient(rgba(20,10,20,0.4), rgba(20,10,20,0.7)), url('https://images.unsplash.com/photo-1530103862676-de8892bf309c?auto=format&fit=crop&w=1080&q=80'); }
         body.theme-wedding { background-image: linear-gradient(rgba(30,20,10,0.4), rgba(30,20,10,0.7)), url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1080&q=80'); }
         body.theme-bar { background-image: linear-gradient(rgba(10,20,40,0.5), rgba(10,20,40,0.8)), url('https://images.unsplash.com/photo-1601564264639-661cd8c1e843?auto=format&fit=crop&w=1080&q=80'); }
         
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 3000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(12px); padding: 15px; }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 6000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(12px); padding: 15px; }
         .app-modal { background: white; width: 100%; max-width: 440px; border-radius: 30px; padding: 35px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.5); max-height: 90vh; overflow-y: auto; }
         
         .top-nav { background: rgba(255,255,255,0.95); backdrop-filter: blur(15px); padding: 10px 15px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: space-between; gap: 5px; }
@@ -44,38 +44,49 @@
         .btn-secondary { background: #f1f2f6; color: #2d3436; width: 100%; }
         
         ul { list-style: none; padding: 0; margin: 20px 0; }
-        li { background: var(--glass); margin-bottom: 12px; padding: 20px; border-radius: 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border-right: 8px solid var(--primary); transition: 0.3s; }
-        .collected { opacity: 0.5; filter: grayscale(1); transform: scale(0.98); border-right-color: #b2bec3 !important; }
+        li { background: var(--glass); margin-bottom: 12px; padding: 20px; border-radius: 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border-right: 8px solid var(--primary); transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
+        li.vacuuming { transform: scale(0.6) translateY(100px); opacity: 0; pointer-events: none; }
+        
+        .collected { background: #2d3436; border-right-color: var(--secondary) !important; color: #fff !important; }
+        .collected-text { text-decoration: line-through; color: #b2bec3; }
+        
         li.category-header { background: rgba(0, 0, 0, 0.75); color: #fff; border: 1px solid rgba(255,255,255,0.1); border-right: 6px solid var(--secondary); width: max-content; padding: 8px 20px; border-radius: 20px; font-size: 14px; font-weight: 900; margin: 40px 10px 15px 0; box-shadow: 0 5px 15px rgba(0,0,0,0.4); display: block; backdrop-filter: blur(10px); }
         .author-badge { font-size: 11px; color: #636e72; margin-top: 6px; font-weight: 600; background: rgba(0,0,0,0.05); padding: 4px 8px; border-radius: 10px; display: inline-block; }
+        .author-badge.dark-mode { background: rgba(255,255,255,0.1); color: #dfe6e9; }
         
         .suggestions-box { position: absolute; background: white; width: 100%; border-radius: 18px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); z-index: 2000; display: none; margin-top: 5px; border: 1px solid #dfe6e9; max-height: 250px; overflow-y: auto; }
         .suggestion-item { padding: 15px; border-bottom: 1px solid #f1f2f6; cursor: pointer; display: flex; justify-content: space-between; font-weight: 700; color: #2d3436; }
         
-        #toastMsg { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: rgba(30, 39, 46, 0.98); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 15px 30px; border-radius: 30px; font-size: 16px; font-weight: 900; box-shadow: 0 15px 35px rgba(0,0,0,0.4); z-index: 6000; transition: top 0.4s ease; text-align: center; white-space: nowrap; max-width: 90%; }
+        #toastMsg { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: rgba(30, 39, 46, 0.98); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 15px 30px; border-radius: 30px; font-size: 16px; font-weight: 900; box-shadow: 0 15px 35px rgba(0,0,0,0.4); z-index: 8000; transition: top 0.4s ease; text-align: center; white-space: nowrap; max-width: 90%; }
         #toastMsg.show { top: 30px; }
-        
         #toastMsg.live-alert { background: linear-gradient(135deg, #00b894, #00cec9); border: 2px solid #fff; box-shadow: 0 15px 35px rgba(0,184,148,0.5); }
-
         #offlineBadge { display: none; background: #ff4757; color: white; text-align: center; padding: 5px; font-size: 12px; font-weight: bold; position: sticky; top: 0; z-index: 2000; }
         
-        #animation-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5000; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0); transition: background 0.5s; }
+        /* -------------- העגלה החכמה (Bottom Sheet) -------------- */
+        .cart-trigger-bar { position: fixed; bottom: 0; left: 0; right: 0; background: linear-gradient(135deg, #0984e3, #6c5ce7); padding: 15px 25px; display: flex; align-items: center; justify-content: space-between; border-radius: 30px 30px 0 0; z-index: 4000; color: white; cursor: pointer; box-shadow: 0 -10px 30px rgba(0,0,0,0.6); transition: 0.3s; border-top: 1px solid rgba(255,255,255,0.2); }
+        .cart-trigger-bar:active { background: linear-gradient(135deg, #0873c4, #5a4bcf); }
+        .cart-icon-wrapper { display: flex; align-items: center; gap: 15px; font-size: 20px; font-weight: 900; }
+        .cart-icon-svg { width: 32px; height: 32px; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.3)); }
+        
+        .cart-sheet { position: fixed; bottom: 0; left: 0; right: 0; height: 75vh; background: #1e272e; z-index: 5000; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); border-radius: 35px 35px 0 0; box-shadow: 0 -20px 60px rgba(0,0,0,0.8); display: flex; flex-direction: column; border-top: 1px solid rgba(255,255,255,0.1); }
+        .cart-sheet.open { transform: translateY(0); }
+        .cart-sheet-header { padding: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; }
+        .cart-sheet-content { flex: 1; overflow-y: auto; padding: 0 15px 20px; }
+        .close-cart-btn { background: rgba(255,255,255,0.1); border: none; color: white; width: 40px; height: 40px; border-radius: 20px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        
+        /* כפתור UNDO מרחף קבוע (Z-Index מדויק) */
+        #undoBtn { position: fixed; bottom: 85px; right: 20px; background: rgba(45, 52, 54, 0.95); color: #dfe6e9; padding: 10px 18px; border-radius: 20px; font-weight: 700; font-size: 14px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 3000; transition: all 0.3s ease; opacity: 0; pointer-events: none; display: flex; align-items: center; gap: 8px; backdrop-filter: blur(5px); max-width: 60%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        #undoBtn.show { transform: translateY(0); opacity: 1; pointer-events: all; cursor: pointer; }
+        #undoBtn:active { transform: scale(0.95); background: rgba(30, 39, 46, 0.95); }
+        
+        #animation-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 7000; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0); transition: background 0.5s; }
         #animation-container.active { background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); }
         
         @keyframes textPop { 0% { transform: scale(0.5); opacity: 0; } 15% { transform: scale(1.1); opacity: 1; } 80% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.15); opacity: 0; } }
         .anim-text { font-size: 32px; font-weight: 900; color: #fff; background: rgba(0, 0, 0, 0.75); border: 2px solid rgba(255,255,255,0.2); padding: 20px 40px; border-radius: 50px; animation: textPop 4s ease-in-out forwards; text-align: center; z-index: 5001; }
         
-        @keyframes successCartPop {
-            0% { transform: scale(0.5) translateY(50px); opacity: 0; }
-            15% { transform: scale(1.05) translateY(0); opacity: 1; }
-            25% { transform: scale(1); opacity: 1; }
-            85% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(1.2) translateY(-30px); opacity: 0; }
-        }
-        @keyframes drawCheck {
-            0% { stroke-dasharray: 0, 100; }
-            100% { stroke-dasharray: 100, 100; }
-        }
+        @keyframes successCartPop { 0% { transform: scale(0.5) translateY(50px); opacity: 0; } 15% { transform: scale(1.05) translateY(0); opacity: 1; } 25% { transform: scale(1); opacity: 1; } 85% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.2) translateY(-30px); opacity: 0; } }
+        @keyframes drawCheck { 0% { stroke-dasharray: 0, 100; } 100% { stroke-dasharray: 100, 100; } }
         .success-badge { text-align: center; animation: successCartPop 4s cubic-bezier(0.25, 1, 0.5, 1) forwards; z-index: 5002; width: 100%; }
         .success-icon { width: 160px; height: 160px; margin: 0 auto 10px; filter: drop-shadow(0 10px 20px rgba(0,184,148,0.4)); }
         .cart-check { stroke-dasharray: 100, 100; animation: drawCheck 1s ease-out 0.6s both; }
@@ -87,6 +98,8 @@
     <div id="offlineBadge">📶 עובד במצב לא מקוון - יסונכרן בהמשך</div>
     <div id="toastMsg"></div>
     <div id="animation-container"></div>
+
+    <div id="undoBtn" onclick="undoLastAction()">↩️ החזר פריט</div>
 
     <div id="nameModal" class="modal-overlay">
         <div class="app-modal">
@@ -199,12 +212,31 @@
 
         <h3 style="margin: 35px 10px 10px; font-weight: 900; color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,0.8);">⏳ צריך לקנות</h3>
         <ul id="shoppingList"></ul>
-        
-        <div style="display: flex; justify-content: space-between; align-items: center; margin: 35px 10px 10px;">
-            <h3 style="margin: 0; font-weight: 900; color: #dfe6e9; text-shadow: 0 2px 8px rgba(0,0,0,0.8);">✅ כבר בעגלה</h3>
-            <button class="btn-secondary" style="width: auto; padding: 6px 12px; border-radius: 10px; font-size: 13px; box-shadow: 0 5px 10px rgba(0,0,0,0.3);" onclick="clearCollectedItems()">🧹 רוקן עגלה</button>
+    </div>
+
+    <div class="cart-trigger-bar" onclick="toggleCartSheet()">
+        <div class="cart-icon-wrapper">
+            <svg class="cart-icon-svg" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 10h10l7.5 35h25L54 20H20" stroke="#fff"/>
+                <circle cx="25" cy="55" r="4" fill="#fff" stroke="none"/>
+                <circle cx="45" cy="55" r="4" fill="#fff" stroke="none"/>
+            </svg>
+            <span id="cart-counter">0 פריטים נאספו</span>
         </div>
-        <ul id="collectedList"></ul>
+        <span style="font-size: 24px;">🡅</span>
+    </div>
+
+    <div id="cartSheet" class="cart-sheet">
+        <div class="cart-sheet-header">
+            <h3 style="margin:0; color:white; font-size:20px; font-weight:900;">🛒 כבר בעגלה</h3>
+            <div style="display:flex; gap:10px; align-items:center;">
+                <button class="btn-secondary" style="width: auto; padding: 6px 12px; border-radius: 10px; font-size: 13px; margin:0;" onclick="clearCollectedItems(); event.stopPropagation();">🧹 רוקן</button>
+                <button class="close-cart-btn" onclick="toggleCartSheet(); event.stopPropagation();">✖</button>
+            </div>
+        </div>
+        <div class="cart-sheet-content">
+            <ul id="collectedList" style="margin-top: 10px;"></ul>
+        </div>
     </div>
 
     <script>
@@ -216,6 +248,8 @@
         let wasComplete = false;
         let knownItemIds = new Set();
         let initialLoadDone = false;
+        let lastCollectedItemId = null;
+        let isCartOpen = false;
 
         const categoryColors = { meat: "#ff4757", dairy: "#74b9ff", veg: "#2ecc71", dry: "#e1b12c", clean: "#a29bfe", general: "#b2bec3", party: "#fd79a8", sweet: "#e84393", drinks: "#00cec9", relig: "#fbc531", log: "#6c5ce7", gift: "#ff7675" };
         const templates = {
@@ -227,11 +261,15 @@
 
         function init() {
             if (!currentUserName) { document.getElementById('nameModal').style.display = 'flex'; } else { updateGreeting(); }
-            database.ref('.info/connected').on('value', snap => {
-                const isOnline = snap.val(); document.getElementById('offlineBadge').style.display = isOnline ? 'none' : 'block'; if(isOnline && currentUserName) showToast("מחובר לרשת ✔️");
-            });
+            database.ref('.info/connected').on('value', snap => { const isOnline = snap.val(); document.getElementById('offlineBadge').style.display = isOnline ? 'none' : 'block'; if(isOnline && currentUserName) showToast("מחובר לרשת ✔️"); });
             loadListData(currentListId, false); updateDropdown();
             database.ref('global_dictionary').on('value', s => { learnedCategories = s.val() || {}; updateQuickSelect(); });
+        }
+
+        function toggleCartSheet() {
+            isCartOpen = !isCartOpen;
+            const sheet = document.getElementById('cartSheet');
+            if(isCartOpen) { sheet.classList.add('open'); } else { sheet.classList.remove('open'); }
         }
 
         function updateGreeting() {
@@ -249,21 +287,9 @@
         }
 
         function showToast(msg, isLiveAlert = false) { 
-            const t = document.getElementById('toastMsg'); 
-            t.innerText = msg; 
+            const t = document.getElementById('toastMsg'); t.innerText = msg; 
             if(isLiveAlert) t.classList.add('live-alert'); else t.classList.remove('live-alert');
-            t.classList.add('show'); 
-            setTimeout(() => { t.classList.remove('show'); t.classList.remove('live-alert'); }, isLiveAlert ? 4500 : 3000); 
-        }
-
-        function triggerAnimation(type) {
-            const container = document.getElementById('animation-container'); container.innerHTML = ''; container.classList.remove('active');
-            if (navigator.vibrate) navigator.vibrate([50, 100, 50]);
-            let msg = "";
-            if (type === 'birthday') msg = "מתחילים לחגוג! 🎈"; else if (type === 'wedding') msg = "מתכוננים ליום הגדול... 💍";
-            else if (type === 'super') msg = (currentUserName ? currentUserName + ", " : "") + "מכינים את העגלה... 🛒"; else if (type === 'bar') msg = "מזל טוב לחתן! ✡️";
-            if (msg) { const textDiv = document.createElement('div'); textDiv.className = 'anim-text'; textDiv.innerText = msg; container.appendChild(textDiv); }
-            setTimeout(() => { container.innerHTML = ''; }, 4000);
+            t.classList.add('show'); setTimeout(() => { t.classList.remove('show'); t.classList.remove('live-alert'); }, isLiveAlert ? 4500 : 3000); 
         }
 
         function triggerCheckoutAnim() {
@@ -300,13 +326,11 @@
 
         function loadListData(id, showAnim = true) {
             database.ref('all_lists/'+currentListId+'/metadata').off(); database.ref('all_lists/'+currentListId+'/items').off(); 
-            currentListId = id;
-            initialLoadDone = false;
-            knownItemIds.clear();
+            currentListId = id; initialLoadDone = false; knownItemIds.clear();
 
             database.ref('all_lists/'+id+'/metadata').on('value', s => {
                 const meta = s.val() || { name: "רשימה", type: "super" }; currentType = meta.type || "super";
-                document.body.className = templates[currentType].theme; if(showAnim) triggerAnimation(currentType);
+                document.body.className = templates[currentType].theme; 
                 document.getElementById('itemCat').innerHTML = Object.entries(templates[currentType].cats).map(([k,v]) => `<option value="${k}">${v}</option>`).join(''); updateQuantityOptions(); updateQuickSelect();
             });
             
@@ -336,17 +360,42 @@
 
         function render(data, isFirstRender = false) {
             const todo = document.getElementById('shoppingList'), done = document.getElementById('collectedList'); todo.innerHTML = ""; done.innerHTML = "";
-            if (!data) { document.getElementById('progress-bar').style.width = "0%"; wasComplete = false; return; }
+            const undoBtn = document.getElementById('undoBtn');
+            
+            if (!data) { 
+                document.getElementById('progress-bar').style.width = "0%"; 
+                document.getElementById('cart-counter').innerText = "0 פריטים נאספו"; 
+                wasComplete = false; 
+                undoBtn.classList.remove('show');
+                lastCollectedItemId = null;
+                return; 
+            }
             
             let itemsArr = []; for (let id in data) { let item = data[id]; item.id = id; itemsArr.push(item); }
-            itemsArr.sort((a, b) => b.id.localeCompare(a.id));
             
-            let uncollected = itemsArr.filter(item => !item.collected), collected = itemsArr.filter(item => item.collected), grouped = {};
+            let uncollected = itemsArr.filter(item => !item.collected);
+            uncollected.sort((a, b) => b.id.localeCompare(a.id));
+            
+            let collected = itemsArr.filter(item => item.collected);
+            collected.sort((a, b) => (b.collectedAt || 0) - (a.collectedAt || 0));
+            
+            if (collected.length > 0) {
+                let lastItem = collected[0];
+                lastCollectedItemId = lastItem.id;
+                undoBtn.innerHTML = `↩️ החזר: ${lastItem.text}`;
+                undoBtn.classList.add('show');
+            } else {
+                undoBtn.classList.remove('show');
+                lastCollectedItemId = null;
+            }
+
+            let grouped = {};
             uncollected.forEach(item => { let catKey = item.category || 'general'; if (!grouped[catKey]) grouped[catKey] = []; grouped[catKey].push(item); });
             
             const totalItems = itemsArr.length;
             const progressPct = totalItems === 0 ? 0 : (collected.length / totalItems) * 100;
             document.getElementById('progress-bar').style.width = progressPct + '%';
+            document.getElementById('cart-counter').innerText = `${collected.length} פריטים נאספו`;
             
             let isNowComplete = (totalItems > 0 && uncollected.length === 0);
             if(isNowComplete && !wasComplete && !isFirstRender) { triggerCheckoutAnim(); }
@@ -356,19 +405,60 @@
             for (let catKey in grouped) {
                 let catName = currentCats[catKey] || '📦 כללי', catColor = categoryColors[catKey] || "#0984e3";
                 let catLi = document.createElement('li'); catLi.className = 'category-header'; catLi.innerText = catName; catLi.style.borderRightColor = catColor; todo.appendChild(catLi);
-                grouped[catKey].forEach(item => todo.appendChild(createItemLi(item)));
+                grouped[catKey].forEach(item => todo.appendChild(createItemLi(item, false)));
             }
-            collected.forEach(item => done.appendChild(createItemLi(item)));
+            
+            collected.forEach(item => done.appendChild(createItemLi(item, true)));
         }
 
-        function createItemLi(item) {
+        function createItemLi(item, isCollected) {
             const displayText = item.qtyText || item.qty || '1'; let itemColor = categoryColors[item.category] || "#0984e3";
-            const authorBadge = item.addedBy ? `<div class="author-badge">👤 ${item.addedBy}</div>` : '';
-            const li = document.createElement('li'); li.className = item.collected ? 'collected' : ''; if(!item.collected) li.style.borderRightColor = itemColor;
-            li.innerHTML = `<div onclick="toggleStatus('${item.id}',${item.collected})" style="flex:1; font-weight:800; color:#2d3436; font-size:17px;"><div><span style="color:var(--primary); font-size:15px; margin-left:5px;">${displayText}</span> ${item.text}</div>${authorBadge}</div><span onclick="del('${item.id}')" style="cursor:pointer; font-size:24px; color:#ff4757; opacity:0.8; padding:5px;">🗑️</span>`;
+            const authorBadge = item.addedBy ? `<div class="author-badge ${isCollected ? 'dark-mode' : ''}">👤 ${item.addedBy}</div>` : '';
+            const li = document.createElement('li'); 
+            li.id = 'li_' + item.id;
+            li.className = isCollected ? 'collected' : ''; 
+            if(!isCollected) li.style.borderRightColor = itemColor;
+            
+            const textClass = isCollected ? 'collected-text' : '';
+            
+            li.innerHTML = `
+                <div onclick="animateAndToggle('${item.id}', ${isCollected})" style="flex:1; font-weight:800; color:#2d3436; font-size:17px; cursor:pointer;">
+                    <div class="${textClass}"><span style="color:${isCollected ? '#00b894' : 'var(--primary)'}; font-size:15px; margin-left:5px;">${displayText}</span> ${item.text}</div>
+                    ${authorBadge}
+                </div>
+                <span onclick="del('${item.id}')" style="cursor:pointer; font-size:24px; color:#ff4757; opacity:0.8; padding:5px;">🗑️</span>
+            `;
             return li;
         }
 
+        function animateAndToggle(id, isCollected) {
+            const li = document.getElementById('li_' + id);
+            if (!isCollected && li) {
+                li.classList.add('vacuuming');
+                if (navigator.vibrate) navigator.vibrate([30, 50, 30]);
+                setTimeout(() => { toggleStatus(id, isCollected); }, 300); 
+            } else {
+                toggleStatus(id, isCollected);
+            }
+        }
+
+        function toggleStatus(id, s) { 
+            if (!s) { 
+                database.ref('all_lists/'+currentListId+'/items/'+id).update({collected: true, collectedAt: Date.now()}); 
+            } else { 
+                database.ref('all_lists/'+currentListId+'/items/'+id).update({collected: false}); 
+            }
+        }
+
+        function undoLastAction() {
+            if(lastCollectedItemId) {
+                database.ref('all_lists/'+currentListId+'/items/'+lastCollectedItemId).update({collected: false});
+                showToast("הפריט חזר לרשימה 🔄");
+            }
+        }
+
+        function del(id) { if(confirm("למחוק פריט זה לגמרי?")) database.ref('all_lists/'+currentListId+'/items/'+id).remove(); }
+        
         function handleAuto(v) {
             const box = document.getElementById('suggestions'); if(v.length < 1) { box.style.display = 'none'; return; }
             let allItemsMap = {}; for(let key in learnedCategories) { let data = learnedCategories[key]; allItemsMap[key] = typeof data === 'object' ? data.category : 'general'; }
@@ -409,6 +499,7 @@
             if(confirm("למחוק את כל הפריטים שכבר נאספו לעגלה?")) {
                 for(let key in currentItemsData) { if(currentItemsData[key].collected) { database.ref('all_lists/'+currentListId+'/items/'+key).remove(); } }
                 showToast("העגלה נוקתה בהצלחה 🧹");
+                if(isCartOpen) toggleCartSheet();
             }
         }
 
@@ -427,8 +518,6 @@
 
         function switchList(id, showAnim = true) { loadListData(id, showAnim); window.history.pushState({}, '', '?list=' + id); }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        function toggleStatus(id, s) { if (!s && navigator.vibrate) navigator.vibrate([30, 50, 30]); database.ref('all_lists/'+currentListId+'/items/'+id).update({collected: !s}); }
-        function del(id) { if(confirm("למחוק פריט זה?")) database.ref('all_lists/'+currentListId+'/items/'+id).remove(); }
         
         function shareCurrentList() { if (navigator.share) { navigator.share({ title: 'הקניות שלי', text: 'הצטרף לרשימת הקניות המשותפת שלנו!', url: window.location.href }); } else { alert("העתק את הלינק כדי לשתף"); } closeModal('shareModal'); }
         function shareAppOnly() { const baseUrl = window.location.origin + window.location.pathname; if (navigator.share) { navigator.share({ title: 'אפליקציית קניות', text: 'בוא לנסות את אפליקציית הקניות החדשה שארגנתי!', url: baseUrl }); } else { alert("העתק את הלינק: " + baseUrl); } closeModal('shareModal'); }
