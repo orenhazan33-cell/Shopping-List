@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>הקניות של אורן - Premium Edition</title>
+    <title>הקניות של אורן - Gold Edition</title>
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#1e272e">
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -12,17 +12,23 @@
         :root { --primary: #0984e3; --secondary: #00b894; --danger: #ff4757; --glass: rgba(255, 255, 255, 0.95); }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; padding-bottom: 140px; min-height: 100vh; background-color: #1e272e; background-attachment: fixed; background-size: cover; background-position: center; transition: background-image 0.6s ease-in-out; direction: rtl; text-align: right; overflow-x: hidden; }
-        body.theme-super { background-image: linear-gradient(rgba(15,20,25,0.7), rgba(15,20,25,0.85)), url('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1080&q=80'); }
-        body.theme-birthday { background-image: linear-gradient(rgba(20,10,20,0.65), rgba(20,10,20,0.8)), url('https://images.unsplash.com/photo-1530103862676-de8892bf309c?auto=format&fit=crop&w=1080&q=80'); }
-        body.theme-wedding { background-image: linear-gradient(rgba(30,20,10,0.7), rgba(30,20,10,0.85)), url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1080&q=80'); }
-        body.theme-bar { background-image: linear-gradient(rgba(10,20,40,0.75), rgba(10,20,40,0.9)), url('https://images.unsplash.com/photo-1601564264639-661cd8c1e843?auto=format&fit=crop&w=1080&q=80'); }
+        
+        body.theme-super { background-image: linear-gradient(rgba(15,20,25,0.4), rgba(15,20,25,0.6)), url('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1080&q=80'); }
+        body.theme-birthday { background-image: linear-gradient(rgba(20,10,20,0.4), rgba(20,10,20,0.6)), url('https://images.unsplash.com/photo-1530103862676-de8892bf309c?auto=format&fit=crop&w=1080&q=80'); }
+        body.theme-wedding { background-image: linear-gradient(rgba(30,20,10,0.4), rgba(30,20,10,0.6)), url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1080&q=80'); }
+        body.theme-bar { background-image: linear-gradient(rgba(10,20,40,0.5), rgba(10,20,40,0.7)), url('https://images.unsplash.com/photo-1601564264639-661cd8c1e843?auto=format&fit=crop&w=1080&q=80'); }
+        
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 3000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(12px); padding: 15px; }
         .app-modal { background: white; width: 100%; max-width: 440px; border-radius: 30px; padding: 35px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.5); max-height: 90vh; overflow-y: auto; }
-        .top-nav { background: rgba(255,255,255,0.95); backdrop-filter: blur(15px); padding: 15px; display: flex; gap: 8px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.15); align-items: center; }
-        #progress-container { width: 100%; height: 5px; background: rgba(255,255,255,0.2); position: sticky; top: 75px; z-index: 999; }
+        
+        .top-nav { background: rgba(255,255,255,0.95); backdrop-filter: blur(15px); padding: 10px 15px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.15); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 5px; }
+        #greetingMsg { width: 100%; font-size: 16px; font-weight: 900; color: var(--primary); margin-bottom: 5px; }
+        
+        #progress-container { width: 100%; height: 5px; background: rgba(255,255,255,0.2); position: sticky; top: 82px; z-index: 999; }
         #progress-bar { height: 100%; width: 0%; background: var(--secondary); transition: width 0.5s ease-out; box-shadow: 0 0 10px var(--secondary); }
-        .app-container { width: 94%; max-width: 500px; margin: 25px auto; }
-        .control-panel { background: var(--glass); border-radius: 30px; padding: 25px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+        
+        .app-container { width: 94%; max-width: 500px; margin: 15px auto 25px auto; }
+        .control-panel { background: var(--glass); border-radius: 30px; padding: 20px 25px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
         .section-label { font-size: 13px; font-weight: 800; color: #636e72; margin-bottom: 6px; display: block; padding-right: 5px; }
         input, select { padding: 15px; border: 2px solid #dfe6e9; border-radius: 18px; font-size: 16px; outline: none; background: #fff; width: 100%; transition: 0.3s; color: #2d3436; font-weight: 600; }
         input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(9,132,227,0.15); }
@@ -31,6 +37,7 @@
         .btn-add { background: var(--primary); color: white; width: 100%; }
         .btn-danger { background: var(--danger); color: white; padding: 12px 15px; border-radius: 15px; font-size: 14px; }
         .btn-secondary { background: #f1f2f6; color: #2d3436; width: 100%; }
+        
         ul { list-style: none; padding: 0; margin: 20px 0; }
         li { background: var(--glass); margin-bottom: 12px; padding: 20px; border-radius: 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border-right: 8px solid var(--primary); transition: 0.3s; }
         .collected { opacity: 0.5; filter: grayscale(1); transform: scale(0.98); border-right-color: #b2bec3 !important; }
@@ -44,10 +51,14 @@
         #offlineBadge { display: none; background: #ff4757; color: white; text-align: center; padding: 5px; font-size: 12px; font-weight: bold; position: sticky; top: 0; z-index: 2000; }
         #animation-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5000; overflow: hidden; display: flex; justify-content: center; align-items: center; }
         .graphic-anim { position: absolute; background-size: contain; background-repeat: no-repeat; opacity: 0; }
+        
         @keyframes floatUp { 0% { transform: translateY(110vh) scale(0.5); opacity: 1; } 100% { transform: translateY(-20vh) scale(1.5); opacity: 0; } }
         @keyframes slideAcross { 0% { transform: translateX(120vw); opacity: 1; } 100% { transform: translateX(-120vw); opacity: 1; } }
         @keyframes textPop { 0% { transform: scale(0.5); opacity: 0; } 15% { transform: scale(1.1); opacity: 1; } 80% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.15); opacity: 0; } }
+        @keyframes runToCheckout { 0% { transform: translateX(120vw) scale(1) rotate(5deg); } 50% { transform: translateX(0vw) scale(1.2) rotate(-5deg); } 100% { transform: translateX(-120vw) scale(1) rotate(5deg); } }
+        
         .anim-text { font-size: 32px; font-weight: 900; color: #fff; background: rgba(0, 0, 0, 0.75); border: 2px solid rgba(255,255,255,0.2); padding: 20px 40px; border-radius: 50px; animation: textPop 4s ease-in-out forwards; text-align: center; z-index: 5001; }
+        .checkout-anim { font-size: 80px; position: absolute; top: 40%; animation: runToCheckout 3.5s ease-in-out forwards; z-index: 5001; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5)); }
     </style>
 </head>
 <body class="theme-super">
@@ -114,23 +125,20 @@
     </div>
 
     <div class="top-nav">
-        <select id="myListsDropdown" onchange="switchList(this.value)" style="flex:1; font-weight:900; border:none; background:none; font-size: 18px; color: #2d3436; margin: 0; padding: 5px;"></select>
-        <button class="btn btn-add" style="padding:0 22px; margin:0; width: auto; font-size: 22px; height: 45px;" onclick="document.getElementById('newListModal').style.display='flex'">+</button>
+        <div id="greetingMsg"></div>
+        <select id="myListsDropdown" onchange="switchList(this.value)" style="flex:1; font-weight:900; border:none; background:none; font-size: 17px; color: #2d3436; margin: 0; padding: 0;"></select>
+        <button class="btn" style="padding:5px; background:transparent; font-size: 18px; box-shadow:none; color: #636e72;" onclick="renameCurrentList()" title="ערוך שם">✏️</button>
+        <button class="btn btn-add" style="padding:0 18px; margin:0; width: auto; font-size: 22px; height: 38px;" onclick="document.getElementById('newListModal').style.display='flex'">+</button>
     </div>
     
     <div id="progress-container"><div id="progress-bar"></div></div>
 
     <div class="app-container">
-        <h2 id="greetingMsg" style="color: white; margin-top: 0; margin-bottom: 20px; font-weight: 900; text-shadow: 0 4px 10px rgba(0,0,0,0.6); font-size: 26px;"></h2>
-
         <div class="control-panel">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; border-bottom: 2px solid #f1f2f6; padding-bottom: 15px; gap: 5px;">
-                <div style="flex:1;">
-                    <span class="section-label">שם הרשימה</span>
-                    <input type="text" id="listNameInput" style="font-size:22px; font-weight:900; border:none; outline:none; background:none; color:#2d3436; padding:0; width: 100%;" onblur="saveListName(this.value)">
-                </div>
-                <button class="btn-secondary" style="width: auto; padding: 10px; border-radius: 12px; box-shadow:none; font-size:14px;" title="שכפל רשימה כתבנית" onclick="duplicateCurrentList()">📋 שכפל</button>
-                <button class="btn-danger" style="padding: 10px; border-radius: 12px;" title="מחק רשימה" onclick="document.getElementById('deleteModal').style.display='flex'">🗑️</button>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom: 2px solid #f1f2f6; padding-bottom: 15px; gap: 5px;">
+                <span style="font-weight: 900; color: #2d3436; font-size: 18px;">פעולות רשימה:</span>
+                <button class="btn-secondary" style="width: auto; padding: 8px 12px; border-radius: 12px; box-shadow:none; font-size:14px;" title="שכפל רשימה כתבנית" onclick="duplicateCurrentList()">📋 שכפל</button>
+                <button class="btn-danger" style="padding: 8px 12px; border-radius: 12px;" title="מחק רשימה" onclick="document.getElementById('deleteModal').style.display='flex'">🗑️ מחק</button>
             </div>
             
             <div style="display:flex; flex-direction:column; gap:15px;">
@@ -189,6 +197,7 @@
         firebase.initializeApp(firebaseConfig); const database = firebase.database();
         let currentListId = new URLSearchParams(window.location.search).get('list') || (JSON.parse(localStorage.getItem('myLists')) || ['list_general'])[0];
         let currentType = "super", learnedPrices = {}, currentUserName = localStorage.getItem('myAppName') || '', currentItemsData = null;
+        let wasComplete = false;
 
         const categoryColors = { meat: "#ff4757", dairy: "#74b9ff", veg: "#2ecc71", dry: "#e1b12c", clean: "#a29bfe", general: "#b2bec3", party: "#fd79a8", sweet: "#e84393", drinks: "#00cec9", relig: "#fbc531", log: "#6c5ce7", gift: "#ff7675" };
         const templates = {
@@ -200,14 +209,9 @@
 
         function init() {
             if (!currentUserName) { document.getElementById('nameModal').style.display = 'flex'; } else { updateGreeting(); }
-            
-            // זיהוי אופליין חכם (Firebase Connection State)
             database.ref('.info/connected').on('value', snap => {
-                const isOnline = snap.val();
-                document.getElementById('offlineBadge').style.display = isOnline ? 'none' : 'block';
-                if(isOnline && currentUserName) showToast("מחובר לרשת ✔️");
+                const isOnline = snap.val(); document.getElementById('offlineBadge').style.display = isOnline ? 'none' : 'block'; if(isOnline && currentUserName) showToast("מחובר לרשת ✔️");
             });
-
             loadListData(currentListId, false); updateDropdown();
             database.ref('global_dictionary').on('value', s => { learnedPrices = s.val() || {}; updateQuickSelect(); });
         }
@@ -235,15 +239,15 @@
             if (type === 'birthday') msg = "מתחילים לחגוג! 🎈"; else if (type === 'wedding') msg = "מתכוננים ליום הגדול... 💍";
             else if (type === 'super') msg = (currentUserName ? currentUserName + ", " : "") + "מכינים את העגלה... 🛒"; else if (type === 'bar') msg = "מזל טוב לחתן! ✡️";
             if (msg) { const textDiv = document.createElement('div'); textDiv.className = 'anim-text'; textDiv.innerText = msg; container.appendChild(textDiv); }
+            setTimeout(() => { container.innerHTML = ''; }, 4000);
+        }
 
-            if (type === 'birthday') {
-                const svg = "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"%23ff4757\"><path d=\"M12,2C8.69,2,6,4.69,6,8c0,3.58,4.25,9.36,5.34,10.82C11.66,19.26,12.34,19.26,12.66,18.82C13.75,17.36,18,11.58,18,8 C18,4.69,15.31,2,12,2z\"/></svg>')";
-                for (let i = 0; i < 35; i++) { const b = document.createElement('div'); b.className = 'graphic-anim'; b.style.backgroundImage = svg; const size = 50+Math.random()*50; b.style.width = size+'px'; b.style.height = (size*1.3)+'px'; b.style.left = Math.random()*100+'vw'; b.style.animation = `floatUp ${3+Math.random()*3}s ease-in forwards`; b.style.filter = `hue-rotate(${Math.random()*360}deg)`; container.appendChild(b); }
-            } else if (type === 'super') {
-                const svg = "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"%23ffffff\"><path d=\"M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z\"/></svg>')";
-                const cart = document.createElement('div'); cart.className = 'graphic-anim'; cart.style.backgroundImage = svg; cart.style.width = '250px'; cart.style.height = '250px'; cart.style.top = '50%'; cart.style.animation = 'slideAcross 3s linear forwards'; container.appendChild(cart);
-            }
-            setTimeout(() => { container.innerHTML = ''; }, 5000);
+        function triggerCheckoutAnim() {
+            const container = document.getElementById('animation-container'); container.innerHTML = ''; 
+            const cart = document.createElement('div'); cart.className = 'checkout-anim'; cart.innerText = '🏃‍♂️🛒'; container.appendChild(cart);
+            showToast("הכל נאסף! אפשר לגשת לקופה 🎉");
+            if(navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 100]);
+            setTimeout(() => { container.innerHTML = ''; }, 3500);
         }
 
         function updateQuantityOptions() {
@@ -261,21 +265,22 @@
         function loadListData(id, showAnim = true) {
             database.ref('all_lists/'+currentListId+'/metadata').off(); database.ref('all_lists/'+currentListId+'/items').off(); currentListId = id;
             database.ref('all_lists/'+id+'/metadata').on('value', s => {
-                const meta = s.val() || { name: "רשימה", type: "super" }; document.getElementById('listNameInput').value = meta.name; currentType = meta.type || "super";
+                const meta = s.val() || { name: "רשימה", type: "super" }; currentType = meta.type || "super";
                 document.body.className = templates[currentType].theme; if(showAnim) triggerAnimation(currentType);
                 document.getElementById('itemCat').innerHTML = Object.entries(templates[currentType].cats).map(([k,v]) => `<option value="${k}">${v}</option>`).join(''); updateQuantityOptions(); updateQuickSelect();
             });
+            
+            let isFirstRender = true; // דגל למניעת אנימציית קופה בטעינה ראשונית
             database.ref('all_lists/'+id+'/items').on('value', s => {
-                currentItemsData = s.val(); // שומר מקומית לטובת פיצ'רים של שיתוף/שכפול
-                render(currentItemsData); 
+                currentItemsData = s.val(); render(currentItemsData, isFirstRender); isFirstRender = false;
             });
         }
 
-        function render(data) {
+        function render(data, isFirstRender = false) {
             const todo = document.getElementById('shoppingList'), done = document.getElementById('collectedList'); todo.innerHTML = ""; done.innerHTML = ""; let p = 0, c = 0;
             if (!data) { 
                 document.getElementById('sumP').innerText = "0.0"; document.getElementById('sumC').innerText = "0.0"; 
-                document.getElementById('progress-bar').style.width = "0%"; return; 
+                document.getElementById('progress-bar').style.width = "0%"; wasComplete = false; return; 
             }
             
             let itemsArr = []; for (let id in data) { let item = data[id]; item.id = id; itemsArr.push(item); const numericQty = parseFloat(item.qtyVal) || parseFloat(item.qty) || 1; const total = (item.price || 0) * numericQty; p += total; if(item.collected) c += total; }
@@ -284,10 +289,13 @@
             let uncollected = itemsArr.filter(item => !item.collected), collected = itemsArr.filter(item => item.collected), grouped = {};
             uncollected.forEach(item => { let catKey = item.category || 'general'; if (!grouped[catKey]) grouped[catKey] = []; grouped[catKey].push(item); });
             
-            // עדכון מד ההתקדמות (Progress Bar)
             const totalItems = itemsArr.length;
             const progressPct = totalItems === 0 ? 0 : (collected.length / totalItems) * 100;
             document.getElementById('progress-bar').style.width = progressPct + '%';
+            
+            let isNowComplete = (totalItems > 0 && uncollected.length === 0);
+            if(isNowComplete && !wasComplete && !isFirstRender) { triggerCheckoutAnim(); }
+            wasComplete = isNowComplete;
 
             const currentCats = templates[currentType].cats || {};
             for (let catKey in grouped) {
@@ -331,35 +339,30 @@
             let l = JSON.parse(localStorage.getItem('myLists')) || []; l.push(id); localStorage.setItem('myLists', JSON.stringify(l)); closeModal('newListModal'); updateDropdown(); switchList(id);
         }
 
-        // --- פונקציית שכפול רשימה (תבנית) ---
         function duplicateCurrentList() {
             if(!currentItemsData) { showToast("היו רשימה ריקה"); return; }
-            const currentName = document.getElementById('listNameInput').value;
+            const d = document.getElementById('myListsDropdown'); if(d.options.length === 0) return;
+            const currentName = d.options[d.selectedIndex].text.split(' (')[0];
             const newId = 'list_' + Date.now();
             database.ref('all_lists/'+newId+'/metadata').set({ name: "עותק של " + currentName, type: currentType });
-            
-            // העתקת הפריטים ללא סימון ה"נאסף"
-            for(let key in currentItemsData) {
-                let item = {...currentItemsData[key]};
-                item.collected = false; // איפוס סטטוס
-                database.ref('all_lists/'+newId+'/items').push(item);
-            }
-            
+            for(let key in currentItemsData) { let item = {...currentItemsData[key]}; item.collected = false; database.ref('all_lists/'+newId+'/items').push(item); }
             let l = JSON.parse(localStorage.getItem('myLists')) || []; l.push(newId); localStorage.setItem('myLists', JSON.stringify(l));
             updateDropdown(); switchList(newId); showToast("הרשימה שוכפלה בהצלחה! 📋");
         }
 
-        // --- פונקציית רוקן עגלה (מחיקת פריטים שנאספו) ---
         function clearCollectedItems() {
             if(!currentItemsData) return;
             if(confirm("למחוק את כל הפריטים שכבר נאספו לעגלה?")) {
-                for(let key in currentItemsData) {
-                    if(currentItemsData[key].collected) {
-                        database.ref('all_lists/'+currentListId+'/items/'+key).remove();
-                    }
-                }
+                for(let key in currentItemsData) { if(currentItemsData[key].collected) { database.ref('all_lists/'+currentListId+'/items/'+key).remove(); } }
                 showToast("העגלה נוקתה בהצלחה 🧹");
             }
+        }
+
+        function renameCurrentList() {
+            const d = document.getElementById('myListsDropdown'); if(d.options.length === 0) return;
+            const currentName = d.options[d.selectedIndex].text.split(' (')[0];
+            const newName = prompt("הכנס שם חדש לרשימה:", currentName);
+            if(newName && newName.trim() !== "") { database.ref('all_lists/'+currentListId+'/metadata/name').set(newName.trim()); updateDropdown(); }
         }
 
         function confirmDeleteList() {
@@ -372,32 +375,17 @@
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
         function toggleStatus(id, s) { if (!s && navigator.vibrate) navigator.vibrate([30, 50, 30]); database.ref('all_lists/'+currentListId+'/items/'+id).update({collected: !s}); }
         function del(id) { if(confirm("למחוק פריט זה?")) database.ref('all_lists/'+currentListId+'/items/'+id).remove(); }
-        function saveListName(n) { database.ref('all_lists/'+currentListId+'/metadata/name').set(n); updateDropdown(); }
         
-        // --- מערכת השיתוף המשולשת ---
         function shareCurrentList() { if (navigator.share) { navigator.share({ title: 'הקניות שלי', text: 'הצטרף לרשימת הקניות המשותפת שלנו!', url: window.location.href }); } else { alert("העתק את הלינק כדי לשתף"); } closeModal('shareModal'); }
         function shareAppOnly() { const baseUrl = window.location.origin + window.location.pathname; if (navigator.share) { navigator.share({ title: 'אפליקציית קניות', text: 'בוא לנסות את אפליקציית הקניות החדשה שארגנתי!', url: baseUrl }); } else { alert("העתק את הלינק: " + baseUrl); } closeModal('shareModal'); }
-        
-        // שיתוף בוואטסאפ כטקסט פשוט ומסודר
         function shareAsText() {
-            if(!currentItemsData) return;
-            let grouped = {};
-            for(let key in currentItemsData) {
-                let item = currentItemsData[key];
-                if(!item.collected) {
-                    let catKey = item.category || 'general';
-                    if(!grouped[catKey]) grouped[catKey] = [];
-                    grouped[catKey].push(`${item.text} (${item.qtyText || '1'})`);
-                }
-            }
-            let textMsg = `🛒 *נשאר לקנות - ${document.getElementById('listNameInput').value}*\n\n`;
-            const currentCats = templates[currentType].cats || {};
-            for(let cat in grouped) {
-                textMsg += `*${currentCats[cat] || '📦 כללי'}*\n• ` + grouped[cat].join('\n• ') + `\n\n`;
-            }
+            if(!currentItemsData) return; let grouped = {};
+            for(let key in currentItemsData) { let item = currentItemsData[key]; if(!item.collected) { let catKey = item.category || 'general'; if(!grouped[catKey]) grouped[catKey] = []; grouped[catKey].push(`${item.text} (${item.qtyText || '1'})`); } }
+            const d = document.getElementById('myListsDropdown'); const currentName = d.options.length > 0 ? d.options[d.selectedIndex].text.split(' (')[0] : 'רשימה';
+            let textMsg = `🛒 *נשאר לקנות - ${currentName}*\n\n`; const currentCats = templates[currentType].cats || {};
+            for(let cat in grouped) { textMsg += `*${currentCats[cat] || '📦 כללי'}*\n• ` + grouped[cat].join('\n• ') + `\n\n`; }
             if(Object.keys(grouped).length === 0) textMsg = "הכל כבר נאסף! אין מה לקנות 🎉";
-            window.open('https://wa.me/?text=' + encodeURIComponent(textMsg), '_blank');
-            closeModal('shareModal');
+            window.open('https://wa.me/?text=' + encodeURIComponent(textMsg), '_blank'); closeModal('shareModal');
         }
 
         async function updateDropdown() {
