@@ -5,32 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>הקניות של אורן - Production Release</title>
     <link rel="manifest" href="./manifest.json">
-    <meta name="theme-color" content="#1e272e">
+    <meta name="theme-color" content="#0f1419">
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
         :root { --primary: #0984e3; --secondary: #00b894; --danger: #ff4757; --glass: rgba(255, 255, 255, 0.95); }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; padding-bottom: 120px; min-height: 100vh; background-color: #1e272e; background-attachment: fixed; background-size: cover; background-position: center; transition: background-image 0.6s ease-in-out; direction: rtl; text-align: right; overflow-x: hidden; }
         
-        body.theme-super { background-image: linear-gradient(rgba(15,20,25,0.4), rgba(15,20,25,0.7)), url('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1080&q=80'); }
-        body.theme-birthday { background-image: linear-gradient(rgba(20,10,20,0.4), rgba(20,10,20,0.7)), url('https://images.unsplash.com/photo-1530103862676-de8892bf309c?auto=format&fit=crop&w=1080&q=80'); }
-        body.theme-wedding { background-image: linear-gradient(rgba(30,20,10,0.4), rgba(30,20,10,0.7)), url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1080&q=80'); }
-        body.theme-bar { background-image: linear-gradient(rgba(10,20,40,0.5), rgba(10,20,40,0.8)), url('https://images.unsplash.com/photo-1601564264639-661cd8c1e843?auto=format&fit=crop&w=1080&q=80'); }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; padding-bottom: 120px; min-height: 100vh; background-color: #1e272e; background-attachment: fixed; background-size: cover; background-position: center; direction: rtl; text-align: right; overflow-x: hidden; }
+        
+        body.theme-super { background-color: #1a202c; background-image: linear-gradient(rgba(15,20,25,0.5), rgba(15,20,25,0.8)), url('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1080&q=80'); }
+        body.theme-birthday { background-color: #2d1b2e; background-image: linear-gradient(rgba(30,15,30,0.5), rgba(30,15,30,0.8)), url('https://images.unsplash.com/photo-1530103862676-de8892bf309c?auto=format&fit=crop&w=1080&q=80'); }
+        body.theme-wedding { background-color: #2c241b; background-image: linear-gradient(rgba(40,30,20,0.5), rgba(40,30,20,0.8)), url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1080&q=80'); }
+        body.theme-bar { background-color: #1a2332; background-image: linear-gradient(rgba(15,25,45,0.6), rgba(15,25,45,0.8)), url('https://images.unsplash.com/photo-1601564264639-661cd8c1e843?auto=format&fit=crop&w=1080&q=80'); }
         
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 6000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(12px); padding: 15px; }
         .app-modal { background: white; width: 100%; max-width: 440px; border-radius: 30px; padding: 35px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.5); max-height: 90vh; overflow-y: auto; }
         
-        .top-nav { background: rgba(255,255,255,0.95); backdrop-filter: blur(15px); padding: 10px 15px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: space-between; gap: 5px; }
-        #progress-container { width: 100%; height: 5px; background: rgba(255,255,255,0.2); position: sticky; top: 60px; z-index: 999; }
+        /* התפריט העליון המחודש - פרימיום דארק מוד */
+        .top-nav { background: rgba(15, 20, 25, 0.95); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 14px 18px; position: sticky; top: 0; z-index: 1000; display: flex; align-items: center; justify-content: space-between; gap: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.6); }
+        
+        #myListsDropdown { flex: 1; font-weight: 900; border: none; background: transparent; font-size: 19px; color: #ffffff; margin: 0; padding: 5px 10px; outline: none; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ffffff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: left 10px center; background-size: 12px auto; cursor: pointer; letter-spacing: 0.5px; }
+        #myListsDropdown option { background: #2d3436; color: #fff; }
+        
+        .nav-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .nav-btn:active { transform: scale(0.92); background: rgba(255,255,255,0.2); }
+        .nav-btn-add { background: linear-gradient(135deg, var(--primary), #6c5ce7); border: none; box-shadow: 0 4px 15px rgba(9,132,227,0.4); font-size: 24px; }
+
+        #progress-container { width: 100%; height: 5px; background: rgba(255,255,255,0.1); position: sticky; top: 73px; z-index: 999; }
         #progress-bar { height: 100%; width: 0%; background: var(--secondary); transition: width 0.5s ease-out; box-shadow: 0 0 10px var(--secondary); }
         
         .app-container { width: 94%; max-width: 500px; margin: 25px auto; }
         
+        @keyframes listSwitchAnim { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+        .animate-switch { animation: listSwitchAnim 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+
         .greeting-box { text-align: center; margin-bottom: 20px; }
         #greetingMsg { font-size: 30px; font-weight: 900; color: #ffffff; text-shadow: 0 4px 15px rgba(0,0,0,0.8); margin: 0; letter-spacing: 0.5px; }
         
-        .control-panel { background: linear-gradient(135deg, rgba(30, 39, 46, 0.95), rgba(45, 52, 54, 0.98)); border: 1px solid rgba(255,255,255,0.15); border-radius: 30px; padding: 20px 25px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); color: white; }
+        .control-panel { background: linear-gradient(135deg, rgba(30, 39, 46, 0.95), rgba(45, 52, 54, 0.98)); border: 1px solid rgba(255,255,255,0.15); border-radius: 30px; padding: 20px 25px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); color: white; opacity: 0; }
         .control-panel .section-label { color: #b2bec3; font-size: 13px; font-weight: 800; margin-bottom: 6px; display: block; padding-right: 5px; }
         .control-panel span.panel-title { color: #ffffff !important; font-weight: 900; font-size: 18px; }
         
@@ -43,9 +56,18 @@
         .btn-danger { background: var(--danger); color: white; padding: 12px 15px; border-radius: 15px; font-size: 14px; }
         .btn-secondary { background: #f1f2f6; color: #2d3436; width: 100%; }
         
-        ul { list-style: none; padding: 0; margin: 20px 0; }
-        li { background: var(--glass); margin-bottom: 12px; padding: 20px; border-radius: 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border-right: 8px solid var(--primary); transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
-        li.vacuuming { transform: scale(0.6) translateY(100px); opacity: 0; pointer-events: none; }
+        ul { list-style: none; padding: 0; margin: 20px 0; opacity: 0; }
+        
+        li { background: var(--glass); margin-bottom: 12px; padding: 20px; border-radius: 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border-right: 8px solid var(--primary); transition: all 0.3s ease; }
+        
+        /* האנימציה המדויקת של הקיפול אחורה בתלת ממד */
+        @keyframes foldAndSuck {
+            0% { transform: perspective(800px) rotateX(0deg) scale(1) translateY(0); opacity: 1; }
+            40% { transform: perspective(800px) rotateX(-50deg) scale(0.9) translateY(30px); opacity: 0.9; }
+            100% { transform: perspective(800px) rotateX(-90deg) scale(0.3) translateY(180px); opacity: 0; }
+        }
+        
+        li.vacuuming { animation: foldAndSuck 0.45s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards; transform-origin: top center; border-right-color: transparent !important; pointer-events: none; }
         
         .collected { background: #2d3436; border-right-color: var(--secondary) !important; color: #fff !important; }
         .collected-text { text-decoration: line-through; color: #b2bec3; }
@@ -92,6 +114,9 @@
         .cart-check { stroke-dasharray: 100, 100; animation: drawCheck 1s ease-out 0.6s both; }
         .success-title { color: white; font-size: 32px; font-weight: 900; margin: 0 0 10px 0; text-shadow: 0 4px 15px rgba(0,0,0,0.8); }
         .success-subtitle { color: var(--secondary); font-size: 20px; font-weight: 700; margin: 0; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
+        
+        /* עיצוב חדש לאייקון השיתוף הוקטורי */
+        .share-svg-icon { width: 22px; height: 22px; margin-left: 8px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
     </style>
 </head>
 <body class="theme-super">
@@ -112,7 +137,7 @@
 
     <div id="shareModal" class="modal-overlay">
         <div class="app-modal">
-            <h2 style="margin-top:0;">אפשרויות שיתוף 📤</h2>
+            <h2 style="margin-top:0;">אפשרויות שיתוף <svg class="share-svg-icon" style="vertical-align: middle; filter:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg></h2>
             <p style="color: #636e72; font-size: 14px; margin-bottom: 25px;">מה תרצה לשתף עם החברים?</p>
             <button class="btn btn-add" style="margin-bottom:15px; justify-content: flex-start;" onclick="shareCurrentList()">
                 <span style="font-size: 24px;">🔗</span><div style="text-align: right;"><div style="font-size: 16px;">שתף כלינק (אפליקציה)</div><div style="font-size: 12px; opacity: 0.8; font-weight: 400;">החברים יוכלו לראות ולהוסיף מוצרים</div></div>
@@ -160,9 +185,9 @@
     </div>
 
     <div class="top-nav">
-        <select id="myListsDropdown" onchange="switchList(this.value)" style="flex:1; font-weight:900; border:none; background:none; font-size: 17px; color: #2d3436; margin: 0; padding: 0;"></select>
-        <button class="btn" style="padding:5px; background:transparent; font-size: 18px; box-shadow:none; color: #636e72;" onclick="renameCurrentList()" title="ערוך שם">✏️</button>
-        <button class="btn btn-add" style="padding:0 18px; margin:0; width: auto; font-size: 22px; height: 38px;" onclick="document.getElementById('newListModal').style.display='flex'">+</button>
+        <select id="myListsDropdown" onchange="switchList(this.value)"></select>
+        <button class="nav-btn" onclick="renameCurrentList()" title="ערוך שם">✏️</button>
+        <button class="nav-btn nav-btn-add" onclick="document.getElementById('newListModal').style.display='flex'" title="רשימה חדשה">➕</button>
     </div>
     
     <div id="progress-container"><div id="progress-bar"></div></div>
@@ -172,7 +197,7 @@
             <h2 id="greetingMsg"></h2>
         </div>
 
-        <div class="control-panel">
+        <div class="control-panel" id="mainControlPanel">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom: 15px; gap: 5px;">
                 <span class="panel-title">הוספת מוצרים</span>
                 <div style="display:flex; gap: 8px;">
@@ -206,7 +231,11 @@
                 </div>
                 
                 <button class="btn btn-add" onclick="addItem()" style="margin-top: 5px;">הוסף לרשימה</button>
-                <button class="btn" style="background:rgba(255,255,255,0.1); color:white; width:100%; border: 1px solid rgba(255,255,255,0.2); font-size: 15px; padding: 12px;" onclick="document.getElementById('shareModal').style.display='flex'">📤 אפשרויות שיתוף</button>
+                
+                <button class="btn" style="background:rgba(255,255,255,0.1); color:white; width:100%; border: 1px solid rgba(255,255,255,0.2); font-size: 16px; padding: 14px;" onclick="document.getElementById('shareModal').style.display='flex'">
+                    <svg class="share-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                    אפשרויות שיתוף
+                </button>
             </div>
         </div>
 
@@ -253,7 +282,9 @@
         let initialLoadDone = false;
         let lastCollectedItemId = null;
         let isCartOpen = false;
+        
         let wasOffline = false; 
+        let appLoadTime = Date.now(); // טיימר לחסימת ההתראה בהתחלה
 
         const categoryColors = { meat: "#ff4757", dairy: "#74b9ff", veg: "#2ecc71", dry: "#e1b12c", clean: "#a29bfe", general: "#b2bec3", party: "#fd79a8", sweet: "#e84393", drinks: "#00cec9", relig: "#fbc531", log: "#6c5ce7", gift: "#ff7675" };
         const templates = {
@@ -270,10 +301,14 @@
                 const isOnline = snap.val(); 
                 document.getElementById('offlineBadge').style.display = isOnline ? 'none' : 'block'; 
                 
+                // משתיק קול מוחלט: אין התראות ב-3.5 שניות הראשונות
+                if (Date.now() - appLoadTime < 3500) {
+                    wasOffline = !isOnline;
+                    return;
+                }
+
                 if (isOnline) {
-                    if (wasOffline && currentUserName) {
-                        showToast("חזרנו לרשת - מסונכרן ✔️", true);
-                    }
+                    if (wasOffline && currentUserName) { showToast("חזרנו לרשת - מסונכרן ✔️", true); }
                     wasOffline = false;
                 } else {
                     wasOffline = true;
@@ -383,8 +418,15 @@
         }
 
         function render(data, isFirstRender = false) {
-            const todo = document.getElementById('shoppingList'), done = document.getElementById('collectedList'); todo.innerHTML = ""; done.innerHTML = "";
+            const todo = document.getElementById('shoppingList'), done = document.getElementById('collectedList'), cp = document.getElementById('mainControlPanel'); 
+            todo.innerHTML = ""; done.innerHTML = "";
             const undoBtn = document.getElementById('undoBtn');
+            
+            if (isFirstRender) {
+                todo.classList.remove('animate-switch'); cp.classList.remove('animate-switch');
+                void todo.offsetWidth; void cp.offsetWidth; 
+                todo.classList.add('animate-switch'); cp.classList.add('animate-switch');
+            }
             
             if (!data) { 
                 document.getElementById('progress-bar').style.width = "0%"; 
@@ -460,7 +502,8 @@
             if (!isCollected && li) {
                 li.classList.add('vacuuming');
                 if (navigator.vibrate) navigator.vibrate([30, 50, 30]);
-                setTimeout(() => { toggleStatus(id, isCollected); }, 300); 
+                // עיכוב קצרצר כדי לראות את הקיפול של הפתק (400ms)
+                setTimeout(() => { toggleStatus(id, isCollected); }, 400); 
             } else {
                 toggleStatus(id, isCollected);
             }
