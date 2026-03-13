@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>הקניות של אורן - Enterprise v4.0</title>
+    <title>הקניות של אורן - v5.0 Master</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
@@ -12,65 +12,63 @@
         
         body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; padding-bottom: 120px; min-height: 100vh; background-color: var(--dark); background-attachment: fixed; background-size: cover; background-position: center; direction: rtl; transition: background 0.8s ease; overflow-x: hidden; }
         
-        /* ערכות נושא */
+        /* Themes */
         body.theme-super { background-image: linear-gradient(rgba(15,20,25,0.7), rgba(15,20,25,0.9)), url('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1080&q=80'); }
         body.theme-ikea { background-image: linear-gradient(rgba(0,88,163,0.75), rgba(0,88,163,0.95)), url('https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1080&q=80'); }
         body.theme-ksp { background-image: linear-gradient(rgba(15,25,45,0.8), rgba(15,25,45,0.95)), url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1080&q=80'); }
-        body.theme-birthday { background-image: linear-gradient(rgba(30,15,30,0.7), rgba(30,15,30,0.9)), url('https://images.unsplash.com/photo-1530103862676-de8892bf309c?auto=format&fit=crop&w=1080&q=80'); }
         body.theme-general { background-image: linear-gradient(rgba(45,52,54,0.75), rgba(45,52,54,0.9)), url('https://images.unsplash.com/photo-1472851294608-062f824d29cc?auto=format&fit=crop&w=1080&q=80'); }
 
-        .top-nav { background: rgba(15, 20, 25, 0.96); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 15px 20px; position: sticky; top: 0; z-index: 1000; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 10px 40px rgba(0,0,0,0.6); }
-        #myListsDropdown { flex: 1; font-weight: 900; border: none; background: transparent; font-size: 19px; color: #fff; outline: none; appearance: none; }
+        .top-nav { background: rgba(15, 20, 25, 0.96); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 15px 20px; position: sticky; top: 0; z-index: 1000; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        #myListsDropdown { flex: 1; font-weight: 900; border: none; background: transparent; font-size: 19px; color: #fff; outline: none; appearance: none; cursor: pointer; }
 
-        /* הנפשות ווקום ופריסה */
+        /* Full Screen Transition */
+        #screenTransition { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--dark); z-index: 10000; display: none; flex-direction: column; justify-content: center; align-items: center; transform: translateY(100%); transition: transform 0.6s cubic-bezier(0.17, 0.84, 0.44, 1); }
+        #screenTransition.active { display: flex; transform: translateY(0); }
+        .trans-icon { font-size: 120px; margin-bottom: 20px; }
+        .trans-text { font-size: 32px; font-weight: 900; color: white; text-align: center; }
+
+        /* Vacuum Animation */
         @keyframes vacuumEffect {
-            0% { transform: perspective(1000px) rotateX(0deg) scale(1) translateY(0); opacity: 1; filter: blur(0); }
-            100% { transform: perspective(1000px) rotateX(-90deg) scale(0.1) translateY(400px); opacity: 0; filter: blur(15px); }
+            0% { transform: perspective(1000px) rotateX(0deg) scale(1) translateY(0); opacity: 1; }
+            100% { transform: perspective(1000px) rotateX(-90deg) scale(0.1) translateY(400px); opacity: 0; }
         }
-        @keyframes listPop {
-            0% { transform: scale(0.5) translateY(50px); opacity: 0; }
-            20% { transform: scale(1.1) translateY(0); opacity: 1; }
-            80% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(1.2) translateY(-30px); opacity: 0; }
-        }
-        
-        .vacuum-out { animation: vacuumEffect 0.6s cubic-bezier(0.5, 0, 0.75, 0) forwards; }
-        .item-vacuum { animation: vacuumEffect 0.5s ease-in forwards !important; transform-origin: top center; }
+        .item-vacuum { animation: vacuumEffect 0.5s ease-in forwards !important; transform-origin: top center; pointer-events: none; }
 
         .app-container { width: 94%; max-width: 500px; margin: 25px auto; transition: opacity 0.3s; }
         .control-panel { background: linear-gradient(135deg, rgba(30, 39, 46, 0.98), rgba(45, 52, 54, 0.98)); border: 1px solid rgba(255,255,255,0.15); border-radius: 30px; padding: 25px; box-shadow: 0 25px 50px rgba(0,0,0,0.6); color: white; margin-bottom: 30px; }
         
-        li { background: rgba(255,255,255,0.98); margin-bottom: 12px; padding: 20px; border-radius: 20px; display: flex; align-items: center; justify-content: space-between; border-right: 8px solid var(--primary); transform-origin: top center; transition: 0.3s; }
+        li { background: rgba(255,255,255,0.98); margin-bottom: 12px; padding: 20px; border-radius: 20px; display: flex; align-items: center; justify-content: space-between; border-right: 8px solid var(--primary); }
         li.category-header { background: rgba(0,0,0,0.85); color: white; border-right: 6px solid var(--secondary); padding: 8px 18px; border-radius: 15px; font-size: 14px; font-weight: 900; margin: 35px 0 12px; width: fit-content; }
         
-        /* Badge Feedback */
-        #animation-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; display: flex; justify-content: center; align-items: center; }
-        .feedback-badge { background: rgba(255,255,255,0.95); padding: 30px; border-radius: 40px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.5); animation: listPop 2.5s cubic-bezier(0.17, 0.84, 0.44, 1) forwards; border: 4px solid var(--primary); }
-        .feedback-icon { font-size: 60px; margin-bottom: 15px; display: block; }
-        .feedback-title { font-size: 24px; font-weight: 900; color: #2d3436; margin: 0; }
+        .btn-add { background: var(--primary); color: white; padding: 18px; border-radius: 18px; width: 100%; font-weight: 900; font-size: 18px; cursor: pointer; border: none; box-shadow: 0 8px 20px rgba(9,132,227,0.3); }
 
         .cart-trigger { position: fixed; bottom: 0; left: 0; right: 0; background: linear-gradient(135deg, #0984e3, #6c5ce7); padding: 20px 25px; display: flex; align-items: center; justify-content: space-between; border-radius: 30px 30px 0 0; z-index: 4000; color: white; cursor: pointer; font-weight: 900; }
         .cart-sheet { position: fixed; bottom: 0; left: 0; right: 0; height: 80vh; background: #161d27; z-index: 5000; transform: translateY(100%); transition: transform 0.5s cubic-bezier(0.2, 1, 0.3, 1); border-radius: 35px 35px 0 0; display: flex; flex-direction: column; }
         .cart-sheet.open { transform: translateY(0); }
         .cart-scroll { flex: 1; overflow-y: auto; padding: 20px 20px 120px; }
+        
+        .nav-icon-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); color: white; width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; }
     </style>
 </head>
 <body class="theme-general">
-    <div id="animation-container"></div>
-    <div id="toast" style="position:fixed; top:-100px; left:50%; transform:translateX(-50%); background:#1e272e; color:white; padding:15px 30px; border-radius:30px; z-index:8000; transition:0.4s; font-weight:900;"></div>
+    <div id="screenTransition">
+        <span class="trans-icon" id="transIcon">🛒</span>
+        <div class="trans-text" id="transText">טוען רשימה...</div>
+    </div>
 
-    <div id="nameModal" style="position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.95); z-index:10000; display:none; align-items:center; justify-content:center; backdrop-filter:blur(10px);">
+    <div id="nameModal" style="position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.95); z-index:11000; display:none; align-items:center; justify-content:center; backdrop-filter:blur(10px);">
         <div style="background:white; width:90%; max-width:400px; padding:35px; border-radius:35px; text-align:center;">
-            <h2 style="color:var(--primary); margin:0; font-size:28px;">שלום! 👋</h2>
-            <p style="color:#636e72; margin-bottom:25px;">מי משתמש באפליקציה כרגע?</p>
+            <h2 style="color:var(--primary); margin:0;">שלום אורן! 👋</h2>
+            <p style="color:#636e72; margin-bottom:25px;">מי משתמש באפליקציה?</p>
             <input type="text" id="userNameInput" placeholder="השם שלך..." style="width:100%; padding:15px; border:2px solid #eee; border-radius:15px; text-align:center; font-size:18px; margin-bottom:20px;">
-            <button onclick="saveUser()" style="width:100%; padding:18px; border:none; background:var(--primary); color:white; border-radius:18px; font-weight:900; font-size:18px;">התחל</button>
+            <button onclick="saveUser()" style="width:100%; padding:18px; border:none; background:var(--primary); color:white; border-radius:18px; font-weight:900;">התחל</button>
         </div>
     </div>
 
     <div class="top-nav">
-        <select id="myListsDropdown" onchange="animateSwitch(this.value)"></select>
-        <button onclick="document.getElementById('newListModal').style.display='flex'" style="background:var(--primary); color:white; border:none; width:46px; height:46px; border-radius:15px; font-size:26px; cursor:pointer;">+</button>
+        <select id="myListsDropdown" onchange="performTransition(this.value)"></select>
+        <button class="nav-icon-btn" onclick="openSettings()">⚙️</button>
+        <button class="nav-icon-btn" style="background:var(--primary)" onclick="document.getElementById('newListModal').style.display='flex'">+</button>
     </div>
 
     <div class="app-container" id="appContent">
@@ -89,15 +87,15 @@
                 <input type="text" id="itemName" placeholder="מה חסר?" style="flex:2; padding:15px; border-radius:15px; border:none;">
                 <select id="itemQty" style="flex:1; padding:15px; border-radius:15px; border:none;"></select>
             </div>
-            <button onclick="pushItem()" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:18px; font-weight:900; font-size:18px; cursor:pointer;">הוסף לרשימה</button>
+            <button class="btn-add" onclick="pushItem()">הוסף לרשימה</button>
         </div>
 
-        <h3 style="color:white; margin:0 10px 15px 0;">⏳ נשאר לקנות</h3>
+        <h3 style="color:white; margin:0 10px 15px 0;">⏳ לקנות עכשיו</h3>
         <ul id="todoList" style="list-style:none; padding:0;"></ul>
     </div>
 
     <div class="cart-trigger" onclick="toggleCart()">
-        <span>🛒 <span id="cartCounter">0</span> פריטים נאספו</span>
+        <span>🛒 <span id="cartCounter">0</span> פריטים בעגלה</span>
         <span id="arrow">▲</span>
     </div>
 
@@ -112,9 +110,19 @@
         </div>
     </div>
 
-    <div id="newListModal" style="position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.92); z-index:9000; display:none; align-items:center; justify-content:center; backdrop-filter:blur(12px);">
+    <div id="settingsModal" style="position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.9); z-index:12000; display:none; align-items:center; justify-content:center; backdrop-filter:blur(10px);">
         <div style="background:white; width:90%; max-width:400px; padding:35px; border-radius:35px; text-align:center;">
-            <h2 style="margin:0; font-size:24px;">רשימה חדשה</h2>
+            <h2 style="margin:0 0 20px;">הגדרות רשימה</h2>
+            <input type="text" id="editListName" placeholder="שם חדש לרשימה..." style="width:100%; padding:15px; border:2px solid #eee; border-radius:15px; margin-bottom:20px;">
+            <button onclick="renameList()" style="width:100%; padding:15px; background:var(--primary); color:white; border:none; border-radius:15px; font-weight:900; margin-bottom:15px;">שמור שם חדש</button>
+            <button onclick="deleteCurrentList()" style="width:100%; padding:15px; background:var(--danger); color:white; border:none; border-radius:15px; font-weight:900;">מחק רשימה זו לצמיתות 🗑️</button>
+            <button onclick="document.getElementById('settingsModal').style.display='none'" style="margin-top:20px; background:none; border:none; color:#636e72; cursor:pointer;">ביטול</button>
+        </div>
+    </div>
+
+    <div id="newListModal" style="position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.92); z-index:10500; display:none; align-items:center; justify-content:center; backdrop-filter:blur(12px);">
+        <div style="background:white; width:90%; max-width:400px; padding:35px; border-radius:35px; text-align:center;">
+            <h2>רשימה חדשה</h2>
             <input type="text" id="newListName" placeholder="שם הרשימה..." style="width:100%; padding:15px; border:2px solid #eee; border-radius:15px; margin:20px 0;">
             <select id="newListType" style="width:100%; padding:15px; border:2px solid #eee; border-radius:15px; margin-bottom:25px;">
                 <option value="super">🛒 סופרמרקט</option>
@@ -122,7 +130,7 @@
                 <option value="ksp">🖥️ KSP מחשבים</option>
                 <option value="general">📦 כללי</option>
             </select>
-            <button onclick="makeList()" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:18px; font-weight:900;">צור רשימה</button>
+            <button onclick="makeList()" class="btn-add">צור רשימה</button>
             <button onclick="document.getElementById('newListModal').style.display='none'" style="background:none; border:none; color:#636e72; margin-top:15px; cursor:pointer;">ביטול</button>
         </div>
     </div>
@@ -133,56 +141,55 @@
 
         let currentId = new URLSearchParams(window.location.search).get('list') || 'list_general';
         let user = localStorage.getItem('myAppName') || '';
-        let schemas = {
-            super: { theme: 'theme-super', icon: '🛒', title: 'סופרמרקט', cats: {meat:"🥩 בשר/דגים", dairy:"🥛 חלב/ביצים", veg:"🥦 ירקות/פירות", dry:"🍝 יבשים", clean:"🧼 ניקיון"}, items: {meat:["עוף","בקר"], dairy:["חלב","גבינה"]} },
-            ikea: { theme: 'theme-ikea', icon: '🇸🇪', title: 'איקאה', cats: {furn:"🛋️ רהיטים", market:"🖼️ Marketplace", text:"🛏️ טקסטיל", light:"💡 תאורה", food:"🌭 אוכל"}, items: {furn:["כוורת KALLAX","BILLY"], market:["נרות","קופסאות"]} },
-            ksp: { theme: 'theme-ksp', icon: '🖥️', title: 'KSP מחשבים', cats: {peri:"⌨️ ציוד היקפי", gadget:"📱 גאדג'טים", cable:"🔌 כבלים", comp:"💻 חומרה"}, items: {peri:["עכבר","מקלדת"], cable:["HDMI","USB-C"]} },
-            general: { theme: 'theme-general', icon: '📦', title: 'כללי', cats: {gen:"📦 כללי", diy:"🛠️ עבודה"}, items: {gen:["סוללות","נייר טואלט"]} }
+        let listType = 'general';
+
+        const schemas = {
+            super: { theme: 'theme-super', icon: '🛒', cats: {meat:"🥩 בשר/דגים", dairy:"🥛 חלב/ביצים", veg:"🥦 ירקות/פירות", dry:"🍝 יבשים", clean:"🧼 ניקיון"}, items: {meat:["עוף","בקר","נקניקיות"], dairy:["חלב","גבינה","ביצים"], veg:["עגבניה","בצל","מלפפון"]} },
+            ikea: { theme: 'theme-ikea', icon: '🇸🇪', cats: {furn:"🛋️ רהיטים", market:"🖼️ Marketplace", text:"🛏️ טקסטיל", light:"💡 תאורה", food:"🌭 אוכל"}, items: {furn:["כוורת KALLAX","BILLY"], market:["נרות","קופסאות ISTAD"]} },
+            ksp: { theme: 'theme-ksp', icon: '🖥️', cats: {peri:"⌨️ ציוד היקפי", gadget:"📱 גאדג'טים", cable:"🔌 כבלים", comp:"💻 חומרה"}, items: {peri:["עכבר","מקלדת"], cable:["HDMI","USB-C"]} },
+            general: { theme: 'theme-general', icon: '📦', cats: {gen:"📦 כללי", diy:"🛠️ עבודה"}, items: {gen:["סוללות","נייר טואלט"]} }
         };
 
         function init() {
-            if(!user) { document.getElementById('nameModal').style.display='flex'; } else { track(); setGreeting(); }
-            sync(currentId, true); // טעינה ראשונית
+            if(!user) { document.getElementById('nameModal').style.display='flex'; } else { setGreeting(); track(); }
+            sync(currentId);
             buildDropdown();
         }
 
-        function track() { db.ref('users/'+user).update({ last: new Date().toLocaleString('he-IL'), ua: navigator.userAgent }); }
+        function track() { db.ref('users/'+user).update({ last: new Date().toLocaleString('he-IL') }); }
         function saveUser() { const val = document.getElementById('userNameInput').value.trim(); if(val) { user = val; localStorage.setItem('myAppName', user); document.getElementById('nameModal').style.display='none'; track(); setGreeting(); } }
-        function setGreeting() { const h = new Date().getHours(); const g = h < 5 ? "לילה טוב" : h < 12 ? "בוקר טוב" : h < 18 ? "צהריים טובים" : "ערב טוב"; document.getElementById('greeting').innerText = `${g}, ${user} 👋`; }
+        function setGreeting() { const h = new Date().getHours(); const g = h < 12 ? "בוקר טוב" : h < 18 ? "צהריים טובים" : "ערב טוב"; document.getElementById('greeting').innerText = `${g}, ${user} 👋`; }
 
-        function triggerListFeedback(type, name) {
-            const schema = schemas[type] || schemas.general;
-            const container = document.getElementById('animation-container');
-            container.innerHTML = `
-                <div class="feedback-badge" style="border-color: ${type === 'ikea' ? '#ffdb00' : 'var(--primary)'}">
-                    <span class="feedback-icon">${schema.icon}</span>
-                    <p class="feedback-title">${name}</p>
-                    <p style="margin:5px 0 0; color:var(--primary); font-weight:800;">הרשימה מוכנה!</p>
-                </div>
-            `;
-            if(navigator.vibrate) navigator.vibrate([50, 30, 50]);
-            setTimeout(() => container.innerHTML = "", 2500);
+        function performTransition(newId) {
+            db.ref('all_lists/'+newId+'/metadata').once('value', s => {
+                const meta = s.val() || {type:'general', name:'טוען...'};
+                const schema = schemas[meta.type] || schemas.general;
+                const overlay = document.getElementById('screenTransition');
+                document.getElementById('transIcon').innerText = schema.icon;
+                document.getElementById('transText').innerText = meta.name;
+                overlay.style.background = meta.type === 'ikea' ? '#0058a3' : meta.type === 'ksp' ? '#1a202c' : 'var(--dark)';
+                
+                overlay.style.display = 'flex';
+                setTimeout(() => overlay.classList.add('active'), 10);
+                
+                setTimeout(() => {
+                    currentId = newId;
+                    window.history.pushState({}, '', '?list='+newId);
+                    sync(newId);
+                    overlay.classList.remove('active');
+                    setTimeout(() => overlay.style.display = 'none', 600);
+                }, 1200);
+            });
         }
 
-        function animateSwitch(newId) {
-            const el = document.getElementById('appContent');
-            el.classList.add('vacuum-out');
-            setTimeout(() => {
-                currentId = newId;
-                window.history.pushState({}, '', '?list='+newId);
-                sync(newId, false);
-                el.classList.remove('vacuum-out');
-            }, 600);
-        }
-
-        function sync(id, isInitial) {
+        function sync(id) {
             db.ref('all_lists/'+id+'/metadata').once('value', s => {
-                const meta = s.val() || {type:'general', name:'כללי'};
-                document.body.className = schemas[meta.type]?.theme || 'theme-general';
-                const cats = schemas[meta.type]?.cats || schemas.general.cats;
+                const meta = s.val() || {type:'general'};
+                listType = meta.type;
+                document.body.className = schemas[listType]?.theme || 'theme-general';
+                const cats = schemas[listType]?.cats || schemas.general.cats;
                 document.getElementById('itemCat').innerHTML = Object.entries(cats).map(([k,v]) => `<option value="${k}">${v}</option>`).join('');
                 updateQty(); updateSuggestions();
-                if(!isInitial) triggerListFeedback(meta.type, meta.name);
             });
             db.ref('all_lists/'+id+'/items').off();
             db.ref('all_lists/'+id+'/items').on('value', s => draw(s.val()));
@@ -196,9 +203,7 @@
             let collected = items.filter(i => i.collected);
             document.getElementById('cartCounter').innerText = collected.length;
 
-            const type = Object.keys(schemas).find(k => schemas[k].theme === document.body.className) || 'general';
-            const cats = schemas[type].cats;
-
+            const cats = schemas[listType].cats;
             Object.keys(cats).forEach(ck => {
                 const list = uncollected.filter(i => i.category === ck);
                 if(list.length > 0) {
@@ -213,11 +218,11 @@
         function row(i, isDone) {
             const li = document.createElement('li');
             li.id = "li_"+i.id;
-            if(isDone) { li.style.background = "rgba(255,255,255,0.05)"; li.style.color = "rgba(255,255,255,0.5)"; li.style.borderRightColor = "var(--secondary)"; }
+            if(isDone) { li.style.background = "rgba(255,255,255,0.05)"; li.style.color = "rgba(255,255,255,0.4)"; li.style.borderRightColor = "var(--secondary)"; }
             li.innerHTML = `
                 <div onclick="move('${i.id}', ${isDone})" style="flex:1; cursor:pointer;">
                     <span style="font-weight:800; font-size:17px; text-decoration:${isDone?'line-through':'none'}">${i.qty} ${i.text}</span>
-                    <div style="font-size:10px; opacity:0.4;">👤 ${i.by || 'אורח'}</div>
+                    <div style="font-size:10px; opacity:0.5;">👤 ${i.by || 'אורח'}</div>
                 </div>
                 <button onclick="kill('${i.id}')" style="background:none; border:none; font-size:22px; cursor:pointer; opacity:0.5;">🗑️</button>
             `;
@@ -226,9 +231,9 @@
 
         function move(id, isDone) {
             if(!isDone) {
-                const target = document.getElementById("li_"+id);
-                target.classList.add('item-vacuum');
-                setTimeout(() => db.ref('all_lists/'+currentId+'/items/'+id).update({collected:true, at:Date.now()}), 450);
+                document.getElementById("li_"+id).classList.add('item-vacuum');
+                if(navigator.vibrate) navigator.vibrate(40);
+                setTimeout(() => db.ref('all_lists/'+currentId+'/items/'+id).update({collected:true, at:Date.now()}), 500);
             } else {
                 db.ref('all_lists/'+currentId+'/items/'+id).update({collected:false});
             }
@@ -237,7 +242,7 @@
         function pushItem() {
             const text = document.getElementById('itemName').value.trim();
             if(!text) return;
-            db.ref('all_lists/'+currentId+'/items').push({ text, category: document.getElementById('itemCat').value, qty: document.getElementById('itemQty').value, collected:false, by: user });
+            db.ref('all_lists/'+currentId+'/items').push({ text, category: document.getElementById('itemCat').value, qty: document.getElementById('itemQty').value, collected:false, by: user, at: Date.now() });
             document.getElementById('itemName').value = "";
         }
 
@@ -249,9 +254,8 @@
 
         function updateSuggestions() {
             const c = document.getElementById('itemCat').value;
-            const type = Object.keys(schemas).find(k => schemas[k].cats[c]);
-            const list = schemas[type]?.items[c] || [];
-            document.getElementById('quickPick').innerHTML = '<option value="">הצעות...</option>' + list.map(i => `<option value="${i}">${i}</option>`).join('');
+            const items = schemas[listType]?.items[c] || [];
+            document.getElementById('quickPick').innerHTML = '<option value="">הצעות...</option>' + items.map(i => `<option value="${i}">${i}</option>`).join('');
         }
 
         function fillItem(v) { if(v) document.getElementById('itemName').value = v; }
@@ -261,26 +265,51 @@
 
         function makeList() {
             const name = document.getElementById('newListName').value.trim();
-            const type = document.getElementById('newListType').value;
             if(!name) return;
             const id = 'list_'+Date.now();
-            db.ref('all_lists/'+id+'/metadata').set({ name, type });
-            let lists = JSON.parse(localStorage.getItem('myLists')) || ['list_general'];
-            lists.push(id); localStorage.setItem('myLists', JSON.stringify(lists));
+            db.ref('all_lists/'+id+'/metadata').set({ name, type: document.getElementById('newListType').value });
+            let l = JSON.parse(localStorage.getItem('myLists')) || ['list_general'];
+            l.push(id); localStorage.setItem('myLists', JSON.stringify(l));
             document.getElementById('newListModal').style.display='none';
-            buildDropdown(); animateSwitch(id);
+            buildDropdown(); performTransition(id);
+        }
+
+        function openSettings() {
+            db.ref('all_lists/'+currentId+'/metadata').once('value', s => {
+                document.getElementById('editListName').value = s.val().name;
+                document.getElementById('settingsModal').style.display = 'flex';
+            });
+        }
+
+        function renameList() {
+            const newName = document.getElementById('editListName').value.trim();
+            if(newName) {
+                db.ref('all_lists/'+currentId+'/metadata').update({ name: newName });
+                document.getElementById('settingsModal').style.display = 'none';
+                buildDropdown();
+            }
+        }
+
+        function deleteCurrentList() {
+            if(currentId === 'list_general') return alert("לא ניתן למחוק את הרשימה הראשית");
+            if(confirm("מחיקה סופית של כל הרשימה מהענן ומכל המכשירים?")) {
+                db.ref('all_lists/'+currentId).remove();
+                let l = JSON.parse(localStorage.getItem('myLists')).filter(i => i !== currentId);
+                localStorage.setItem('myLists', JSON.stringify(l));
+                document.getElementById('settingsModal').style.display = 'none';
+                performTransition(l[0] || 'list_general');
+                buildDropdown();
+            }
         }
 
         async function buildDropdown() {
-            const d = document.getElementById('myListsDropdown'); d.innerHTML = "";
-            // משיכת כל הרשימות הקיימות מה-Firebase כדי לוודא ששום דבר לא הלך לאיבוד
             db.ref('all_lists').once('value', s => {
-                const all = s.val();
+                const all = s.val(); if(!all) return;
                 let myLocal = JSON.parse(localStorage.getItem('myLists')) || ['list_general'];
-                d.innerHTML = "";
+                const d = document.getElementById('myListsDropdown'); d.innerHTML = "";
                 myLocal.forEach(id => {
                     if(all[id]) {
-                        const opt = new Option(all[id].metadata.name, id);
+                        const opt = new Option(all[id].metadata.name + (all[id].metadata.type === 'ikea' ? ' 🇸🇪' : ''), id);
                         if(id === currentId) opt.selected = true;
                         d.add(opt);
                     }
