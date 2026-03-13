@@ -3,94 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>הקניות של אורן - v5.0 Master</title>
+    <title>הקניות של אורן - Elite v6.0</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
-        :root { --primary: #0984e3; --secondary: #00b894; --danger: #ff4757; --dark: #0f1419; }
+        :root { --primary: #0984e3; --secondary: #00b894; --danger: #ff4757; --dark: #0f1419; --accent: #6c5ce7; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; padding-bottom: 120px; min-height: 100vh; background-color: var(--dark); background-attachment: fixed; background-size: cover; background-position: center; direction: rtl; transition: background 0.8s ease; overflow-x: hidden; }
         
         /* Themes */
         body.theme-super { background-image: linear-gradient(rgba(15,20,25,0.7), rgba(15,20,25,0.9)), url('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1080&q=80'); }
-        body.theme-ikea { background-image: linear-gradient(rgba(0,88,163,0.75), rgba(0,88,163,0.95)), url('https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1080&q=80'); }
-        body.theme-ksp { background-image: linear-gradient(rgba(15,25,45,0.8), rgba(15,25,45,0.95)), url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1080&q=80'); }
+        body.theme-ikea { background-image: linear-gradient(rgba(0,88,163,0.8), rgba(0,88,163,0.95)), url('https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1080&q=80'); }
+        body.theme-ksp { background-image: linear-gradient(rgba(15,25,45,0.85), rgba(15,25,45,0.95)), url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1080&q=80'); }
         body.theme-general { background-image: linear-gradient(rgba(45,52,54,0.75), rgba(45,52,54,0.9)), url('https://images.unsplash.com/photo-1472851294608-062f824d29cc?auto=format&fit=crop&w=1080&q=80'); }
 
-        .top-nav { background: rgba(15, 20, 25, 0.96); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 15px 20px; position: sticky; top: 0; z-index: 1000; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-        #myListsDropdown { flex: 1; font-weight: 900; border: none; background: transparent; font-size: 19px; color: #fff; outline: none; appearance: none; cursor: pointer; }
+        /* מסך כניסה יוקרתי */
+        #welcomePortal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--dark); z-index: 20000; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 30px; }
+        .portal-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); width: 100%; max-width: 350px; padding: 25px; border-radius: 30px; margin-bottom: 20px; text-align: center; cursor: pointer; transition: 0.3s; }
+        .portal-card:active { transform: scale(0.95); background: rgba(255,255,255,0.1); }
+        .portal-icon { font-size: 45px; display: block; margin-bottom: 10px; }
+        .portal-text { color: white; font-size: 20px; font-weight: 900; }
 
-        /* Full Screen Transition */
-        #screenTransition { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--dark); z-index: 10000; display: none; flex-direction: column; justify-content: center; align-items: center; transform: translateY(100%); transition: transform 0.6s cubic-bezier(0.17, 0.84, 0.44, 1); }
+        /* ניווט עליון נקי */
+        .top-nav { background: rgba(15, 20, 25, 0.98); backdrop-filter: blur(25px); padding: 18px 20px; position: sticky; top: 0; z-index: 1000; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .nav-label { color: #b2bec3; font-size: 13px; font-weight: bold; white-space: nowrap; }
+        #myListsDropdown { flex: 1; font-weight: 900; border: none; background: transparent; font-size: 18px; color: #fff; outline: none; appearance: none; cursor: pointer; }
+
+        /* כפתורי פעולה */
+        .action-icon { background: rgba(255,255,255,0.1); color: white; width: 40px; height: 40px; border-radius: 12px; border: none; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; }
+
+        /* הנפשת מעבר מסך */
+        #screenTransition { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 15000; display: none; flex-direction: column; justify-content: center; align-items: center; transform: translateY(100%); transition: transform 0.6s cubic-bezier(0.17, 0.84, 0.44, 1); }
         #screenTransition.active { display: flex; transform: translateY(0); }
-        .trans-icon { font-size: 120px; margin-bottom: 20px; }
-        .trans-text { font-size: 32px; font-weight: 900; color: white; text-align: center; }
 
-        /* Vacuum Animation */
+        .app-container { width: 94%; max-width: 500px; margin: 25px auto; }
+        .control-panel { background: linear-gradient(135deg, rgba(30, 39, 46, 0.98), rgba(45, 52, 54, 0.98)); border: 1px solid rgba(255,255,255,0.15); border-radius: 30px; padding: 25px; box-shadow: 0 25px 50px rgba(0,0,0,0.6); color: white; margin-bottom: 30px; }
+        
+        li { background: rgba(255,255,255,0.98); margin-bottom: 12px; padding: 20px; border-radius: 20px; display: flex; align-items: center; justify-content: space-between; border-right: 8px solid var(--primary); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        li.category-header { background: rgba(0,0,0,0.85); color: white; border-right: 6px solid var(--secondary); padding: 8px 18px; border-radius: 15px; font-size: 14px; font-weight: 900; margin: 35px 0 12px; width: fit-content; }
+        
         @keyframes vacuumEffect {
             0% { transform: perspective(1000px) rotateX(0deg) scale(1) translateY(0); opacity: 1; }
             100% { transform: perspective(1000px) rotateX(-90deg) scale(0.1) translateY(400px); opacity: 0; }
         }
         .item-vacuum { animation: vacuumEffect 0.5s ease-in forwards !important; transform-origin: top center; pointer-events: none; }
 
-        .app-container { width: 94%; max-width: 500px; margin: 25px auto; transition: opacity 0.3s; }
-        .control-panel { background: linear-gradient(135deg, rgba(30, 39, 46, 0.98), rgba(45, 52, 54, 0.98)); border: 1px solid rgba(255,255,255,0.15); border-radius: 30px; padding: 25px; box-shadow: 0 25px 50px rgba(0,0,0,0.6); color: white; margin-bottom: 30px; }
-        
-        li { background: rgba(255,255,255,0.98); margin-bottom: 12px; padding: 20px; border-radius: 20px; display: flex; align-items: center; justify-content: space-between; border-right: 8px solid var(--primary); }
-        li.category-header { background: rgba(0,0,0,0.85); color: white; border-right: 6px solid var(--secondary); padding: 8px 18px; border-radius: 15px; font-size: 14px; font-weight: 900; margin: 35px 0 12px; width: fit-content; }
-        
-        .btn-add { background: var(--primary); color: white; padding: 18px; border-radius: 18px; width: 100%; font-weight: 900; font-size: 18px; cursor: pointer; border: none; box-shadow: 0 8px 20px rgba(9,132,227,0.3); }
-
         .cart-trigger { position: fixed; bottom: 0; left: 0; right: 0; background: linear-gradient(135deg, #0984e3, #6c5ce7); padding: 20px 25px; display: flex; align-items: center; justify-content: space-between; border-radius: 30px 30px 0 0; z-index: 4000; color: white; cursor: pointer; font-weight: 900; }
         .cart-sheet { position: fixed; bottom: 0; left: 0; right: 0; height: 80vh; background: #161d27; z-index: 5000; transform: translateY(100%); transition: transform 0.5s cubic-bezier(0.2, 1, 0.3, 1); border-radius: 35px 35px 0 0; display: flex; flex-direction: column; }
         .cart-sheet.open { transform: translateY(0); }
-        .cart-scroll { flex: 1; overflow-y: auto; padding: 20px 20px 120px; }
-        
-        .nav-icon-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); color: white; width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; }
     </style>
 </head>
 <body class="theme-general">
-    <div id="screenTransition">
-        <span class="trans-icon" id="transIcon">🛒</span>
-        <div class="trans-text" id="transText">טוען רשימה...</div>
+    <div id="welcomePortal">
+        <h1 id="portalGreeting" style="color:white; font-size:36px; margin-bottom:10px; text-align:center;">שלום אורן 👋</h1>
+        <p style="color:#b2bec3; margin-bottom:40px; text-align:center;">מה התוכנית להיום?</p>
+        
+        <div class="portal-card" onclick="hidePortal()">
+            <span class="portal-icon">📋</span>
+            <span class="portal-text">לרשימות הקיימות שלי</span>
+        </div>
+        
+        <div class="portal-card" onclick="document.getElementById('newListModal').style.display='flex'">
+            <span class="portal-icon">✨</span>
+            <span class="portal-text">יצירת רשימה חדשה</span>
+        </div>
     </div>
 
-    <div id="nameModal" style="position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.95); z-index:11000; display:none; align-items:center; justify-content:center; backdrop-filter:blur(10px);">
+    <div id="screenTransition">
+        <span id="transIcon" style="font-size:100px; margin-bottom:20px;">🛒</span>
+        <div id="transText" style="color:white; font-size:28px; font-weight:900;">טוען רשימה...</div>
+    </div>
+
+    <div id="nameModal" style="position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.95); z-index:30000; display:none; align-items:center; justify-content:center; backdrop-filter:blur(10px);">
         <div style="background:white; width:90%; max-width:400px; padding:35px; border-radius:35px; text-align:center;">
-            <h2 style="color:var(--primary); margin:0;">שלום אורן! 👋</h2>
-            <p style="color:#636e72; margin-bottom:25px;">מי משתמש באפליקציה?</p>
-            <input type="text" id="userNameInput" placeholder="השם שלך..." style="width:100%; padding:15px; border:2px solid #eee; border-radius:15px; text-align:center; font-size:18px; margin-bottom:20px;">
-            <button onclick="saveUser()" style="width:100%; padding:18px; border:none; background:var(--primary); color:white; border-radius:18px; font-weight:900;">התחל</button>
+            <h2 style="color:var(--primary); margin:0;">נעים להכיר!</h2>
+            <input type="text" id="userNameInput" placeholder="איך קוראים לך?" style="width:100%; padding:15px; border:2px solid #eee; border-radius:15px; text-align:center; font-size:18px; margin:20px 0;">
+            <button onclick="saveUser()" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:18px; font-weight:900;">המשך</button>
         </div>
     </div>
 
     <div class="top-nav">
+        <span class="nav-label">בחר רשימה:</span>
         <select id="myListsDropdown" onchange="performTransition(this.value)"></select>
-        <button class="nav-icon-btn" onclick="openSettings()">⚙️</button>
-        <button class="nav-icon-btn" style="background:var(--primary)" onclick="document.getElementById('newListModal').style.display='flex'">+</button>
+        <button class="action-icon" onclick="renameListPrompt()">✏️</button>
+        <button class="action-icon" style="background:var(--primary)" onclick="document.getElementById('newListModal').style.display='flex'">+</button>
     </div>
 
     <div class="app-container" id="appContent">
-        <h1 id="greeting" style="color:white; text-align:center; text-shadow:0 4px 10px rgba(0,0,0,0.5); font-weight:900; margin-bottom:25px;"></h1>
-
         <div class="control-panel">
-            <div style="display:flex; gap:12px; margin-bottom:15px;">
-                <div style="flex:1">
-                    <select id="itemCat" onchange="updateSuggestions()" style="width:100%; padding:12px; border-radius:12px;"></select>
-                </div>
-                <div style="flex:1">
-                    <select id="quickPick" onchange="fillItem(this.value)" style="width:100%; padding:12px; border-radius:12px;"><option value="">הצעות...</option></select>
-                </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+                <span id="listTitleDisplay" style="font-weight:900; font-size:18px;">🛒 רשימה נוכחית</span>
+                <button onclick="deleteCurrentList()" style="background:none; border:none; color:var(--danger); font-weight:bold; cursor:pointer;">מחק רשימה</button>
             </div>
-            <div style="display:flex; gap:12px; margin-bottom:20px;">
+            
+            <div style="display:flex; gap:10px; margin-bottom:15px;">
+                <select id="itemCat" onchange="updateSuggestions()" style="flex:1; padding:12px; border-radius:12px;"></select>
+                <select id="quickPick" onchange="fillItem(this.value)" style="flex:1; padding:12px; border-radius:12px;"><option value="">הצעות...</option></select>
+            </div>
+            <div style="display:flex; gap:10px; margin-bottom:20px;">
                 <input type="text" id="itemName" placeholder="מה חסר?" style="flex:2; padding:15px; border-radius:15px; border:none;">
                 <select id="itemQty" style="flex:1; padding:15px; border-radius:15px; border:none;"></select>
             </div>
-            <button class="btn-add" onclick="pushItem()">הוסף לרשימה</button>
+            <button onclick="pushItem()" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:18px; font-weight:900; font-size:18px;">הוסף לרשימה</button>
         </div>
 
-        <h3 style="color:white; margin:0 10px 15px 0;">⏳ לקנות עכשיו</h3>
         <ul id="todoList" style="list-style:none; padding:0;"></ul>
     </div>
 
@@ -102,25 +119,15 @@
     <div id="cartSheet" class="cart-sheet">
         <div style="width:50px; height:6px; background:rgba(255,255,255,0.2); margin:15px auto; border-radius:10px; cursor:pointer;" onclick="toggleCart()"></div>
         <div style="padding:10px 25px; display:flex; justify-content:space-between; align-items:center;">
-            <h2 style="color:white; margin:0; font-weight:900;">כבר בעגלה</h2>
+            <h2 style="color:white; margin:0;">כבר בעגלה</h2>
             <button onclick="wipeDone()" style="background:var(--danger); color:white; border:none; padding:8px 15px; border-radius:10px; font-weight:bold;">נקה הכל</button>
         </div>
-        <div class="cart-scroll">
+        <div class="cart-scroll" style="flex:1; overflow-y:auto; padding:20px;">
             <ul id="doneList" style="list-style:none; padding:0;"></ul>
         </div>
     </div>
 
-    <div id="settingsModal" style="position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.9); z-index:12000; display:none; align-items:center; justify-content:center; backdrop-filter:blur(10px);">
-        <div style="background:white; width:90%; max-width:400px; padding:35px; border-radius:35px; text-align:center;">
-            <h2 style="margin:0 0 20px;">הגדרות רשימה</h2>
-            <input type="text" id="editListName" placeholder="שם חדש לרשימה..." style="width:100%; padding:15px; border:2px solid #eee; border-radius:15px; margin-bottom:20px;">
-            <button onclick="renameList()" style="width:100%; padding:15px; background:var(--primary); color:white; border:none; border-radius:15px; font-weight:900; margin-bottom:15px;">שמור שם חדש</button>
-            <button onclick="deleteCurrentList()" style="width:100%; padding:15px; background:var(--danger); color:white; border:none; border-radius:15px; font-weight:900;">מחק רשימה זו לצמיתות 🗑️</button>
-            <button onclick="document.getElementById('settingsModal').style.display='none'" style="margin-top:20px; background:none; border:none; color:#636e72; cursor:pointer;">ביטול</button>
-        </div>
-    </div>
-
-    <div id="newListModal" style="position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.92); z-index:10500; display:none; align-items:center; justify-content:center; backdrop-filter:blur(12px);">
+    <div id="newListModal" style="position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.92); z-index:25000; display:none; align-items:center; justify-content:center; backdrop-filter:blur(12px);">
         <div style="background:white; width:90%; max-width:400px; padding:35px; border-radius:35px; text-align:center;">
             <h2>רשימה חדשה</h2>
             <input type="text" id="newListName" placeholder="שם הרשימה..." style="width:100%; padding:15px; border:2px solid #eee; border-radius:15px; margin:20px 0;">
@@ -130,7 +137,7 @@
                 <option value="ksp">🖥️ KSP מחשבים</option>
                 <option value="general">📦 כללי</option>
             </select>
-            <button onclick="makeList()" class="btn-add">צור רשימה</button>
+            <button onclick="makeList()" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:18px; font-weight:900;">צור רשימה</button>
             <button onclick="document.getElementById('newListModal').style.display='none'" style="background:none; border:none; color:#636e72; margin-top:15px; cursor:pointer;">ביטול</button>
         </div>
     </div>
@@ -139,26 +146,26 @@
         const config = { apiKey: "AIzaSyCb7dApdjqPB6Fip9rW-QxoNbTZBow6rkQ", databaseURL: "https://shopping-list-7c4fa-default-rtdb.europe-west1.firebasedatabase.app" };
         firebase.initializeApp(config); const db = firebase.database();
 
-        let currentId = new URLSearchParams(window.location.search).get('list') || 'list_general';
+        let currentId = new URLSearchParams(window.location.search).get('list') || localStorage.getItem('lastUsedList') || 'list_general';
         let user = localStorage.getItem('myAppName') || '';
         let listType = 'general';
 
         const schemas = {
-            super: { theme: 'theme-super', icon: '🛒', cats: {meat:"🥩 בשר/דגים", dairy:"🥛 חלב/ביצים", veg:"🥦 ירקות/פירות", dry:"🍝 יבשים", clean:"🧼 ניקיון"}, items: {meat:["עוף","בקר","נקניקיות"], dairy:["חלב","גבינה","ביצים"], veg:["עגבניה","בצל","מלפפון"]} },
-            ikea: { theme: 'theme-ikea', icon: '🇸🇪', cats: {furn:"🛋️ רהיטים", market:"🖼️ Marketplace", text:"🛏️ טקסטיל", light:"💡 תאורה", food:"🌭 אוכל"}, items: {furn:["כוורת KALLAX","BILLY"], market:["נרות","קופסאות ISTAD"]} },
+            super: { theme: 'theme-super', icon: '🛒', cats: {meat:"🥩 בשר/דגים", dairy:"🥛 חלב/ביצים", veg:"🥦 ירקות/פירות", dry:"🍝 יבשים", clean:"🧼 ניקיון"}, items: {meat:["עוף","בקר"], dairy:["חלב","גבינה"]} },
+            ikea: { theme: 'theme-ikea', icon: '🇸🇪', cats: {furn:"🛋️ רהיטים", market:"🖼️ Marketplace", text:"🛏️ טקסטיל", light:"💡 תאורה", food:"🌭 אוכל"}, items: {furn:["כוורת KALLAX","BILLY"], market:["נרות","קופסאות"]} },
             ksp: { theme: 'theme-ksp', icon: '🖥️', cats: {peri:"⌨️ ציוד היקפי", gadget:"📱 גאדג'טים", cable:"🔌 כבלים", comp:"💻 חומרה"}, items: {peri:["עכבר","מקלדת"], cable:["HDMI","USB-C"]} },
             general: { theme: 'theme-general', icon: '📦', cats: {gen:"📦 כללי", diy:"🛠️ עבודה"}, items: {gen:["סוללות","נייר טואלט"]} }
         };
 
         function init() {
-            if(!user) { document.getElementById('nameModal').style.display='flex'; } else { setGreeting(); track(); }
+            if(!user) { document.getElementById('nameModal').style.display='flex'; } 
+            else { document.getElementById('portalGreeting').innerText = `שלום ${user} 👋`; }
             sync(currentId);
             buildDropdown();
         }
 
-        function track() { db.ref('users/'+user).update({ last: new Date().toLocaleString('he-IL') }); }
-        function saveUser() { const val = document.getElementById('userNameInput').value.trim(); if(val) { user = val; localStorage.setItem('myAppName', user); document.getElementById('nameModal').style.display='none'; track(); setGreeting(); } }
-        function setGreeting() { const h = new Date().getHours(); const g = h < 12 ? "בוקר טוב" : h < 18 ? "צהריים טובים" : "ערב טוב"; document.getElementById('greeting').innerText = `${g}, ${user} 👋`; }
+        function hidePortal() { document.getElementById('welcomePortal').style.display = 'none'; }
+        function saveUser() { const val = document.getElementById('userNameInput').value.trim(); if(val) { user = val; localStorage.setItem('myAppName', user); document.getElementById('nameModal').style.display='none'; document.getElementById('portalGreeting').innerText = `שלום ${user} 👋`; } }
 
         function performTransition(newId) {
             db.ref('all_lists/'+newId+'/metadata').once('value', s => {
@@ -168,25 +175,25 @@
                 document.getElementById('transIcon').innerText = schema.icon;
                 document.getElementById('transText').innerText = meta.name;
                 overlay.style.background = meta.type === 'ikea' ? '#0058a3' : meta.type === 'ksp' ? '#1a202c' : 'var(--dark)';
-                
                 overlay.style.display = 'flex';
                 setTimeout(() => overlay.classList.add('active'), 10);
-                
                 setTimeout(() => {
                     currentId = newId;
+                    localStorage.setItem('lastUsedList', newId);
                     window.history.pushState({}, '', '?list='+newId);
                     sync(newId);
                     overlay.classList.remove('active');
-                    setTimeout(() => overlay.style.display = 'none', 600);
-                }, 1200);
+                    setTimeout(() => { overlay.style.display = 'none'; hidePortal(); }, 600);
+                }, 1000);
             });
         }
 
         function sync(id) {
-            db.ref('all_lists/'+id+'/metadata').once('value', s => {
-                const meta = s.val() || {type:'general'};
+            db.ref('all_lists/'+id+'/metadata').on('value', s => {
+                const meta = s.val() || {type:'general', name:'רשימה'};
                 listType = meta.type;
                 document.body.className = schemas[listType]?.theme || 'theme-general';
+                document.getElementById('listTitleDisplay').innerText = meta.name;
                 const cats = schemas[listType]?.cats || schemas.general.cats;
                 document.getElementById('itemCat').innerHTML = Object.entries(cats).map(([k,v]) => `<option value="${k}">${v}</option>`).join('');
                 updateQty(); updateSuggestions();
@@ -199,13 +206,11 @@
             const todo = document.getElementById('todoList'), done = document.getElementById('doneList');
             todo.innerHTML = ""; done.innerHTML = "";
             let items = data ? Object.entries(data).map(([id, val]) => ({id, ...val})) : [];
-            let uncollected = items.filter(i => !i.collected);
             let collected = items.filter(i => i.collected);
             document.getElementById('cartCounter').innerText = collected.length;
-
             const cats = schemas[listType].cats;
             Object.keys(cats).forEach(ck => {
-                const list = uncollected.filter(i => i.category === ck);
+                const list = items.filter(i => !i.collected && i.category === ck);
                 if(list.length > 0) {
                     const h = document.createElement('li'); h.className = 'category-header'; h.innerText = cats[ck];
                     todo.appendChild(h);
@@ -216,8 +221,7 @@
         }
 
         function row(i, isDone) {
-            const li = document.createElement('li');
-            li.id = "li_"+i.id;
+            const li = document.createElement('li'); li.id = "li_"+i.id;
             if(isDone) { li.style.background = "rgba(255,255,255,0.05)"; li.style.color = "rgba(255,255,255,0.4)"; li.style.borderRightColor = "var(--secondary)"; }
             li.innerHTML = `
                 <div onclick="move('${i.id}', ${isDone})" style="flex:1; cursor:pointer;">
@@ -225,18 +229,14 @@
                     <div style="font-size:10px; opacity:0.5;">👤 ${i.by || 'אורח'}</div>
                 </div>
                 <button onclick="kill('${i.id}')" style="background:none; border:none; font-size:22px; cursor:pointer; opacity:0.5;">🗑️</button>
-            `;
-            return li;
+            `; return li;
         }
 
         function move(id, isDone) {
             if(!isDone) {
                 document.getElementById("li_"+id).classList.add('item-vacuum');
-                if(navigator.vibrate) navigator.vibrate(40);
                 setTimeout(() => db.ref('all_lists/'+currentId+'/items/'+id).update({collected:true, at:Date.now()}), 500);
-            } else {
-                db.ref('all_lists/'+currentId+'/items/'+id).update({collected:false});
-            }
+            } else { db.ref('all_lists/'+currentId+'/items/'+id).update({collected:false}); }
         }
 
         function pushItem() {
@@ -274,29 +274,17 @@
             buildDropdown(); performTransition(id);
         }
 
-        function openSettings() {
-            db.ref('all_lists/'+currentId+'/metadata').once('value', s => {
-                document.getElementById('editListName').value = s.val().name;
-                document.getElementById('settingsModal').style.display = 'flex';
-            });
-        }
-
-        function renameList() {
-            const newName = document.getElementById('editListName').value.trim();
-            if(newName) {
-                db.ref('all_lists/'+currentId+'/metadata').update({ name: newName });
-                document.getElementById('settingsModal').style.display = 'none';
-                buildDropdown();
-            }
+        function renameListPrompt() {
+            const newName = prompt("שם חדש לרשימה:");
+            if(newName) { db.ref('all_lists/'+currentId+'/metadata').update({ name: newName }); buildDropdown(); }
         }
 
         function deleteCurrentList() {
             if(currentId === 'list_general') return alert("לא ניתן למחוק את הרשימה הראשית");
-            if(confirm("מחיקה סופית של כל הרשימה מהענן ומכל המכשירים?")) {
+            if(confirm("מחיקה סופית של הרשימה מהענן?")) {
                 db.ref('all_lists/'+currentId).remove();
                 let l = JSON.parse(localStorage.getItem('myLists')).filter(i => i !== currentId);
                 localStorage.setItem('myLists', JSON.stringify(l));
-                document.getElementById('settingsModal').style.display = 'none';
                 performTransition(l[0] || 'list_general');
                 buildDropdown();
             }
