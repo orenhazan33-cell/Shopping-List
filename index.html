@@ -3,250 +3,202 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>הקניות של אורן - Enterprise v3.8</title>
+    <title>הקניות של אורן - Enterprise v4.0</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
         :root { --primary: #0984e3; --secondary: #00b894; --danger: #ff4757; --dark: #0f1419; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
-        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; padding-bottom: 120px; min-height: 100vh; background-color: var(--dark); background-attachment: fixed; background-size: cover; background-position: center; direction: rtl; transition: background 0.8s cubic-bezier(0.4, 0, 0.2, 1); overflow-x: hidden; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; padding-bottom: 120px; min-height: 100vh; background-color: var(--dark); background-attachment: fixed; background-size: cover; background-position: center; direction: rtl; transition: background 0.8s ease; overflow-x: hidden; }
         
-        /* רקעים לפי נושא */
-        body.theme-super { background-image: linear-gradient(rgba(15,20,25,0.75), rgba(15,20,25,0.9)), url('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1080&q=80'); }
-        body.theme-ikea { background-image: linear-gradient(rgba(0,88,163,0.75), rgba(0,88,163,0.9)), url('https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1080&q=80'); }
+        /* ערכות נושא */
+        body.theme-super { background-image: linear-gradient(rgba(15,20,25,0.7), rgba(15,20,25,0.9)), url('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1080&q=80'); }
+        body.theme-ikea { background-image: linear-gradient(rgba(0,88,163,0.75), rgba(0,88,163,0.95)), url('https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1080&q=80'); }
         body.theme-ksp { background-image: linear-gradient(rgba(15,25,45,0.8), rgba(15,25,45,0.95)), url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1080&q=80'); }
+        body.theme-birthday { background-image: linear-gradient(rgba(30,15,30,0.7), rgba(30,15,30,0.9)), url('https://images.unsplash.com/photo-1530103862676-de8892bf309c?auto=format&fit=crop&w=1080&q=80'); }
         body.theme-general { background-image: linear-gradient(rgba(45,52,54,0.75), rgba(45,52,54,0.9)), url('https://images.unsplash.com/photo-1472851294608-062f824d29cc?auto=format&fit=crop&w=1080&q=80'); }
 
-        /* ניווט פרימיום */
-        .top-nav { background: rgba(15, 20, 25, 0.96); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 15px 20px; position: sticky; top: 0; z-index: 1000; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 10px 40px rgba(0,0,0,0.6); }
-        #myListsDropdown { flex: 1; font-weight: 900; border: none; background: transparent; font-size: 19px; color: #fff; outline: none; appearance: none; -webkit-appearance: none; cursor: pointer; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .top-nav { background: rgba(15, 20, 25, 0.96); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 15px 20px; position: sticky; top: 0; z-index: 1000; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 10px 40px rgba(0,0,0,0.6); }
+        #myListsDropdown { flex: 1; font-weight: 900; border: none; background: transparent; font-size: 19px; color: #fff; outline: none; appearance: none; }
 
-        /* אנימציות - "ואקום" ו"פריסה" */
+        /* הנפשות ווקום ופריסה */
         @keyframes vacuumEffect {
             0% { transform: perspective(1000px) rotateX(0deg) scale(1) translateY(0); opacity: 1; filter: blur(0); }
             100% { transform: perspective(1000px) rotateX(-90deg) scale(0.1) translateY(400px); opacity: 0; filter: blur(15px); }
         }
-        @keyframes unfoldEffect {
-            0% { transform: perspective(1000px) rotateX(90deg) scale(0.6) translateY(-200px); opacity: 0; }
-            100% { transform: perspective(1000px) rotateX(0deg) scale(1) translateY(0); opacity: 1; }
+        @keyframes listPop {
+            0% { transform: scale(0.5) translateY(50px); opacity: 0; }
+            20% { transform: scale(1.1) translateY(0); opacity: 1; }
+            80% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.2) translateY(-30px); opacity: 0; }
         }
         
         .vacuum-out { animation: vacuumEffect 0.6s cubic-bezier(0.5, 0, 0.75, 0) forwards; }
-        .unfold-in { animation: unfoldEffect 0.7s cubic-bezier(0.17, 0.84, 0.44, 1) forwards; }
-        .item-vacuum { animation: vacuumEffect 0.45s ease-in forwards !important; transform-origin: top center; }
+        .item-vacuum { animation: vacuumEffect 0.5s ease-in forwards !important; transform-origin: top center; }
 
-        .app-container { width: 94%; max-width: 500px; margin: 25px auto; }
-
-        /* קונטרוולים */
+        .app-container { width: 94%; max-width: 500px; margin: 25px auto; transition: opacity 0.3s; }
         .control-panel { background: linear-gradient(135deg, rgba(30, 39, 46, 0.98), rgba(45, 52, 54, 0.98)); border: 1px solid rgba(255,255,255,0.15); border-radius: 30px; padding: 25px; box-shadow: 0 25px 50px rgba(0,0,0,0.6); color: white; margin-bottom: 30px; }
-        input, select { padding: 16px; border: 2px solid #dfe6e9; border-radius: 18px; font-size: 16px; width: 100%; font-weight: 600; outline: none; background: #fff; color: #2d3436; transition: 0.3s; }
-        input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(9,132,227,0.3); }
         
-        /* רשימות */
-        li { background: rgba(255,255,255,0.98); margin-bottom: 12px; padding: 20px; border-radius: 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 10px 20px rgba(0,0,0,0.15); border-right: 8px solid var(--primary); transform-origin: top center; transition: 0.3s; }
-        li.category-header { background: rgba(0,0,0,0.85); color: white; border-right: 6px solid var(--secondary); padding: 8px 20px; border-radius: 15px; font-size: 14px; font-weight: 900; margin: 35px 0 12px; width: fit-content; backdrop-filter: blur(5px); }
+        li { background: rgba(255,255,255,0.98); margin-bottom: 12px; padding: 20px; border-radius: 20px; display: flex; align-items: center; justify-content: space-between; border-right: 8px solid var(--primary); transform-origin: top center; transition: 0.3s; }
+        li.category-header { background: rgba(0,0,0,0.85); color: white; border-right: 6px solid var(--secondary); padding: 8px 18px; border-radius: 15px; font-size: 14px; font-weight: 900; margin: 35px 0 12px; width: fit-content; }
         
-        .btn-add { background: var(--primary); color: white; padding: 18px; border-radius: 18px; width: 100%; font-weight: 900; font-size: 18px; cursor: pointer; border: none; box-shadow: 0 8px 20px rgba(9,132,227,0.4); }
-        .btn-add:active { transform: scale(0.96); }
+        /* Badge Feedback */
+        #animation-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; display: flex; justify-content: center; align-items: center; }
+        .feedback-badge { background: rgba(255,255,255,0.95); padding: 30px; border-radius: 40px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.5); animation: listPop 2.5s cubic-bezier(0.17, 0.84, 0.44, 1) forwards; border: 4px solid var(--primary); }
+        .feedback-icon { font-size: 60px; margin-bottom: 15px; display: block; }
+        .feedback-title { font-size: 24px; font-weight: 900; color: #2d3436; margin: 0; }
 
-        /* עגלת קניות - Bottom Sheet */
-        .cart-trigger { position: fixed; bottom: 0; left: 0; right: 0; background: linear-gradient(135deg, #0984e3, #6c5ce7); padding: 20px 25px; display: flex; align-items: center; justify-content: space-between; border-radius: 30px 30px 0 0; z-index: 4000; color: white; cursor: pointer; box-shadow: 0 -10px 40px rgba(0,0,0,0.5); font-weight: 900; border-top: 1px solid rgba(255,255,255,0.2); }
-        .cart-sheet { position: fixed; bottom: 0; left: 0; right: 0; height: 80vh; background: #161d27; z-index: 5000; transform: translateY(100%); transition: transform 0.5s cubic-bezier(0.2, 1, 0.3, 1); border-radius: 35px 35px 0 0; display: flex; flex-direction: column; box-shadow: 0 -20px 60px rgba(0,0,0,0.8); }
+        .cart-trigger { position: fixed; bottom: 0; left: 0; right: 0; background: linear-gradient(135deg, #0984e3, #6c5ce7); padding: 20px 25px; display: flex; align-items: center; justify-content: space-between; border-radius: 30px 30px 0 0; z-index: 4000; color: white; cursor: pointer; font-weight: 900; }
+        .cart-sheet { position: fixed; bottom: 0; left: 0; right: 0; height: 80vh; background: #161d27; z-index: 5000; transform: translateY(100%); transition: transform 0.5s cubic-bezier(0.2, 1, 0.3, 1); border-radius: 35px 35px 0 0; display: flex; flex-direction: column; }
         .cart-sheet.open { transform: translateY(0); }
-        .cart-scroll { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 120px; }
-
-        #toast { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: #1e272e; color: #fff; padding: 15px 30px; border-radius: 30px; z-index: 8000; transition: 0.4s; font-weight: 900; box-shadow: 0 15px 40px rgba(0,0,0,0.6); }
-        #toast.show { top: 30px; }
-
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.92); z-index: 9000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(12px); }
-        .app-modal { background: white; width: 92%; max-width: 420px; padding: 35px; border-radius: 35px; text-align: center; }
+        .cart-scroll { flex: 1; overflow-y: auto; padding: 20px 20px 120px; }
     </style>
 </head>
 <body class="theme-general">
-    <div id="toast"></div>
-    <div id="offlineAlert" style="display:none; background:var(--danger); color:white; text-align:center; padding:12px; font-weight:bold; position:fixed; width:100%; top:0; z-index:10000;">⚠️ שים לב: אין חיבור לאינטרנט</div>
+    <div id="animation-container"></div>
+    <div id="toast" style="position:fixed; top:-100px; left:50%; transform:translateX(-50%); background:#1e272e; color:white; padding:15px 30px; border-radius:30px; z-index:8000; transition:0.4s; font-weight:900;"></div>
 
-    <div id="nameModal" class="modal-overlay">
-        <div class="app-modal">
+    <div id="nameModal" style="position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.95); z-index:10000; display:none; align-items:center; justify-content:center; backdrop-filter:blur(10px);">
+        <div style="background:white; width:90%; max-width:400px; padding:35px; border-radius:35px; text-align:center;">
             <h2 style="color:var(--primary); margin:0; font-size:28px;">שלום! 👋</h2>
-            <p style="color:#636e72; margin-bottom:25px; font-size:18px;">נשמח לדעת מי משתמש באפליקציה כרגע:</p>
-            <input type="text" id="userNameInput" placeholder="השם שלך..." style="text-align:center; margin-bottom:25px; border:2px solid #eee;">
-            <button class="btn-add" onclick="saveUser()">בוא נתחיל בקניות</button>
+            <p style="color:#636e72; margin-bottom:25px;">מי משתמש באפליקציה כרגע?</p>
+            <input type="text" id="userNameInput" placeholder="השם שלך..." style="width:100%; padding:15px; border:2px solid #eee; border-radius:15px; text-align:center; font-size:18px; margin-bottom:20px;">
+            <button onclick="saveUser()" style="width:100%; padding:18px; border:none; background:var(--primary); color:white; border-radius:18px; font-weight:900; font-size:18px;">התחל</button>
         </div>
     </div>
 
     <div class="top-nav">
         <select id="myListsDropdown" onchange="animateSwitch(this.value)"></select>
-        <button onclick="document.getElementById('newListModal').style.display='flex'" style="background:linear-gradient(135deg, var(--primary), #6c5ce7); color:white; border:none; width:46px; height:46px; border-radius:15px; font-size:26px; cursor:pointer; font-weight:bold; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">+</button>
+        <button onclick="document.getElementById('newListModal').style.display='flex'" style="background:var(--primary); color:white; border:none; width:46px; height:46px; border-radius:15px; font-size:26px; cursor:pointer;">+</button>
     </div>
 
     <div class="app-container" id="appContent">
-        <h1 id="greeting" style="color:white; text-align:center; text-shadow:0 4px 10px rgba(0,0,0,0.5); font-weight:900; font-size:32px; margin-bottom:25px;"></h1>
+        <h1 id="greeting" style="color:white; text-align:center; text-shadow:0 4px 10px rgba(0,0,0,0.5); font-weight:900; margin-bottom:25px;"></h1>
 
         <div class="control-panel">
             <div style="display:flex; gap:12px; margin-bottom:15px;">
                 <div style="flex:1">
-                    <span style="font-size:12px; color:#b2bec3; display:block; margin-bottom:5px; padding-right:5px;">מחלקה</span>
-                    <select id="itemCat" onchange="updateSuggestions()"></select>
+                    <select id="itemCat" onchange="updateSuggestions()" style="width:100%; padding:12px; border-radius:12px;"></select>
                 </div>
                 <div style="flex:1">
-                    <span style="font-size:12px; color:#b2bec3; display:block; margin-bottom:5px; padding-right:5px;">הצעות מהירות</span>
-                    <select id="quickPick" onchange="fillItem(this.value)"><option value="">בחר...</option></select>
+                    <select id="quickPick" onchange="fillItem(this.value)" style="width:100%; padding:12px; border-radius:12px;"><option value="">הצעות...</option></select>
                 </div>
             </div>
-            <div style="display:flex; gap:12px; margin-bottom:25px;">
-                <div style="flex:2">
-                    <span style="font-size:12px; color:#b2bec3; display:block; margin-bottom:5px; padding-right:5px;">שם המוצר</span>
-                    <input type="text" id="itemName" placeholder="מה חסר לנו?">
-                </div>
-                <div style="flex:1">
-                    <span style="font-size:12px; color:#b2bec3; display:block; margin-bottom:5px; padding-right:5px;">כמות/משקל</span>
-                    <select id="itemQty"></select>
-                </div>
+            <div style="display:flex; gap:12px; margin-bottom:20px;">
+                <input type="text" id="itemName" placeholder="מה חסר?" style="flex:2; padding:15px; border-radius:15px; border:none;">
+                <select id="itemQty" style="flex:1; padding:15px; border-radius:15px; border:none;"></select>
             </div>
-            <button class="btn-add" onclick="pushItem()">הוסף לרשימה</button>
+            <button onclick="pushItem()" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:18px; font-weight:900; font-size:18px; cursor:pointer;">הוסף לרשימה</button>
         </div>
 
-        <h3 style="color:white; margin:0 10px 20px 0; font-weight:900; text-shadow:0 2px 5px rgba(0,0,0,0.5); font-size:20px;">⏳ נשאר לקנות</h3>
-        <ul id="todoList"></ul>
+        <h3 style="color:white; margin:0 10px 15px 0;">⏳ נשאר לקנות</h3>
+        <ul id="todoList" style="list-style:none; padding:0;"></ul>
     </div>
 
     <div class="cart-trigger" onclick="toggleCart()">
-        <div style="display:flex; align-items:center; gap:12px;">
-            <span style="font-size:24px;">🛒</span>
-            <span><span id="cartCounter">0</span> פריטים נאספו לעגלה</span>
-        </div>
-        <span id="arrow" style="font-size:20px;">▲</span>
+        <span>🛒 <span id="cartCounter">0</span> פריטים נאספו</span>
+        <span id="arrow">▲</span>
     </div>
 
     <div id="cartSheet" class="cart-sheet">
-        <div style="width:50px; height:6px; background:rgba(255,255,255,0.2); margin:18px auto; border-radius:10px; cursor:pointer;" onclick="toggleCart()"></div>
+        <div style="width:50px; height:6px; background:rgba(255,255,255,0.2); margin:15px auto; border-radius:10px; cursor:pointer;" onclick="toggleCart()"></div>
         <div style="padding:10px 25px; display:flex; justify-content:space-between; align-items:center;">
-            <h2 style="color:white; margin:0; font-weight:900; font-size:26px;">כבר בעגלה</h2>
-            <button onclick="wipeDone()" style="background:rgba(255,71,87,0.15); color:var(--danger); border:1px solid var(--danger); padding:8px 18px; border-radius:12px; font-weight:bold; font-size:14px;">נקה הכל</button>
+            <h2 style="color:white; margin:0; font-weight:900;">כבר בעגלה</h2>
+            <button onclick="wipeDone()" style="background:var(--danger); color:white; border:none; padding:8px 15px; border-radius:10px; font-weight:bold;">נקה הכל</button>
         </div>
         <div class="cart-scroll">
-            <ul id="doneList" style="list-style:none; padding:0; margin:0;"></ul>
+            <ul id="doneList" style="list-style:none; padding:0;"></ul>
         </div>
     </div>
 
-    <div id="newListModal" class="modal-overlay">
-        <div class="app-modal">
-            <h2 style="margin-top:0; font-size:24px;">יצירת רשימה חדשה</h2>
-            <input type="text" id="newListName" placeholder="שם הרשימה (למשל: איקאה)" style="margin-bottom:15px; border:2px solid #eee;">
-            <select id="newListType" style="margin-bottom:25px; border:2px solid #eee;">
+    <div id="newListModal" style="position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.92); z-index:9000; display:none; align-items:center; justify-content:center; backdrop-filter:blur(12px);">
+        <div style="background:white; width:90%; max-width:400px; padding:35px; border-radius:35px; text-align:center;">
+            <h2 style="margin:0; font-size:24px;">רשימה חדשה</h2>
+            <input type="text" id="newListName" placeholder="שם הרשימה..." style="width:100%; padding:15px; border:2px solid #eee; border-radius:15px; margin:20px 0;">
+            <select id="newListType" style="width:100%; padding:15px; border:2px solid #eee; border-radius:15px; margin-bottom:25px;">
                 <option value="super">🛒 סופרמרקט</option>
                 <option value="ikea">🇸🇪 איקאה (IKEA)</option>
                 <option value="ksp">🖥️ KSP מחשבים</option>
                 <option value="general">📦 כללי</option>
             </select>
-            <div style="display:flex; gap:10px;">
-                <button class="btn-add" style="flex:2" onclick="makeList()">צור רשימה</button>
-                <button onclick="document.getElementById('newListModal').style.display='none'" style="flex:1; background:#eee; border:none; color:#2d3436; border-radius:18px; font-weight:bold; cursor:pointer;">ביטול</button>
-            </div>
+            <button onclick="makeList()" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:18px; font-weight:900;">צור רשימה</button>
+            <button onclick="document.getElementById('newListModal').style.display='none'" style="background:none; border:none; color:#636e72; margin-top:15px; cursor:pointer;">ביטול</button>
         </div>
     </div>
 
     <script>
-        // חיבור לפיירבייס - בדיקת תקינות מפתח
         const config = { apiKey: "AIzaSyCb7dApdjqPB6Fip9rW-QxoNbTZBow6rkQ", databaseURL: "https://shopping-list-7c4fa-default-rtdb.europe-west1.firebasedatabase.app" };
-        if(!firebase.apps.length) firebase.initializeApp(config);
-        const db = firebase.database();
+        firebase.initializeApp(config); const db = firebase.database();
 
-        // משתני מערכת
-        let currentId = new URLSearchParams(window.location.search).get('list') || (JSON.parse(localStorage.getItem('myLists')) || ['list_general'])[0];
+        let currentId = new URLSearchParams(window.location.search).get('list') || 'list_general';
         let user = localStorage.getItem('myAppName') || '';
-        let startT = Date.now();
-        let isCartOpen = false;
-
-        const schemas = {
-            super: { theme: 'theme-super', cats: {meat:"🥩 בשר ודגים", dairy:"🥛 חלב וביצים", veg:"🥦 ירקות ופירות", dry:"🍝 יבשים ושימורים", clean:"🧼 ניקיון ופארם"}, items: {meat:["כרעיים עוף","חזה עוף","בקר טחון"], dairy:["חלב 3%","גבינה צהובה","ביצים L"], veg:["מלפפון","עגבניה","בצל"]} },
-            ikea: { theme: 'theme-ikea', cats: {furn:"🛋️ רהיטים (איסוף עצמי)", market:"🖼️ Marketplace (כלים/נוי)", text:"🛏️ טקסטיל ומצעים", light:"💡 תאורה", food:"🌭 אוכל וסופר"}, items: {furn:["כוורת KALLAX","מדפי BILLY","שולחן עבודה"], market:["נרות ריחניים","קופסאות ISTAD","מתלה נעליים"], text:["מצעים למידה","כריות נוי"]} },
-            ksp: { theme: 'theme-ksp', cats: {peri:"⌨️ ציוד היקפי", gadget:"📱 גאדג'טים", cable:"🔌 כבלים ומתאמים", comp:"💻 חומרת מחשב"}, items: {peri:["עכבר אלחוטי","מקלדת מכנית","משטח לעכבר"], gadget:["אוזניות BT","מטען קיר מהיר"], cable:["כבל HDMI 2.1","מתאם USB-C"]} },
-            general: { theme: 'theme-general', cats: {gen:"📦 כללי", diy:"🛠️ עבודה / DIY", home:"🏠 תחזוקת הבית"}, items: {gen:["נייר טואלט","סוללות AA","נורות"]} }
+        let schemas = {
+            super: { theme: 'theme-super', icon: '🛒', title: 'סופרמרקט', cats: {meat:"🥩 בשר/דגים", dairy:"🥛 חלב/ביצים", veg:"🥦 ירקות/פירות", dry:"🍝 יבשים", clean:"🧼 ניקיון"}, items: {meat:["עוף","בקר"], dairy:["חלב","גבינה"]} },
+            ikea: { theme: 'theme-ikea', icon: '🇸🇪', title: 'איקאה', cats: {furn:"🛋️ רהיטים", market:"🖼️ Marketplace", text:"🛏️ טקסטיל", light:"💡 תאורה", food:"🌭 אוכל"}, items: {furn:["כוורת KALLAX","BILLY"], market:["נרות","קופסאות"]} },
+            ksp: { theme: 'theme-ksp', icon: '🖥️', title: 'KSP מחשבים', cats: {peri:"⌨️ ציוד היקפי", gadget:"📱 גאדג'טים", cable:"🔌 כבלים", comp:"💻 חומרה"}, items: {peri:["עכבר","מקלדת"], cable:["HDMI","USB-C"]} },
+            general: { theme: 'theme-general', icon: '📦', title: 'כללי', cats: {gen:"📦 כללי", diy:"🛠️ עבודה"}, items: {gen:["סוללות","נייר טואלט"]} }
         };
 
         function init() {
             if(!user) { document.getElementById('nameModal').style.display='flex'; } else { track(); setGreeting(); }
-            
-            db.ref('.info/connected').on('value', snap => {
-                if(Date.now() - startT < 4500) return;
-                document.getElementById('offlineAlert').style.display = snap.val() ? 'none' : 'block';
-            });
-
-            sync(currentId);
+            sync(currentId, true); // טעינה ראשונית
             buildDropdown();
         }
 
-        function track() {
-            if(!user) return;
-            db.ref('users/'+user).update({ 
-                lastEntry: new Date().toLocaleString('he-IL'), 
-                device: navigator.platform,
-                userAgent: navigator.userAgent 
-            });
+        function track() { db.ref('users/'+user).update({ last: new Date().toLocaleString('he-IL'), ua: navigator.userAgent }); }
+        function saveUser() { const val = document.getElementById('userNameInput').value.trim(); if(val) { user = val; localStorage.setItem('myAppName', user); document.getElementById('nameModal').style.display='none'; track(); setGreeting(); } }
+        function setGreeting() { const h = new Date().getHours(); const g = h < 5 ? "לילה טוב" : h < 12 ? "בוקר טוב" : h < 18 ? "צהריים טובים" : "ערב טוב"; document.getElementById('greeting').innerText = `${g}, ${user} 👋`; }
+
+        function triggerListFeedback(type, name) {
+            const schema = schemas[type] || schemas.general;
+            const container = document.getElementById('animation-container');
+            container.innerHTML = `
+                <div class="feedback-badge" style="border-color: ${type === 'ikea' ? '#ffdb00' : 'var(--primary)'}">
+                    <span class="feedback-icon">${schema.icon}</span>
+                    <p class="feedback-title">${name}</p>
+                    <p style="margin:5px 0 0; color:var(--primary); font-weight:800;">הרשימה מוכנה!</p>
+                </div>
+            `;
+            if(navigator.vibrate) navigator.vibrate([50, 30, 50]);
+            setTimeout(() => container.innerHTML = "", 2500);
         }
 
-        function saveUser() {
-            const val = document.getElementById('userNameInput').value.trim();
-            if(val) { user = val; localStorage.setItem('myAppName', user); document.getElementById('nameModal').style.display='none'; track(); setGreeting(); }
-        }
-
-        function setGreeting() {
-            const h = new Date().getHours();
-            const g = h < 5 ? "לילה טוב" : h < 12 ? "בוקר טוב" : h < 18 ? "צהריים טובים" : "ערב טוב";
-            document.getElementById('greeting').innerText = `${g}, ${user} 👋`;
-        }
-
-        // פונקציית מעבר הרשימות עם הנפשת הוואקום
         function animateSwitch(newId) {
             const el = document.getElementById('appContent');
             el.classList.add('vacuum-out');
-            if(navigator.vibrate) navigator.vibrate(50);
-            
             setTimeout(() => {
                 currentId = newId;
                 window.history.pushState({}, '', '?list='+newId);
-                sync(newId); // טעינת הנתונים החדשים
-                
+                sync(newId, false);
                 el.classList.remove('vacuum-out');
-                el.classList.add('unfold-in');
-                setTimeout(() => el.classList.remove('unfold-in'), 700);
             }, 600);
         }
 
-        function sync(id) {
-            // ניקוי מאזינים קודמים למניעת כפילויות
-            db.ref('all_lists/'+currentId+'/items').off();
-            
+        function sync(id, isInitial) {
             db.ref('all_lists/'+id+'/metadata').once('value', s => {
-                const meta = s.val() || {type:'general'};
+                const meta = s.val() || {type:'general', name:'כללי'};
                 document.body.className = schemas[meta.type]?.theme || 'theme-general';
                 const cats = schemas[meta.type]?.cats || schemas.general.cats;
                 document.getElementById('itemCat').innerHTML = Object.entries(cats).map(([k,v]) => `<option value="${k}">${v}</option>`).join('');
                 updateQty(); updateSuggestions();
+                if(!isInitial) triggerListFeedback(meta.type, meta.name);
             });
-
+            db.ref('all_lists/'+id+'/items').off();
             db.ref('all_lists/'+id+'/items').on('value', s => draw(s.val()));
         }
 
-        // פונקציית הרינדור הקריטית - מונעת את באג העגלה
         function draw(data) {
             const todo = document.getElementById('todoList'), done = document.getElementById('doneList');
-            todo.innerHTML = ""; 
-            done.innerHTML = ""; // איפוס מלא של העגלה בכל רינדור
-            
+            todo.innerHTML = ""; done.innerHTML = "";
             let items = data ? Object.entries(data).map(([id, val]) => ({id, ...val})) : [];
             let uncollected = items.filter(i => !i.collected);
             let collected = items.filter(i => i.collected);
-            
             document.getElementById('cartCounter').innerText = collected.length;
 
             const type = Object.keys(schemas).find(k => schemas[k].theme === document.body.className) || 'general';
             const cats = schemas[type].cats;
 
-            // רינדור רשימת הקניות
             Object.keys(cats).forEach(ck => {
                 const list = uncollected.filter(i => i.category === ck);
                 if(list.length > 0) {
@@ -255,33 +207,19 @@
                     list.forEach(i => todo.appendChild(row(i, false)));
                 }
             });
-            
-            // רינדור העגלה - פתרון סופי לבאג
-            if(collected.length > 0) {
-                collected.sort((a,b) => (b.at || 0) - (a.at || 0)).forEach(i => {
-                    done.appendChild(row(i, true));
-                });
-            } else {
-                done.innerHTML = `<div style="text-align:center; color:rgba(255,255,255,0.2); margin-top:40px; font-weight:bold;">העגלה מחכה לך... 🛒</div>`;
-            }
+            collected.sort((a,b) => (b.at || 0) - (a.at || 0)).forEach(i => done.appendChild(row(i, true)));
         }
 
         function row(i, isDone) {
             const li = document.createElement('li');
             li.id = "li_"+i.id;
-            if(isDone) { 
-                li.style.background = "rgba(255,255,255,0.05)"; 
-                li.style.color = "rgba(255,255,255,0.6)"; 
-                li.style.borderRightColor = "var(--secondary)"; 
-            }
+            if(isDone) { li.style.background = "rgba(255,255,255,0.05)"; li.style.color = "rgba(255,255,255,0.5)"; li.style.borderRightColor = "var(--secondary)"; }
             li.innerHTML = `
-                <div onclick="move('${i.id}', ${isDone})" style="flex:1; cursor:pointer; padding:5px 0;">
-                    <span style="font-weight:800; font-size:17px; text-decoration:${isDone?'line-through':'none'}">
-                        <span style="color:${isDone?'var(--secondary)':'var(--primary)'}; margin-left:5px;">${i.qty}</span> ${i.text}
-                    </span>
-                    <div style="font-size:10px; opacity:0.4; margin-top:4px;">👤 ${i.by || 'אורח'}</div>
+                <div onclick="move('${i.id}', ${isDone})" style="flex:1; cursor:pointer;">
+                    <span style="font-weight:800; font-size:17px; text-decoration:${isDone?'line-through':'none'}">${i.qty} ${i.text}</span>
+                    <div style="font-size:10px; opacity:0.4;">👤 ${i.by || 'אורח'}</div>
                 </div>
-                <button onclick="kill('${i.id}')" style="background:none; border:none; font-size:22px; cursor:pointer; opacity:0.5; padding:10px;">🗑️</button>
+                <button onclick="kill('${i.id}')" style="background:none; border:none; font-size:22px; cursor:pointer; opacity:0.5;">🗑️</button>
             `;
             return li;
         }
@@ -290,10 +228,7 @@
             if(!isDone) {
                 const target = document.getElementById("li_"+id);
                 target.classList.add('item-vacuum');
-                if(navigator.vibrate) navigator.vibrate([30, 40]);
-                setTimeout(() => {
-                    db.ref('all_lists/'+currentId+'/items/'+id).update({collected:true, at:Date.now()});
-                }, 450);
+                setTimeout(() => db.ref('all_lists/'+currentId+'/items/'+id).update({collected:true, at:Date.now()}), 450);
             } else {
                 db.ref('all_lists/'+currentId+'/items/'+id).update({collected:false});
             }
@@ -302,88 +237,55 @@
         function pushItem() {
             const text = document.getElementById('itemName').value.trim();
             if(!text) return;
-            db.ref('all_lists/'+currentId+'/items').push({
-                text, 
-                category: document.getElementById('itemCat').value, 
-                qty: document.getElementById('itemQty').value, 
-                collected:false, 
-                by: user,
-                createdAt: Date.now()
-            });
+            db.ref('all_lists/'+currentId+'/items').push({ text, category: document.getElementById('itemCat').value, qty: document.getElementById('itemQty').value, collected:false, by: user });
             document.getElementById('itemName').value = "";
-            if(navigator.vibrate) navigator.vibrate(30);
         }
 
         function updateQty() {
             const s = document.getElementById('itemQty'); s.innerHTML = "";
             for(let i=1; i<=15; i++) s.add(new Option(i + " יח'", i));
-            s.add(new Option('0.5 ק"ג', '0.5 ק"ג'));
             s.add(new Option('1 ק"ג', '1 ק"ג'));
-            s.add(new Option('2 ק"ג', '2 ק"ג'));
         }
 
         function updateSuggestions() {
             const c = document.getElementById('itemCat').value;
             const type = Object.keys(schemas).find(k => schemas[k].cats[c]);
             const list = schemas[type]?.items[c] || [];
-            const p = document.getElementById('quickPick');
-            p.innerHTML = '<option value="">הצעות למחלקה...</option>' + list.map(i => `<option value="${i}">${i}</option>`).join('');
+            document.getElementById('quickPick').innerHTML = '<option value="">הצעות...</option>' + list.map(i => `<option value="${i}">${i}</option>`).join('');
         }
 
         function fillItem(v) { if(v) document.getElementById('itemName').value = v; }
-        
-        function toggleCart() { 
-            const sheet = document.getElementById('cartSheet');
-            isCartOpen = !isCartOpen;
-            sheet.classList.toggle('open'); 
-            document.getElementById('arrow').innerText = isCartOpen ? "▼" : "▲";
-        }
-
-        function kill(id) { if(confirm("למחוק את הפריט הזה?")) db.ref('all_lists/'+currentId+'/items/'+id).remove(); }
-        
-        function wipeDone() { 
-            if(confirm("לנקות את כל הפריטים שנאספו?")) {
-                db.ref('all_lists/'+currentId+'/items').once('value', s => {
-                    const d = s.val(); 
-                    for(let k in d) if(d[k].collected) db.ref('all_lists/'+currentId+'/items/'+k).remove();
-                });
-                showToast("העגלה נוקתה בהצלחה 🧹");
-            }
-        }
+        function toggleCart() { document.getElementById('cartSheet').classList.toggle('open'); document.getElementById('arrow').innerText = document.getElementById('cartSheet').classList.contains('open') ? "▼" : "▲"; }
+        function kill(id) { if(confirm("למחוק?")) db.ref('all_lists/'+currentId+'/items/'+id).remove(); }
+        function wipeDone() { db.ref('all_lists/'+currentId+'/items').once('value', s => { const d = s.val(); for(let k in d) if(d[k].collected) db.ref('all_lists/'+currentId+'/items/'+k).remove(); }); }
 
         function makeList() {
             const name = document.getElementById('newListName').value.trim();
+            const type = document.getElementById('newListType').value;
             if(!name) return;
             const id = 'list_'+Date.now();
-            db.ref('all_lists/'+id+'/metadata').set({ name, type: document.getElementById('newListType').value });
-            
+            db.ref('all_lists/'+id+'/metadata').set({ name, type });
             let lists = JSON.parse(localStorage.getItem('myLists')) || ['list_general'];
-            lists.push(id); 
-            localStorage.setItem('myLists', JSON.stringify(lists));
-            
+            lists.push(id); localStorage.setItem('myLists', JSON.stringify(lists));
             document.getElementById('newListModal').style.display='none';
-            document.getElementById('newListName').value = "";
-            buildDropdown(); 
-            animateSwitch(id);
+            buildDropdown(); animateSwitch(id);
         }
 
         async function buildDropdown() {
             const d = document.getElementById('myListsDropdown'); d.innerHTML = "";
-            let l = JSON.parse(localStorage.getItem('myLists')) || ['list_general'];
-            for(let id of l) {
-                const s = await db.ref('all_lists/'+id+'/metadata').once('value');
-                const m = s.val() || {name:'רשימה כללית'};
-                const o = new Option(m.name, id);
-                if(id === currentId) o.selected = true;
-                d.add(o);
-            }
-        }
-
-        function showToast(m) { 
-            const t = document.getElementById('toast'); 
-            t.innerText = m; 
-            t.classList.add('show'); 
-            setTimeout(()=>t.classList.remove('show'), 3500); 
+            // משיכת כל הרשימות הקיימות מה-Firebase כדי לוודא ששום דבר לא הלך לאיבוד
+            db.ref('all_lists').once('value', s => {
+                const all = s.val();
+                let myLocal = JSON.parse(localStorage.getItem('myLists')) || ['list_general'];
+                d.innerHTML = "";
+                myLocal.forEach(id => {
+                    if(all[id]) {
+                        const opt = new Option(all[id].metadata.name, id);
+                        if(id === currentId) opt.selected = true;
+                        d.add(opt);
+                    }
+                });
+            });
         }
 
         window.onload = init;
