@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FLOWW CART | Continuity Master</title>
+    <title>FLOWW CART | Elite Master</title>
     <script src="https://unpkg.com/feather-icons"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;800;900&display=swap">
     <style>
@@ -19,7 +19,9 @@
         body { background: radial-gradient(circle at 5% 5%, #1e1b4b 0%, #0f172a 50%, #000 100%); color: var(--text-main); min-height: 100vh; overflow: hidden; display: flex; justify-content: center; align-items: center; }
         
         @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
         @keyframes vacuumOut { 100% { transform: scale(0) translateX(300px) rotate(45deg); opacity: 0; } }
+        @keyframes slideUp { 0% { transform: translateY(100%); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
 
         .screen { position: absolute; inset: 0; display: none; padding: 15px; align-items: center; justify-content: center; flex-direction: column; opacity: 0; transition: 0.4s cubic-bezier(0.23, 1, 0.32, 1); }
         .screen.active { display: flex; opacity: 1; z-index: 10; }
@@ -30,7 +32,8 @@
         
         .cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; margin-top: 25px; }
         .cat-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); padding: 22px 10px; border-radius: 28px; cursor: pointer; text-align: center; transition: 0.3s; position: relative; }
-        .cat-card .badge { position: absolute; top: 10px; left: 10px; background: var(--accent); color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; display: flex; align-items: center; justify-content: center; }
+        .cat-card .badge { position: absolute; top: 10px; left: 10px; background: var(--accent); color: white; border-radius: 50%; width: 22px; height: 22px; font-size: 12px; display: flex; align-items: center; justify-content: center; font-weight: 900; box-shadow: 0 0 10px var(--accent); }
+        .cat-card:active { transform: scale(0.95); background: var(--accent); }
 
         .item-row { background: rgba(255,255,255,0.03); padding: 16px 20px; border-radius: 22px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); margin-bottom: 12px; cursor: pointer; }
         .item-row.collected { opacity: 0.4; border-style: dashed; }
@@ -39,16 +42,15 @@
         .vacuum { animation: vacuumOut 0.4s forwards ease-in; }
 
         .history-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); padding: 18px; border-radius: 25px; margin-bottom: 12px; cursor: pointer; border-right: 4px solid var(--accent); }
-        .detail-overlay { position: absolute; inset: 0; background: var(--glass); z-index: 2000; border-radius: 40px; padding: 30px 20px; display: none; flex-direction: column; }
+        .detail-overlay { position: absolute; inset: 0; background: var(--glass); z-index: 2000; border-radius: 40px; padding: 30px 20px; display: none; flex-direction: column; animation: slideUp 0.4s ease-out; }
 
-        .overlay-victory { position: absolute; inset: 0; background: rgba(15, 23, 42, 0.99); display: none; flex-direction: column; justify-content: center; align-items: center; gap: 20px; z-index: 5000; padding: 40px; border-radius: 40px; text-align: center; }
-        .success-icon-container { width: 220px; height: 220px; position: relative; animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .big-cart { width: 100%; height: 100%; filter: drop-shadow(0 0 30px var(--accent)); }
-        .big-check { position: absolute; top: 20%; left: 35%; width: 90px; height: 90px; stroke: var(--success); stroke-width: 10; stroke-linecap: round; }
+        .overlay-victory { position: absolute; inset: 0; background: rgba(15, 23, 42, 0.99); display: none; flex-direction: column; justify-content: center; align-items: center; gap: 20px; z-index: 5000; padding: 40px; border-radius: 40px; text-align: center; backdrop-filter: blur(45px); }
+        .success-icon-container { width: 260px; height: 260px; position: relative; animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .big-cart { width: 100%; height: 100%; filter: drop-shadow(0 0 30px var(--accent)); animation: float 4s infinite ease-in-out; }
+        .big-check { position: absolute; top: 20%; left: 35%; width: 110px; height: 110px; stroke: var(--success); stroke-width: 10; stroke-linecap: round; filter: drop-shadow(0 0 20px var(--success)); }
 
         .smart-form { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; margin-top: 45px; }
         select, input { background: rgba(0,0,0,0.5); border: 1px solid var(--border); border-radius: 15px; padding: 12px; color: white; text-align: right; width: 100%; font-weight: 700; }
-        
         .secondary-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); padding: 14px; border-radius: 15px; cursor: pointer; color: var(--text-muted); font-weight: 700; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 10px; }
     </style>
 </head>
@@ -58,34 +60,34 @@
     <div class="elite-card">
         <h1 class="gradient-title">FLOWW CART</h1>
         <p style="margin: 30px 0; text-align: center; color: var(--text-muted);">הזן שם להמשך עבודה חכמה:</p>
-        <input type="text" id="user-name" placeholder="השם שלך..." style="background: rgba(0,0,0,0.5); border: 1px solid var(--border); border-radius: 20px; padding: 20px; color: white; text-align: center; font-size: 18px; margin-bottom: 25px; width: 100%;">
+        <input type="text" id="user-name" placeholder="מה השם שלך?" style="background: rgba(0,0,0,0.5); border: 1px solid var(--border); border-radius: 20px; padding: 20px; color: white; text-align: center; font-size: 18px; margin-bottom: 25px; width: 100%;">
         <button class="btn" onclick="initUser()">כניסה למערכת <i data-feather="arrow-left"></i></button>
     </div>
 </div>
 
 <div id="screen-menu" class="screen">
     <div class="elite-card">
-        <h2 id="hello-txt" class="gradient-title">שלום!</h2>
+        <h2 id="hello-txt" class="gradient-title" style="font-size: 32px;">שלום!</h2>
         <div id="category-grid" class="cat-grid">
             </div>
         <div style="margin-top: 25px;">
-            <div class="secondary-btn" onclick="showScreen('screen-history')"><i data-feather="archive"></i> היסטוריית רשימות</div>
+            <div class="secondary-btn" onclick="showScreen('screen-history')"><i data-feather="archive"></i> ארכיון רשימות</div>
             <button class="btn" style="background: rgba(255,255,255,0.05); margin-top: 15px;" onclick="logout()">החלף משתמש</button>
         </div>
     </div>
 </div>
 
 <div id="screen-history" class="screen">
-    <div class="elite-card">
+    <div class="elite-card" style="position:relative;">
         <h2 class="gradient-title" style="font-size: 28px;">ארכיון רשימות</h2>
         <div id="history-container" style="flex:1; overflow-y: auto; margin: 20px 0;"></div>
         <button class="btn" onclick="showScreen('screen-menu')">חזרה לתפריט</button>
         
         <div id="detail-overlay" class="detail-overlay">
-            <h2 id="det-title" class="gradient-title">פרטים</h2>
+            <h2 id="det-title" class="gradient-title" style="font-size: 24px;">פרטים</h2>
             <p id="det-date" style="text-align:center; color:var(--text-muted); margin-bottom: 20px;"></p>
-            <div id="det-items" style="flex:1; overflow-y: auto;"></div>
-            <button class="btn" id="resume-btn" style="margin-bottom: 10px; background: var(--accent);">המשך רשימה זו</button>
+            <div id="det-items" style="flex:1; overflow-y: auto; margin-bottom: 20px;"></div>
+            <button class="btn" id="resume-btn" style="margin-bottom: 10px; background: var(--accent);">המשך רשימה זו <i data-feather="refresh-cw" style="width:16px;"></i></button>
             <button class="btn" style="background: rgba(255,255,255,0.05);" onclick="closeDetails()">סגור</button>
         </div>
     </div>
@@ -93,31 +95,39 @@
 
 <div id="screen-list" class="screen">
     <div class="elite-card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <i data-feather="share-2" onclick="doShare()" style="color: var(--success); cursor: pointer;"></i>
-            <h2 id="cat-title" class="gradient-title" style="font-size: 22px;">רשימה</h2>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <h2 id="cat-title" class="gradient-title" style="font-size: 24px;">רשימה</h2>
+                <i data-feather="edit-2" onclick="editListName()" style="width: 18px; color: var(--text-muted); cursor: pointer;"></i>
+            </div>
             <i data-feather="chevron-left" onclick="showScreen('screen-menu')" style="color: var(--accent); cursor: pointer;"></i>
         </div>
+        
         <div class="smart-form">
             <div style="display:flex; flex-direction:column;"><label style="font-size:11px;">מחלקה</label><select id="item-dept" onchange="updateSuggestions()" style="background: rgba(0,0,0,0.5); color:white; border-radius:15px; padding:10px;"></select></div>
             <div style="display:flex; flex-direction:column;"><label style="font-size:11px;">הצעות</label><select id="item-suggest" onchange="syncSuggest()" style="background: rgba(0,0,0,0.5); color:white; border-radius:15px; padding:10px;"></select></div>
             <div style="grid-column: span 2;"><input type="text" id="item-name" placeholder="מה חסר?..." style="background: rgba(0,0,0,0.5); color:white; border-radius:15px; padding:15px; width:100%;"></div>
         </div>
-        <button class="btn" onclick="addItem()" style="margin-bottom: 12px;">הוסף לרשימה</button>
+
+        <button class="btn" onclick="addItem()" style="margin-bottom: 15px;">הוסף לרשימה</button>
+        
         <div style="flex:1; overflow-y: auto;">
             <div id="items-list"></div>
-            <div id="collected-list" style="margin-top: 20px; border-top: 1px solid var(--border); padding-top: 10px;"></div>
+            <div id="collected-list" style="margin-top: 20px; border-top: 1px solid var(--border); padding-top: 15px;"></div>
         </div>
 
         <div id="success-overlay" class="overlay-victory">
             <div class="success-icon-container">
                 <svg class="big-cart" viewBox="0 0 100 100" fill="none"><path d="M20 20H25L32 60C32.5 62.2 34.5 64 36.8 64H80.2C82.5 64 84.5 62.2 85 60L90 32.5H35" stroke="url(#g1)" stroke-width="3" stroke-linecap="round"/><circle cx="38" cy="80" r="5" fill="#818cf8"/><circle cx="78" cy="80" r="5" fill="#c084fc"/><defs><linearGradient id="g1"><stop stop-color="#818cf8"/><stop offset="1" stop-color="#c084fc"/></linearGradient></defs></svg>
-                <svg class="big-check" viewBox="0 0 100 100" fill="none"><path d="M20 50L45 75L85 25" stroke="#10b981" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <svg class="big-check" viewBox="0 0 100 100" fill="none"><path d="M20 50L45 75L85 25" stroke="#10b981" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </div>
-            <h2 class="gradient-title">הכל נאסף!</h2>
-            <button class="btn" onclick="handleNewList()" style="background: var(--success); margin-top: 20px;">רשימה חדשה</button>
+            <h2 class="gradient-title" style="font-size: 42px;">הכל נאסף!</h2>
+            <button class="btn" onclick="handleNewList()" style="background: var(--success); margin-top: 15px;">רשימה חדשה</button>
             <button class="btn" style="background: rgba(255,255,255,0.05); margin-top: 10px;" onclick="toggleOverlay('success-overlay', false)">סגור</button>
         </div>
+
+        <button class="btn" style="background: rgba(255,255,255,0.05); margin-top: 15px;" onclick="showScreen('screen-menu')">חזרה לתפריט</button>
     </div>
 </div>
 
@@ -181,13 +191,23 @@
 
     function openList(cat) {
         activeCat = cat;
-        document.getElementById('cat-title').innerText = `רשימת ${cat}`;
+        const addon = localStorage.getItem(`addon_${user}_${cat}`) || "";
+        document.getElementById('cat-title').innerText = `רשימת ${cat} ${addon}`;
         const ds = document.getElementById('item-dept');
         ds.innerHTML = "";
         MASTER_CONFIG[cat].depts.forEach(d => {
             const o = document.createElement('option'); o.value = d; o.innerText = d; ds.appendChild(o);
         });
         updateSuggestions(); render(); showScreen('screen-list');
+    }
+
+    function editListName() {
+        const cur = localStorage.getItem(`addon_${user}_${activeCat}`) || "";
+        const res = prompt(`הוסף תיאור אישי לרשימת ${activeCat}:`, cur);
+        if(res !== null) {
+            localStorage.setItem(`addon_${user}_${activeCat}`, res);
+            document.getElementById('cat-title').innerText = `רשימת ${activeCat} ${res}`;
+        }
     }
 
     function updateSuggestions() {
@@ -220,14 +240,12 @@
         if(!db[cat][dept].includes(item)) { db[cat][dept].push(item); localStorage.setItem('floww_shared_db', JSON.stringify(db)); }
     }
 
-    // --- מערכת המשכיות וארכיון ---
     function handleNewList() { archiveCurrentList(); localStorage.setItem(`fc_${user}_${activeCat}`, "[]"); render(); toggleOverlay('success-overlay', false); showScreen('screen-menu'); }
 
     function archiveCurrentList() {
         let its = JSON.parse(localStorage.getItem(`fc_${user}_${activeCat}`) || "[]");
         if(its.length === 0) return;
         let history = JSON.parse(localStorage.getItem(`floww_history_${user}`) || "[]");
-        // מעדכן את הרשימה האחרונה אם היא מאותה קטגוריה וחדשה מאוד, אחרת יוצר חדשה
         history.push({ id: Date.now(), cat: activeCat, date: new Date().toLocaleString('he-IL'), items: [...its] });
         localStorage.setItem(`floww_history_${user}`, JSON.stringify(history));
     }
@@ -256,13 +274,12 @@
         itemsDiv.innerHTML = h.items.map(i => `<div class="item-row" style="cursor:default;"><div style="display:flex; align-items:center; gap:12px;"><div class="check-btn ${i.collected ? 'active' : ''}"><i data-feather="check" style="width:14px;"></i></div><span>${i.txt}</span></div></div>`).join('');
         
         document.getElementById('resume-btn').onclick = () => {
-            if(confirm(`להחליף את הרשימה הנוכחית ב${h.cat} ברשימה זו?`)) {
+            if(confirm(`להחליף את הרשימה הנוכחית ב-${h.cat} ברשימה זו?`)) {
                 localStorage.setItem(`fc_${user}_${h.cat}`, JSON.stringify(h.items));
                 closeDetails();
                 openList(h.cat);
             }
         };
-        
         document.getElementById('detail-overlay').style.display = "flex";
         feather.replace();
     }
