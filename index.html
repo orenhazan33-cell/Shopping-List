@@ -25,16 +25,15 @@
         .screen { position: absolute; inset: 0; display: none; padding: 15px; align-items: center; justify-content: center; flex-direction: column; opacity: 0; transition: 0.4s; }
         .screen.active { display: flex; opacity: 1; z-index: 10; }
         
-        /* התיקון הקריטי: הוספת overflow-y: auto כדי לאפשר גלילה אמיתית */
         .elite-card { 
             background: var(--glass); backdrop-filter: blur(50px); width: 100%; max-width: 440px; height: 94vh; 
-            padding: 25px 20px 35px 20px; /* הוספת ריווח תחתון לנוחות גלילה */
+            padding: 25px 20px 35px 20px; 
             border-radius: 40px; border: 1px solid var(--border); box-shadow: 0 50px 150px rgba(0,0,0,0.9); 
             display: flex; flex-direction: column; 
-            overflow-y: auto; /* הנה הגלילה שחזרה! */
-            scrollbar-width: none; /* העלמת הפס המכוער ב-Firefox */
+            overflow-y: auto; 
+            scrollbar-width: none; 
         }
-        .elite-card::-webkit-scrollbar { display: none; } /* העלמת הפס המכוער ב-Chrome/Safari */
+        .elite-card::-webkit-scrollbar { display: none; }
 
         .gradient-title { 
             background: linear-gradient(135deg, #a78bfa, #c084fc); 
@@ -47,7 +46,6 @@
         .btn { background: linear-gradient(135deg, #4f46e5, #7c3aed); border: none; color: white; border-radius: 20px; padding: 18px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 17px; width: 100%; transition: 0.2s; flex-shrink: 0; }
         .btn:active { transform: scale(0.98); }
         
-        /* Features List (Welcome Screen) */
         .feature-item { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; text-align: right; }
         .feature-icon { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 
@@ -72,12 +70,16 @@
         .inline-edit-input { background: rgba(255,255,255,0.05); border: 1.5px solid var(--accent); color: white; font-size: 24px; font-weight: 900; text-align: center; border-radius: 15px; width: 85%; padding: 8px; }
         .history-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); padding: 20px; border-radius: 25px; margin-bottom: 12px; cursor: pointer; border-right: 5px solid var(--accent); }
 
-        /* Victory Overlay */
-        .overlay-victory { position: absolute; inset: 0; background: rgba(15, 23, 42, 0.99); display: none; flex-direction: column; justify-content: center; align-items: center; gap: 20px; z-index: 5000; padding: 40px; border-radius: 40px; text-align: center; backdrop-filter: blur(50px); }
+        .overlay-victory, .overlay-bottom { position: absolute; inset: 0; background: rgba(15, 23, 42, 0.95); display: none; flex-direction: column; justify-content: center; align-items: center; gap: 20px; z-index: 5000; padding: 40px; text-align: center; backdrop-filter: blur(20px); }
+        .overlay-bottom { justify-content: flex-end; padding: 0; }
+        .bottom-sheet { background: #0f172a; width: 100%; max-width: 440px; border-radius: 40px 40px 0 0; padding: 35px 25px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 15px; animation: slideUp 0.3s ease-out; box-shadow: 0 -10px 50px rgba(0,0,0,0.5); }
+        
         .success-icon-container { width: 280px; height: 280px; position: relative; animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .big-cart { width: 100%; height: 100%; filter: drop-shadow(0 0 30px var(--accent)); }
         .big-check { position: absolute; top: 20%; left: 35%; width: 120px; height: 120px; stroke: var(--success); stroke-width: 10; stroke-linecap: round; }
+        
         @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -144,7 +146,7 @@
 <div id="screen-list" class="screen">
     <div class="elite-card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-shrink: 0;">
-            <i data-feather="share-2" onclick="doShare()" style="color: var(--success); cursor: pointer; width: 24px;"></i>
+            <i data-feather="share-2" onclick="openShareMenu()" style="color: var(--success); cursor: pointer; width: 24px;"></i>
             <div id="title-wrapper" style="display: flex; align-items: center; gap: 8px; flex:1; justify-content: center;">
                 <h2 id="cat-title" class="gradient-title" style="font-size: 22px;">רשימה</h2>
                 <i id="edit-icon" data-feather="edit-2" onclick="toggleInlineEdit()" style="width: 20px; color: var(--text-muted); cursor: pointer;"></i>
@@ -169,6 +171,16 @@
             <div id="collected-list" style="display:none; margin-top: 10px; border-top: 1px solid var(--border); padding-top: 15px;"></div>
         </div>
 
+        <div id="share-overlay" class="overlay-bottom">
+            <div class="bottom-sheet">
+                <h3 class="gradient-title" style="font-size: 24px; margin-bottom: 10px;">שתף רשימה</h3>
+                <button class="btn" style="background: #25D366; color: white;" onclick="shareWhatsApp()"><i data-feather="message-circle"></i> וואטסאפ</button>
+                <button class="btn" style="background: rgba(255,255,255,0.1);" onclick="copyList()"><i data-feather="copy"></i> העתק טקסט</button>
+                <button class="btn" style="background: rgba(255,255,255,0.05);" onclick="nativeShare()"><i data-feather="share"></i> שיתוף כללי</button>
+                <button class="btn" style="background: transparent; border: 1px solid var(--border); margin-top: 10px;" onclick="toggleOverlay('share-overlay', false)">ביטול</button>
+            </div>
+        </div>
+
         <div id="success-overlay" class="overlay-victory">
             <div class="success-icon-container">
                 <svg class="big-cart" viewBox="0 0 100 100" fill="none"><path d="M20 20H25L32 60C32.5 62.2 34.5 64 36.8 64H80.2C82.5 64 84.5 62.2 85 60L90 32.5H35" stroke="url(#g1)" stroke-width="3" stroke-linecap="round"/><circle cx="38" cy="80" r="5" fill="#818cf8"/><circle cx="78" cy="80" r="5" fill="#c084fc"/><defs><linearGradient id="g1"><stop stop-color="#818cf8"/><stop offset="1" stop-color="#c084fc"/></linearGradient></defs></svg>
@@ -182,7 +194,6 @@
 </div>
 
 <script>
-    // Firebase Config - הגנה מפני קריסות ברענון
     const firebaseConfig = {
         apiKey: "AIzaSyCb7dApdjqPB6Fip9rW-QxoNbTZBow6rkQ",
         authDomain: "shopping-list-7c4fa.firebaseapp.com",
@@ -194,18 +205,14 @@
         measurementId: "G-MBRDXXLKKX"
     };
 
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    // מנגנון הגנה על LocalStorage
     function getSafeData(key) {
         try { return JSON.parse(localStorage.getItem(key) || "[]"); } 
         catch (e) { localStorage.setItem(key, "[]"); return []; }
     }
 
-    // מאגר 6 הקטגוריות
     const MASTER_CONFIG = {
         'סופר': { icon: 'shopping-cart', depts: {
             '🥛 חלב וביצים': {color: '#60a5fa', icon: 'package', items: ['חלב 3%', 'ביצים L', 'גבינה לבנה', 'קוטג׳', 'חמאה', 'יוגורט', 'צהובה']},
@@ -285,8 +292,7 @@
             header.className = 'dept-header'; header.style.color = config.color;
             header.innerHTML = `<i data-feather="${config.icon}" style="width:14px;"></i> ${deptName}`;
             l.appendChild(header);
-
-            grouped[deptName].forEach(item => { l.appendChild(createRow(item, config.color, config.icon)); });
+            grouped[deptName].forEach(item => l.appendChild(createRow(item, config.color, config.icon)));
         });
 
         const collectedGrouped = {};
@@ -303,8 +309,7 @@
             header.style.opacity = '0.7';
             header.innerHTML = `<i data-feather="${config.icon}" style="width:14px;"></i> ${deptName}`;
             cl.appendChild(header);
-
-            collectedGrouped[deptName].forEach(item => { cl.appendChild(createRow(item, config.color, config.icon)); });
+            collectedGrouped[deptName].forEach(item => cl.appendChild(createRow(item, config.color, config.icon)));
         });
         
         document.getElementById('cart-count').innerText = its.filter(i => i.collected).length;
@@ -417,9 +422,7 @@
     }
 
     function toggleCart() { isCartOpen = !isCartOpen; document.getElementById('collected-list').style.display = isCartOpen ? 'block' : 'none'; feather.replace(); }
-    
     function logout() { localStorage.removeItem('floww_u'); location.reload(); }
-    
     function toggleOverlay(id, s) { document.getElementById(id).style.display = s ? 'flex' : 'none'; }
     
     function handleNewList() { 
@@ -466,17 +469,42 @@
 
     function closeDetails() { document.getElementById('detail-overlay').style.display = "none"; }
     function deleteHistoryItem(id) { if(confirm("למחוק מהארכיון?")) { let h = getSafeData(`floww_history_${user}`); localStorage.setItem(`floww_history_${user}`, JSON.stringify(h.filter(x => x.id !== id))); renderHistoryList(); } }
+    function removeItem(id, el) { let its = getSafeData(`fc_${user}_${activeCat}`); localStorage.setItem(`fc_${user}_${activeCat}`, JSON.stringify(its.filter(x => x.id !== id))); render(); }
     
-    function removeItem(id, el) { 
-        let its = getSafeData(`fc_${user}_${activeCat}`); 
-        localStorage.setItem(`fc_${user}_${activeCat}`, JSON.stringify(its.filter(x => x.id !== id))); render(); 
+    // --- מערכת השיתוף החכמה חזרה! ---
+    function openShareMenu() {
+        toggleOverlay('share-overlay', true);
+        feather.replace();
     }
-    
-    function doShare() {
+
+    function getShareText() {
         let its = getSafeData(`fc_${user}_${activeCat}`);
         const addon = localStorage.getItem(`addon_${user}_${activeCat}`) || "";
-        let t = `*FLOWW CART - ${activeCat} ${addon}*\n\n` + its.map(i => `${i.collected ? '✅' : '🔹'} ${i.txt} ${i.qty ? `(${i.qty})` : ''}`).join('\n');
-        window.open(`https://wa.me/?text=${encodeURIComponent(t)}`);
+        return `*FLOWW CART - ${activeCat} ${addon}*\n\n` + its.map(i => `${i.collected ? '✅' : '🔹'} ${i.txt} ${i.qty ? `(${i.qty})` : ''}`).join('\n');
+    }
+
+    function shareWhatsApp() {
+        window.open(`https://wa.me/?text=${encodeURIComponent(getShareText())}`);
+        toggleOverlay('share-overlay', false);
+    }
+
+    function copyList() {
+        navigator.clipboard.writeText(getShareText()).then(() => {
+            alert("הרשימה הועתקה ללוח!");
+            toggleOverlay('share-overlay', false);
+        });
+    }
+
+    function nativeShare() {
+        if (navigator.share) {
+            navigator.share({
+                title: `FLOWW CART - ${activeCat}`,
+                text: getShareText()
+            }).catch(console.error);
+        } else {
+            copyList(); // Fallback
+        }
+        toggleOverlay('share-overlay', false);
     }
 </script>
 </body>
