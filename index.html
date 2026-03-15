@@ -70,7 +70,7 @@
         .inline-edit-input { background: rgba(255,255,255,0.05); border: 1.5px solid var(--accent); color: white; font-size: 24px; font-weight: 900; text-align: center; border-radius: 15px; width: 85%; padding: 8px; }
         .history-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); padding: 20px; border-radius: 25px; margin-bottom: 12px; cursor: pointer; border-right: 5px solid var(--accent); }
 
-        .overlay-victory, .overlay-bottom { position: absolute; inset: 0; background: rgba(15, 23, 42, 0.95); display: none; flex-direction: column; justify-content: center; align-items: center; gap: 20px; z-index: 5000; padding: 40px; text-align: center; backdrop-filter: blur(20px); }
+        .overlay-victory, .overlay-bottom { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.95); display: none; flex-direction: column; justify-content: center; align-items: center; gap: 20px; z-index: 9999; padding: 40px; text-align: center; backdrop-filter: blur(20px); }
         .overlay-bottom { justify-content: flex-end; padding: 0; }
         .bottom-sheet { background: #0f172a; width: 100%; max-width: 440px; border-radius: 40px 40px 0 0; padding: 35px 25px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 15px; animation: slideUp 0.3s ease-out; box-shadow: 0 -10px 50px rgba(0,0,0,0.5); }
         
@@ -132,14 +132,6 @@
         <h2 class="gradient-title" style="font-size: 30px; flex-shrink: 0;">ארכיון</h2>
         <div id="history-container" style="flex:1; overflow-y: auto; margin: 20px 0;"></div>
         <button class="btn" onclick="showScreen('screen-menu')" style="margin-top: auto;">חזרה</button>
-        
-        <div id="detail-overlay" style="position: absolute; inset: 0; background: var(--glass); z-index: 2000; border-radius: 40px; padding: 30px 20px; display: none; flex-direction: column;">
-            <h2 id="det-title" class="gradient-title" style="flex-shrink: 0;">פרטים</h2>
-            <p id="det-date" style="text-align:center; color:var(--text-muted); margin-bottom: 25px; flex-shrink: 0;"></p>
-            <div id="det-items" style="flex:1; overflow-y: auto; margin-bottom: 20px;"></div>
-            <button class="btn" id="resume-btn" style="margin-bottom: 12px; background: var(--accent); flex-shrink: 0;">המשך רשימה זו</button>
-            <button class="btn" style="background: rgba(255,255,255,0.05); flex-shrink: 0;" onclick="closeDetails()">סגור</button>
-        </div>
     </div>
 </div>
 
@@ -170,27 +162,35 @@
             </div>
             <div id="collected-list" style="display:none; margin-top: 10px; border-top: 1px solid var(--border); padding-top: 15px;"></div>
         </div>
-
-        <div id="share-overlay" class="overlay-bottom">
-            <div class="bottom-sheet">
-                <h3 class="gradient-title" style="font-size: 24px; margin-bottom: 10px;">שתף רשימה</h3>
-                <button class="btn" style="background: #25D366; color: white;" onclick="shareWhatsApp()"><i data-feather="message-circle"></i> וואטסאפ</button>
-                <button class="btn" style="background: rgba(255,255,255,0.1);" onclick="copyList()"><i data-feather="copy"></i> העתק טקסט</button>
-                <button class="btn" style="background: rgba(255,255,255,0.05);" onclick="nativeShare()"><i data-feather="share"></i> שיתוף כללי</button>
-                <button class="btn" style="background: transparent; border: 1px solid var(--border); margin-top: 10px;" onclick="toggleOverlay('share-overlay', false)">ביטול</button>
-            </div>
-        </div>
-
-        <div id="success-overlay" class="overlay-victory">
-            <div class="success-icon-container">
-                <svg class="big-cart" viewBox="0 0 100 100" fill="none"><path d="M20 20H25L32 60C32.5 62.2 34.5 64 36.8 64H80.2C82.5 64 84.5 62.2 85 60L90 32.5H35" stroke="url(#g1)" stroke-width="3" stroke-linecap="round"/><circle cx="38" cy="80" r="5" fill="#818cf8"/><circle cx="78" cy="80" r="5" fill="#c084fc"/><defs><linearGradient id="g1"><stop stop-color="#818cf8"/><stop offset="1" stop-color="#c084fc"/></linearGradient></defs></svg>
-                <svg class="big-check" viewBox="0 0 100 100" fill="none"><path d="M20 50L45 75L85 25" stroke="#10b981" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </div>
-            <h2 class="gradient-title" style="font-size: 44px; margin-top: 10px;">הכל נאסף!</h2>
-            <button class="btn" onclick="handleNewList()" style="background: var(--success); margin-top: 20px; padding: 22px;">רשימה חדשה</button>
-            <button class="btn" style="background: rgba(255,255,255,0.05); margin-top: 10px;" onclick="toggleOverlay('success-overlay', false)">סגור</button>
-        </div>
     </div>
+</div>
+
+<div id="share-overlay" class="overlay-bottom">
+    <div class="bottom-sheet">
+        <h3 class="gradient-title" style="font-size: 24px; margin-bottom: 10px;">שתף רשימה</h3>
+        <button class="btn" style="background: #25D366; color: white;" onclick="shareWhatsApp()"><i data-feather="message-circle"></i> וואטסאפ</button>
+        <button class="btn" style="background: rgba(255,255,255,0.1);" onclick="copyList()"><i data-feather="copy"></i> העתק טקסט</button>
+        <button class="btn" style="background: rgba(255,255,255,0.05);" onclick="nativeShare()"><i data-feather="share"></i> שיתוף מתקדם</button>
+        <button class="btn" style="background: transparent; border: 1px solid var(--border); margin-top: 10px;" onclick="toggleOverlay('share-overlay', false)">ביטול</button>
+    </div>
+</div>
+
+<div id="detail-overlay" style="position: fixed; inset: 0; background: var(--glass); z-index: 9999; padding: 30px 20px; display: none; flex-direction: column;">
+    <h2 id="det-title" class="gradient-title" style="flex-shrink: 0; padding-top: 20px;">פרטים</h2>
+    <p id="det-date" style="text-align:center; color:var(--text-muted); margin-bottom: 25px; flex-shrink: 0;"></p>
+    <div id="det-items" style="flex:1; overflow-y: auto; margin-bottom: 20px;"></div>
+    <button class="btn" id="resume-btn" style="margin-bottom: 12px; background: var(--accent); flex-shrink: 0;">המשך רשימה זו</button>
+    <button class="btn" style="background: rgba(255,255,255,0.05); flex-shrink: 0;" onclick="closeDetails()">סגור</button>
+</div>
+
+<div id="success-overlay" class="overlay-victory">
+    <div class="success-icon-container">
+        <svg class="big-cart" viewBox="0 0 100 100" fill="none"><path d="M20 20H25L32 60C32.5 62.2 34.5 64 36.8 64H80.2C82.5 64 84.5 62.2 85 60L90 32.5H35" stroke="url(#g1)" stroke-width="3" stroke-linecap="round"/><circle cx="38" cy="80" r="5" fill="#818cf8"/><circle cx="78" cy="80" r="5" fill="#c084fc"/><defs><linearGradient id="g1"><stop stop-color="#818cf8"/><stop offset="1" stop-color="#c084fc"/></linearGradient></defs></svg>
+        <svg class="big-check" viewBox="0 0 100 100" fill="none"><path d="M20 50L45 75L85 25" stroke="#10b981" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <h2 class="gradient-title" style="font-size: 44px; margin-top: 10px;">הכל נאסף!</h2>
+    <button class="btn" onclick="handleNewList()" style="background: var(--success); margin-top: 20px; padding: 22px;">רשימה חדשה</button>
+    <button class="btn" style="background: rgba(255,255,255,0.05); margin-top: 10px;" onclick="toggleOverlay('success-overlay', false)">סגור</button>
 </div>
 
 <script>
@@ -423,7 +423,7 @@
 
     function toggleCart() { isCartOpen = !isCartOpen; document.getElementById('collected-list').style.display = isCartOpen ? 'block' : 'none'; feather.replace(); }
     function logout() { localStorage.removeItem('floww_u'); location.reload(); }
-    function toggleOverlay(id, s) { document.getElementById(id).style.display = s ? 'flex' : 'none'; }
+    function toggleOverlay(id, s) { document.getElementById(id).style.display = s ? 'flex' : 'none'; feather.replace(); }
     
     function handleNewList() { 
         archiveCurrentList(); 
@@ -471,10 +471,9 @@
     function deleteHistoryItem(id) { if(confirm("למחוק מהארכיון?")) { let h = getSafeData(`floww_history_${user}`); localStorage.setItem(`floww_history_${user}`, JSON.stringify(h.filter(x => x.id !== id))); renderHistoryList(); } }
     function removeItem(id, el) { let its = getSafeData(`fc_${user}_${activeCat}`); localStorage.setItem(`fc_${user}_${activeCat}`, JSON.stringify(its.filter(x => x.id !== id))); render(); }
     
-    // --- מערכת השיתוף החכמה חזרה! ---
+    // --- תפריט השיתוף שעובד מושלם ---
     function openShareMenu() {
         toggleOverlay('share-overlay', true);
-        feather.replace();
     }
 
     function getShareText() {
@@ -484,13 +483,15 @@
     }
 
     function shareWhatsApp() {
-        window.open(`https://wa.me/?text=${encodeURIComponent(getShareText())}`);
+        const t = getShareText();
+        // הוספת _blank מונעת מהדפדפן לדרוס את האפליקציה!
+        window.open(`https://wa.me/?text=${encodeURIComponent(t)}`, '_blank');
         toggleOverlay('share-overlay', false);
     }
 
     function copyList() {
         navigator.clipboard.writeText(getShareText()).then(() => {
-            alert("הרשימה הועתקה ללוח!");
+            alert("הרשימה הועתקה! עכשיו אפשר להדביק אותה איפה שתרצה.");
             toggleOverlay('share-overlay', false);
         });
     }
@@ -502,7 +503,7 @@
                 text: getShareText()
             }).catch(console.error);
         } else {
-            copyList(); // Fallback
+            copyList(); // אם המכשיר לא תומך בשיתוף כללי, נעתיק כגיבוי
         }
         toggleOverlay('share-overlay', false);
     }
