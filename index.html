@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FLOWW CART | Final Elite Launch</title>
+    <title>FLOWW CART | The Elite Standard</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -72,7 +72,7 @@
 
         .overlay-victory, .overlay-bottom { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.95); display: none; flex-direction: column; justify-content: center; align-items: center; gap: 20px; z-index: 9999; padding: 40px; text-align: center; backdrop-filter: blur(20px); }
         .overlay-bottom { justify-content: flex-end; padding: 0; }
-        .bottom-sheet { background: #0f172a; width: 100%; max-width: 440px; border-radius: 40px 40px 0 0; padding: 35px 25px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 15px; animation: slideUp 0.3s ease-out; box-shadow: 0 -10px 50px rgba(0,0,0,0.5); }
+        .bottom-sheet { background: #0f172a; width: 100%; max-width: 440px; border-radius: 40px 40px 0 0; padding: 35px 25px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 12px; animation: slideUp 0.3s ease-out; box-shadow: 0 -10px 50px rgba(0,0,0,0.5); }
         
         .success-icon-container { width: 280px; height: 280px; position: relative; animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .big-cart { width: 100%; height: 100%; filter: drop-shadow(0 0 30px var(--accent)); }
@@ -167,11 +167,11 @@
 
 <div id="share-overlay" class="overlay-bottom">
     <div class="bottom-sheet">
-        <h3 class="gradient-title" style="font-size: 24px; margin-bottom: 10px;">שתף רשימה</h3>
-        <button class="btn" style="background: #25D366; color: white;" onclick="shareWhatsApp()"><i data-feather="message-circle"></i> וואטסאפ</button>
-        <button class="btn" style="background: rgba(255,255,255,0.1);" onclick="copyList()"><i data-feather="copy"></i> העתק טקסט</button>
-        <button class="btn" style="background: rgba(255,255,255,0.05);" onclick="nativeShare()"><i data-feather="share"></i> שיתוף מתקדם</button>
-        <button class="btn" style="background: transparent; border: 1px solid var(--border); margin-top: 10px;" onclick="toggleOverlay('share-overlay', false)">ביטול</button>
+        <h3 class="gradient-title" style="font-size: 24px; margin-bottom: 5px;">מה לשתף?</h3>
+        <button class="btn" style="background: #25D366; color: white;" onclick="shareFullList()"><i data-feather="list"></i> שיתוף רשימה מפורטת</button>
+        <button class="btn" style="background: #3b82f6; color: white;" onclick="shareRemainingItems()"><i data-feather="shopping-cart"></i> שיתוף פריטים שנשארו</button>
+        <button class="btn" style="background: rgba(244, 114, 182, 0.2); color: white;" onclick="shareAppInvite()"><i data-feather="star"></i> שיתוף לאפליקציה ברוך הבא</button>
+        <button class="btn" style="background: transparent; border: 1px solid var(--border); margin-top: 5px;" onclick="toggleOverlay('share-overlay', false)">ביטול</button>
     </div>
 </div>
 
@@ -213,18 +213,19 @@
         catch (e) { localStorage.setItem(key, "[]"); return []; }
     }
 
+    // הסט הלוגי של האייקונים
     const MASTER_CONFIG = {
         'סופר': { icon: 'shopping-cart', depts: {
-            '🥛 חלב וביצים': {color: '#60a5fa', icon: 'package', items: ['חלב 3%', 'ביצים L', 'גבינה לבנה', 'קוטג׳', 'חמאה', 'יוגורט', 'צהובה']},
-            '🥦 ירקות ופירות': {color: '#4ade80', icon: 'zap', items: ['עגבניה', 'מלפפון', 'בצל', 'תפוח אדמה', 'גזר', 'פלפל חריף', 'לימון', 'בננה', 'תפוח']},
-            '🥩 בשר ודגים': {color: '#f87171', icon: 'activity', items: ['חזה עוף', 'בשר טחון', 'כרעיים', 'סטייק', 'סלמון טרי', 'נקניקיות']},
-            '🥖 מאפה': {color: '#fbbf24', icon: 'sun', items: ['לחם פרוס', 'פיתות', 'חלה', 'לחמניות', 'בורקס', 'עוגה']},
-            '❄️ קפואים': {color: '#93c5fd', icon: 'wind', items: ['צ׳יפס', 'אפונה', 'מלווח', 'גלידה', 'פיצה']},
-            '🥫 מזווה': {color: '#f472b6', icon: 'package', items: ['אורז', 'פסטה', 'שמן קנולה', 'סוכר', 'מלח', 'קמח', 'שימורי תירס', 'טונה']}
+            '🥛 חלב וביצים': {color: '#60a5fa', icon: 'droplet', items: ['חלב 3%', 'ביצים L', 'גבינה לבנה', 'קוטג׳', 'חמאה', 'יוגורט', 'צהובה']},
+            '🥦 ירקות ופירות': {color: '#4ade80', icon: 'sun', items: ['עגבניה', 'מלפפון', 'בצל', 'תפוח אדמה', 'גזר', 'פלפל חריף', 'לימון', 'בננה', 'תפוח']},
+            '🥩 בשר ודגים': {color: '#f87171', icon: 'target', items: ['חזה עוף', 'בשר טחון', 'כרעיים', 'סטייק', 'סלמון טרי', 'נקניקיות']},
+            '🥖 מאפה': {color: '#fbbf24', icon: 'coffee', items: ['לחם פרוס', 'פיתות', 'חלה', 'לחמניות', 'בורקס', 'עוגה']},
+            '❄️ קפואים': {color: '#93c5fd', icon: 'cloud', items: ['צ׳יפס', 'אפונה', 'מלווח', 'גלידה', 'פיצה']},
+            '🥫 מזווה': {color: '#f472b6', icon: 'archive', items: ['אורז', 'פסטה', 'שמן קנולה', 'סוכר', 'מלח', 'קמח', 'שימורי תירס', 'טונה']}
         }},
         'פארם': { icon: 'heart', depts: {
             '🧼 היגיינה': {color: '#a78bfa', icon: 'feather', items: ['שמפו', 'מרכך', 'סבון נוזלי', 'משחת שיניים', 'דאודורנט', 'מברשת שיניים']},
-            '💊 תרופות': {color: '#fb7185', icon: 'heart', items: ['אקמול', 'אדוויל', 'פלסטר', 'אלכוהול לחיטוי']},
+            '💊 תרופות': {color: '#fb7185', icon: 'plus-circle', items: ['אקמול', 'אדוויל', 'פלסטר', 'אלכוהול לחיטוי']},
             '👶 תינוקות': {color: '#fde047', icon: 'smile', items: ['חיתולים', 'מגבונים', 'תמ״ל', 'מוצץ']}
         }},
         'בית': { icon: 'home', depts: {
@@ -234,7 +235,7 @@
         }},
         'אירוע': { icon: 'star', depts: {
             '🥨 חטיפים': {color: '#f97316', icon: 'gift', items: ['במבה', 'ביסלי', 'תפוצ׳יפס', 'פיצוחים', 'שוקולד']},
-            '🍷 אלכוהול': {color: '#c084fc', icon: 'coffee', items: ['יין אדום', 'יין לבן', 'בירה', 'וודקה', 'ערק']},
+            '🍷 אלכוהול': {color: '#c084fc', icon: 'droplet', items: ['יין אדום', 'יין לבן', 'בירה', 'וודקה', 'ערק']},
             '🥤 שתייה': {color: '#38bdf8', icon: 'droplet', items: ['קולה', 'מים מינרליים', 'מיץ תפוזים', 'סודה']}
         }},
         'חשמל': { icon: 'zap', depts: {
@@ -471,40 +472,50 @@
     function deleteHistoryItem(id) { if(confirm("למחוק מהארכיון?")) { let h = getSafeData(`floww_history_${user}`); localStorage.setItem(`floww_history_${user}`, JSON.stringify(h.filter(x => x.id !== id))); renderHistoryList(); } }
     function removeItem(id, el) { let its = getSafeData(`fc_${user}_${activeCat}`); localStorage.setItem(`fc_${user}_${activeCat}`, JSON.stringify(its.filter(x => x.id !== id))); render(); }
     
-    // --- תפריט השיתוף שעובד מושלם ---
+    // --- מערכת השיתוף: בדיוק 3 האופציות המבוקשות ---
     function openShareMenu() {
         toggleOverlay('share-overlay', true);
     }
 
-    function getShareText() {
+    // 1. שיתוף רשימה (הכל)
+    function shareFullList() {
         let its = getSafeData(`fc_${user}_${activeCat}`);
         const addon = localStorage.getItem(`addon_${user}_${activeCat}`) || "";
-        return `*FLOWW CART - ${activeCat} ${addon}*\n\n` + its.map(i => `${i.collected ? '✅' : '🔹'} ${i.txt} ${i.qty ? `(${i.qty})` : ''}`).join('\n');
-    }
-
-    function shareWhatsApp() {
-        const t = getShareText();
-        // הוספת _blank מונעת מהדפדפן לדרוס את האפליקציה!
-        window.open(`https://wa.me/?text=${encodeURIComponent(t)}`, '_blank');
+        let text = `*FLOWW CART - ${activeCat} ${addon}*\n\n`;
+        let unf = its.filter(i => !i.collected);
+        let col = its.filter(i => i.collected);
+        
+        if(unf.length > 0) text += `*🛍️ נשאר לקנות:*\n` + unf.map(i => `🔸 ${i.txt} ${i.qty ? `(${i.qty})` : ''}`).join('\n') + `\n\n`;
+        if(col.length > 0) text += `*🛒 כבר בעגלה:*\n` + col.map(i => `✅ ~${i.txt}~ ${i.qty ? `(${i.qty})` : ''}`).join('\n');
+        
+        window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
         toggleOverlay('share-overlay', false);
     }
 
-    function copyList() {
-        navigator.clipboard.writeText(getShareText()).then(() => {
-            alert("הרשימה הועתקה! עכשיו אפשר להדביק אותה איפה שתרצה.");
+    // 2. שיתוף פריטים שנשארו (רק מה שלא נאסף)
+    function shareRemainingItems() {
+        let its = getSafeData(`fc_${user}_${activeCat}`);
+        const addon = localStorage.getItem(`addon_${user}_${activeCat}`) || "";
+        let unf = its.filter(i => !i.collected);
+        
+        if(unf.length === 0) {
+            alert("הכל כבר נאסף! אין פריטים חסרים לשתף.");
             toggleOverlay('share-overlay', false);
-        });
+            return;
+        }
+
+        let text = `*🚨 FLOWW CART - דחוף להשלים מ${activeCat} ${addon}:*\n\n`;
+        text += unf.map(i => `🔸 ${i.txt} ${i.qty ? `(${i.qty})` : ''}`).join('\n');
+        
+        window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+        toggleOverlay('share-overlay', false);
     }
 
-    function nativeShare() {
-        if (navigator.share) {
-            navigator.share({
-                title: `FLOWW CART - ${activeCat}`,
-                text: getShareText()
-            }).catch(console.error);
-        } else {
-            copyList(); // אם המכשיר לא תומך בשיתוף כללי, נעתיק כגיבוי
-        }
+    // 3. שיתוף לאפליקציה ברוך הבא (הזמנה לויראליות)
+    function shareAppInvite() {
+        let text = `*מוכנים לחוות קניות מסוג אחר? 🛒✨*\n\nהצטרפו אליי ל-FLOWW CART! המערכת החכמה שזוכרת מה חסר, מסדרת את המוצרים לפי מחלקות בעצמה, וחוסכת זמן בסופר.\n\nהיכנסו עכשיו והתחילו לזרום: [כאן תשים את הקישור לאפליקציה שלך]`;
+        
+        window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
         toggleOverlay('share-overlay', false);
     }
 </script>
