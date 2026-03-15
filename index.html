@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FLOWW CART | Definitive Elite Complete</title>
+    <title>FLOWW CART | Final Elite Launch</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -25,7 +25,6 @@
         .screen { position: absolute; inset: 0; display: none; padding: 15px; align-items: center; justify-content: center; flex-direction: column; opacity: 0; transition: 0.4s; }
         .screen.active { display: flex; opacity: 1; z-index: 10; }
         .elite-card { background: var(--glass); backdrop-filter: blur(50px); width: 100%; max-width: 440px; height: 94vh; padding: 25px 20px; border-radius: 40px; border: 1px solid var(--border); box-shadow: 0 50px 150px rgba(0,0,0,0.9); display: flex; flex-direction: column; scrollbar-width: none; }
-        
         .elite-card::-webkit-scrollbar { display: none; }
 
         .gradient-title { 
@@ -33,37 +32,38 @@
             -webkit-background-clip: text; 
             background-clip: text; 
             -webkit-text-fill-color: transparent; 
-            font-weight: 900; 
-            font-size: 38px; 
-            text-align: center; 
-            line-height: 1.1; 
+            font-weight: 900; font-size: 38px; text-align: center; line-height: 1.1; 
         }
 
-        .btn { background: linear-gradient(135deg, #4f46e5, #7c3aed); border: none; color: white; border-radius: 20px; padding: 18px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 17px; width: 100%; }
+        .btn { background: linear-gradient(135deg, #4f46e5, #7c3aed); border: none; color: white; border-radius: 20px; padding: 18px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 17px; width: 100%; transition: 0.2s; }
+        .btn:active { transform: scale(0.98); }
         
+        /* Features List (Welcome Screen) */
+        .feature-item { display: flex; align-items: center; gap: 15px; margin-bottom: 18px; text-align: right; }
+        .feature-icon { width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
         .cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%; margin-top: 25px; }
         .cat-card { background: rgba(255,255,255,0.04); border: 1px solid var(--border); padding: 30px 10px; border-radius: 32px; cursor: pointer; text-align: center; transition: 0.3s; position: relative; }
         .cat-card .badge { position: absolute; top: 12px; left: 12px; background: var(--accent); color: white; border-radius: 50%; width: 24px; height: 24px; font-size: 12px; display: flex; align-items: center; justify-content: center; font-weight: 900; box-shadow: 0 0 10px var(--accent); }
 
         .dept-header { font-size: 13px; font-weight: 900; color: var(--text-muted); margin: 15px 0 8px 0; border-right: 3px solid var(--accent); padding-right: 8px; letter-spacing: 1px; }
         
-        .item-row { background: rgba(255,255,255,0.05); padding: 14px; border-radius: 22px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); margin-bottom: 10px; cursor: pointer; }
-        .check-btn { width: 32px; height: 32px; border-radius: 10px; border: 2.3px solid var(--accent); display: flex; align-items: center; justify-content: center; color: var(--accent); pointer-events: none; }
-        .check-btn.active { background: var(--accent); color: white; }
-
-        .item-row.collected { opacity: 0.6; border-style: dashed; }
+        .item-row { background: rgba(255,255,255,0.05); padding: 14px; border-radius: 22px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); margin-bottom: 10px; cursor: pointer; transition: 0.2s; }
+        .item-row:active { transform: scale(0.98); }
+        .icon-btn { width: 34px; height: 34px; border-radius: 10px; border: 2.3px solid currentColor; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        
+        .item-row.collected { opacity: 0.75; border-style: dashed; transform: scale(0.98); }
 
         .smart-form { display: grid; grid-template-columns: 1.2fr 1fr; gap: 10px; margin-bottom: 15px; margin-top: 35px; }
         .form-group { display: flex; flex-direction: column; gap: 5px; }
         .form-group label { font-size: 11px; font-weight: 700; color: var(--text-muted); padding-right: 5px; }
         select, input { background: rgba(0,0,0,0.6); border: 1px solid var(--border); border-radius: 15px; padding: 14px; color: white; text-align: right; }
         
-        .cart-toggle-btn { background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success); color: var(--success); padding: 16px; border-radius: 20px; width: 100%; font-weight: 800; cursor: pointer; margin: 20px 0; display: flex; justify-content: center; gap: 10px; align-items: center; }
-        
+        .cart-toggle-btn { background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success); color: var(--success); padding: 16px; border-radius: 20px; width: 100%; font-weight: 800; cursor: pointer; margin: 20px 0; display: flex; justify-content: center; gap: 10px; align-items: center; font-size: 16px; }
         .inline-edit-input { background: rgba(255,255,255,0.05); border: 1.5px solid var(--accent); color: white; font-size: 24px; font-weight: 900; text-align: center; border-radius: 15px; width: 85%; padding: 8px; }
         .history-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); padding: 20px; border-radius: 25px; margin-bottom: 12px; cursor: pointer; border-right: 5px solid var(--accent); }
 
-        /* החזרת האנימציה המפוארת למסך הניצחון */
+        /* Victory Overlay */
         .overlay-victory { position: absolute; inset: 0; background: rgba(15, 23, 42, 0.99); display: none; flex-direction: column; justify-content: center; align-items: center; gap: 20px; z-index: 5000; padding: 40px; border-radius: 40px; text-align: center; backdrop-filter: blur(50px); }
         .success-icon-container { width: 280px; height: 280px; position: relative; animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .big-cart { width: 100%; height: 100%; filter: drop-shadow(0 0 30px var(--accent)); }
@@ -74,17 +74,38 @@
 <body>
 
 <div id="screen-welcome" class="screen active">
-    <div class="elite-card">
-        <h1 class="gradient-title">FLOWW CART</h1>
-        <p style="margin: 30px 0; text-align: center; color: var(--text-muted);">הזן שם להפעלת המאגר החכם:</p>
-        <input type="text" id="user-name" placeholder="מה השם שלך?" style="width: 100%; height: 65px; font-size: 18px;">
-        <button class="btn" style="margin-top: 25px; padding: 22px;" onclick="initUser()">כניסה למערכת <i data-feather="arrow-left"></i></button>
+    <div class="elite-card" style="justify-content: center; padding-top: 0;">
+        <div style="text-align: center; margin-bottom: 35px;">
+            <div style="background: rgba(99,102,241,0.1); width: 85px; height: 85px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto; border: 1px solid var(--accent); box-shadow: 0 0 30px rgba(99,102,241,0.2);">
+                <i data-feather="shopping-cart" style="width: 40px; height: 40px; color: var(--accent);"></i>
+            </div>
+            <h1 class="gradient-title" style="font-size: 42px;">FLOWW CART</h1>
+            <p style="color: var(--text-muted); font-size: 16px; margin-top: 5px; font-weight: 700;">הדור הבא של ניהול הקניות</p>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 30px; padding: 25px; margin-bottom: 35px;">
+            <div class="feature-item">
+                <div class="feature-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--success);"><i data-feather="cloud"></i></div>
+                <div><strong style="color: white; font-size: 16px;">גיבוי חכם בענן</strong><br><small style="color: var(--text-muted);">הנתונים שלך מסונכרנים בזמן אמת</small></div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon" style="background: rgba(96, 165, 250, 0.1); color: #60a5fa;"><i data-feather="layers"></i></div>
+                <div><strong style="color: white; font-size: 16px;">מיון קטגוריות אוטומטי</strong><br><small style="color: var(--text-muted);">סידור חזותי לפי מחלקות וצבעים</small></div>
+            </div>
+            <div class="feature-item" style="margin-bottom: 0;">
+                <div class="feature-icon" style="background: rgba(244, 114, 182, 0.1); color: #f472b6;"><i data-feather="zap"></i></div>
+                <div><strong style="color: white; font-size: 16px;">חווית Elite</strong><br><small style="color: var(--text-muted);">ממשק נקי, מהיר ומותאם אישית</small></div>
+            </div>
+        </div>
+
+        <input type="text" id="user-name" placeholder="הזן את שמך לכניסה" style="width: 100%; height: 65px; font-size: 18px; text-align: center; border-radius: 20px;">
+        <button class="btn" style="margin-top: 20px; padding: 22px;" onclick="initUser()">התחל עכשיו <i data-feather="arrow-left"></i></button>
     </div>
 </div>
 
 <div id="screen-menu" class="screen">
     <div class="elite-card">
-        <h2 id="hello-txt" class="gradient-title">שלום!</h2>
+        <h2 id="hello-txt" class="gradient-title" style="font-size: 34px;">שלום!</h2>
         <div id="category-grid" class="cat-grid"></div>
         <div style="margin-top: 35px;">
             <div class="btn" style="background: rgba(255,255,255,0.06); border: 1px solid var(--border); margin-bottom: 12px; padding: 22px;" onclick="showScreen('screen-history')"><i data-feather="archive"></i> ארכיון רשימות</div>
@@ -98,6 +119,7 @@
         <h2 class="gradient-title" style="font-size: 30px;">ארכיון</h2>
         <div id="history-container" style="flex:1; overflow-y: auto; margin: 20px 0;"></div>
         <button class="btn" onclick="showScreen('screen-menu')">חזרה</button>
+        
         <div id="detail-overlay" style="position: absolute; inset: 0; background: var(--glass); z-index: 2000; border-radius: 40px; padding: 30px 20px; display: none; flex-direction: column;">
             <h2 id="det-title" class="gradient-title">פרטים</h2>
             <p id="det-date" style="text-align:center; color:var(--text-muted); margin-bottom: 25px;"></p>
@@ -149,6 +171,7 @@
 </div>
 
 <script>
+    // Firebase Config - הגנה מפני קריסות ברענון
     const firebaseConfig = {
         apiKey: "AIzaSyCb7dApdjqPB6Fip9rW-QxoNbTZBow6rkQ",
         authDomain: "shopping-list-7c4fa.firebaseapp.com",
@@ -160,9 +183,18 @@
         measurementId: "G-MBRDXXLKKX"
     };
 
-    firebase.initializeApp(firebaseConfig);
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
     const database = firebase.database();
 
+    // מנגנון הגנה על LocalStorage (מונע מסכים שחורים)
+    function getSafeData(key) {
+        try { return JSON.parse(localStorage.getItem(key) || "[]"); } 
+        catch (e) { localStorage.setItem(key, "[]"); return []; }
+    }
+
+    // מאגר 6 הקטגוריות השלם והמדויק
     const MASTER_CONFIG = {
         'סופר': { icon: 'shopping-cart', depts: {
             '🥛 חלב וביצים': {color: '#60a5fa', icon: 'package', items: ['חלב 3%', 'ביצים L', 'גבינה לבנה', 'קוטג׳', 'חמאה', 'יוגורט', 'צהובה']},
@@ -201,7 +233,13 @@
 
     window.onload = () => {
         user = localStorage.getItem('floww_u');
-        if(user) { updateGreet(); renderCategories(); showScreen('screen-menu'); }
+        if(user) { 
+            updateGreet(); 
+            renderCategories(); 
+            showScreen('screen-menu'); 
+        } else {
+            showScreen('screen-welcome');
+        }
         feather.replace();
     };
 
@@ -222,8 +260,9 @@
     function render() {
         const l = document.getElementById('items-list'); const cl = document.getElementById('collected-list');
         l.innerHTML = ""; cl.innerHTML = "";
-        let its = JSON.parse(localStorage.getItem(`fc_${user}_${activeCat}`) || "[]");
+        let its = getSafeData(`fc_${user}_${activeCat}`);
         
+        // רשימה פעילה (לקנייה)
         const grouped = {};
         its.filter(i => !i.collected).forEach(i => {
             if(!grouped[i.dept]) grouped[i.dept] = [];
@@ -240,7 +279,24 @@
             grouped[deptName].forEach(item => { l.appendChild(createRow(item, config.color, config.icon)); });
         });
 
-        its.filter(i => i.collected).reverse().forEach(i => cl.appendChild(createRow(i, '#475569', 'check')));
+        // רשימה שנאספה (בעגלה) - מחלקות
+        const collectedGrouped = {};
+        its.filter(i => i.collected).forEach(i => {
+            if(!collectedGrouped[i.dept]) collectedGrouped[i.dept] = [];
+            collectedGrouped[i.dept].unshift(i);
+        });
+
+        Object.keys(collectedGrouped).forEach(deptName => {
+            const config = MASTER_CONFIG[activeCat].depts[deptName] || {color: '#94a3b8', icon: 'check'};
+            const header = document.createElement('div');
+            header.className = 'dept-header'; 
+            header.style.color = config.color;
+            header.style.opacity = '0.7';
+            header.innerHTML = `<i data-feather="${config.icon}" style="width:14px;"></i> ${deptName}`;
+            cl.appendChild(header);
+
+            collectedGrouped[deptName].forEach(item => { cl.appendChild(createRow(item, config.color, config.icon)); });
+        });
         
         document.getElementById('cart-count').innerText = its.filter(i => i.collected).length;
         feather.replace();
@@ -252,15 +308,20 @@
         const r = document.createElement('div');
         r.className = `item-row ${i.collected ? 'collected' : ''}`;
         r.style.borderColor = color;
-        r.style.background = i.collected ? 'transparent' : `${color}08`;
+        r.style.background = i.collected ? 'rgba(0,0,0,0.2)' : `${color}08`;
         r.onclick = () => toggleCollect(i.id);
         
+        // High Visibility icons for cart
+        const iconBg = i.collected ? color : 'transparent';
+        const iconColor = i.collected ? '#fff' : color;
         const displayedIcon = i.collected ? 'check' : iconName;
-        const textStyle = i.collected ? 'color: var(--text-muted);' : `color: ${color};`;
+        
+        // Strikethrough for collected
+        const textStyle = i.collected ? 'color: var(--text-muted); text-decoration: line-through;' : `color: ${color};`;
 
         r.innerHTML = `
             <div style="display:flex; align-items:center; gap:12px;">
-                <div class="check-btn ${i.collected ? 'active' : ''}" style="color:${color}; border-color:${color};"><i data-feather="${displayedIcon}" style="width:16px;"></i></div>
+                <div class="icon-btn" style="background-color:${iconBg}; color:${iconColor}; border-color:${color};"><i data-feather="${displayedIcon}" style="width:16px;"></i></div>
                 <div style="display:flex; flex-direction:column;">
                     <strong style="font-size:16px; ${textStyle}">${i.txt}</strong>
                     <small style="font-weight:700; color:var(--text-muted)">${i.qty || ''}</small>
@@ -275,14 +336,14 @@
         const ni = document.getElementById('item-name'); const qi = document.getElementById('item-qty');
         const dept = document.getElementById('item-dept').value;
         if(!ni.value.trim()) return;
-        let its = JSON.parse(localStorage.getItem(`fc_${user}_${activeCat}`) || "[]");
+        let its = getSafeData(`fc_${user}_${activeCat}`);
         its.push({ id: Date.now(), txt: ni.value.trim(), qty: qi.value.trim(), dept: dept, collected: false });
         localStorage.setItem(`fc_${user}_${activeCat}`, JSON.stringify(its));
         ni.value = ""; qi.value = ""; render();
     }
 
     function toggleCollect(id) {
-        let its = JSON.parse(localStorage.getItem(`fc_${user}_${activeCat}`) || "[]");
+        let its = getSafeData(`fc_${user}_${activeCat}`);
         const i = its.find(x => x.id === id); if(i) i.collected = !i.collected;
         localStorage.setItem(`fc_${user}_${activeCat}`, JSON.stringify(its));
         render();
@@ -298,7 +359,7 @@
     function renderCategories() {
         const grid = document.getElementById('category-grid'); grid.innerHTML = "";
         Object.keys(MASTER_CONFIG).forEach(cat => {
-            const its = JSON.parse(localStorage.getItem(`fc_${user}_${cat}`) || "[]");
+            const its = getSafeData(`fc_${user}_${cat}`);
             const unf = its.filter(i => !i.collected).length;
             const card = document.createElement('div'); card.className = "cat-card"; card.onclick = () => openList(cat);
             card.innerHTML = `${unf > 0 ? `<div class="badge">${unf}</div>` : ''}<i data-feather="${MASTER_CONFIG[cat].icon}"></i><br><span>${cat}</span>`;
@@ -350,7 +411,9 @@
     }
 
     function toggleCart() { isCartOpen = !isCartOpen; document.getElementById('collected-list').style.display = isCartOpen ? 'block' : 'none'; feather.replace(); }
+    
     function logout() { localStorage.removeItem('floww_u'); location.reload(); }
+    
     function toggleOverlay(id, s) { document.getElementById(id).style.display = s ? 'flex' : 'none'; }
     
     function handleNewList() { 
@@ -363,8 +426,8 @@
     }
 
     function archiveCurrentList() {
-        let its = JSON.parse(localStorage.getItem(`fc_${user}_${activeCat}`) || "[]"); if(its.length === 0) return;
-        let h = JSON.parse(localStorage.getItem(`floww_history_${user}`) || "[]");
+        let its = getSafeData(`fc_${user}_${activeCat}`); if(its.length === 0) return;
+        let h = getSafeData(`floww_history_${user}`);
         const titleAddon = localStorage.getItem(`addon_${user}_${activeCat}`) || "";
         h.push({ id: Date.now(), cat: activeCat, addon: titleAddon, date: new Date().toLocaleString('he-IL'), items: its });
         localStorage.setItem(`floww_history_${user}`, JSON.stringify(h));
@@ -372,7 +435,7 @@
 
     function renderHistoryList() {
         const container = document.getElementById('history-container'); container.innerHTML = "";
-        let h = JSON.parse(localStorage.getItem(`floww_history_${user}`) || "[]");
+        let h = getSafeData(`floww_history_${user}`);
         h.reverse().forEach(x => {
             const row = document.createElement('div'); row.className = "history-card"; row.onclick = () => openHistoryDetails(x.id);
             row.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center;"><div><strong style="font-size:18px;">${x.cat} ${x.addon || ''}</strong><br><small>${x.date}</small></div><i data-feather="trash-2" style="width:20px; color:red;" onclick="event.stopPropagation(); deleteHistoryItem(${x.id})"></i></div>`;
@@ -382,7 +445,7 @@
     }
 
     function openHistoryDetails(id) {
-        const h = JSON.parse(localStorage.getItem(`floww_history_${user}`) || "[]").find(x => x.id === id); if(!h) return;
+        const h = getSafeData(`floww_history_${user}`).find(x => x.id === id); if(!h) return;
         document.getElementById('det-title').innerText = `רשימת ${h.cat} ${h.addon || ''}`; 
         document.getElementById('det-date').innerText = h.date;
         document.getElementById('det-items').innerHTML = h.items.map(i => `<div class="item-row" style="cursor:default; border-color:var(--border);"><span>${i.txt} ${i.qty ? `(${i.qty})` : ''}</span></div>`).join('');
@@ -396,15 +459,15 @@
     }
 
     function closeDetails() { document.getElementById('detail-overlay').style.display = "none"; }
-    function deleteHistoryItem(id) { if(confirm("למחוק מהארכיון?")) { let h = JSON.parse(localStorage.getItem(`floww_history_${user}`) || "[]"); localStorage.setItem(`floww_history_${user}`, JSON.stringify(h.filter(x => x.id !== id))); renderHistoryList(); } }
+    function deleteHistoryItem(id) { if(confirm("למחוק מהארכיון?")) { let h = getSafeData(`floww_history_${user}`); localStorage.setItem(`floww_history_${user}`, JSON.stringify(h.filter(x => x.id !== id))); renderHistoryList(); } }
     
     function removeItem(id, el) { 
-        let its = JSON.parse(localStorage.getItem(`fc_${user}_${activeCat}`) || "[]"); 
+        let its = getSafeData(`fc_${user}_${activeCat}`); 
         localStorage.setItem(`fc_${user}_${activeCat}`, JSON.stringify(its.filter(x => x.id !== id))); render(); 
     }
     
     function doShare() {
-        let its = JSON.parse(localStorage.getItem(`fc_${user}_${activeCat}`) || "[]");
+        let its = getSafeData(`fc_${user}_${activeCat}`);
         const addon = localStorage.getItem(`addon_${user}_${activeCat}`) || "";
         let t = `*FLOWW CART - ${activeCat} ${addon}*\n\n` + its.map(i => `${i.collected ? '✅' : '🔹'} ${i.txt} ${i.qty ? `(${i.qty})` : ''}`).join('\n');
         window.open(`https://wa.me/?text=${encodeURIComponent(t)}`);
