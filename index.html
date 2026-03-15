@@ -39,8 +39,8 @@
         .btn:active { transform: scale(0.98); }
         
         /* Features List (Welcome Screen) */
-        .feature-item { display: flex; align-items: center; gap: 15px; margin-bottom: 18px; text-align: right; }
-        .feature-icon { width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .feature-item { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; text-align: right; }
+        .feature-icon { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 
         .cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%; margin-top: 25px; }
         .cat-card { background: rgba(255,255,255,0.04); border: 1px solid var(--border); padding: 30px 10px; border-radius: 32px; cursor: pointer; text-align: center; transition: 0.3s; position: relative; }
@@ -85,16 +85,16 @@
 
         <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 30px; padding: 25px; margin-bottom: 35px;">
             <div class="feature-item">
-                <div class="feature-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--success);"><i data-feather="cloud"></i></div>
-                <div><strong style="color: white; font-size: 16px;">גיבוי חכם בענן</strong><br><small style="color: var(--text-muted);">הנתונים שלך מסונכרנים בזמן אמת</small></div>
+                <div class="feature-icon" style="background: rgba(244, 114, 182, 0.1); color: #f472b6;"><i data-feather="cpu"></i></div>
+                <div><strong style="color: white; font-size: 16px;">המוח החכם</strong><br><small style="color: var(--text-muted); font-size: 13px;">אין יותר "שכחתי חלב לקפה!". המערכת מציעה לך מוצרים בהתאמה אישית.</small></div>
             </div>
             <div class="feature-item">
                 <div class="feature-icon" style="background: rgba(96, 165, 250, 0.1); color: #60a5fa;"><i data-feather="layers"></i></div>
-                <div><strong style="color: white; font-size: 16px;">מיון קטגוריות אוטומטי</strong><br><small style="color: var(--text-muted);">סידור חזותי לפי מחלקות וצבעים</small></div>
+                <div><strong style="color: white; font-size: 16px;">מיון קטגוריות אוטומטי</strong><br><small style="color: var(--text-muted); font-size: 13px;">המוצרים מסתדרים לבד לפי מחלקות וצבעים, כדי שתטוס בסופר.</small></div>
             </div>
             <div class="feature-item" style="margin-bottom: 0;">
-                <div class="feature-icon" style="background: rgba(244, 114, 182, 0.1); color: #f472b6;"><i data-feather="zap"></i></div>
-                <div><strong style="color: white; font-size: 16px;">חווית Elite</strong><br><small style="color: var(--text-muted);">ממשק נקי, מהיר ומותאם אישית</small></div>
+                <div class="feature-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--success);"><i data-feather="star"></i></div>
+                <div><strong style="color: white; font-size: 16px;">חווית קנייה Elite</strong><br><small style="color: var(--text-muted); font-size: 13px;">סנכרון מיידי לענן, ארכיון רשימות ועיצוב יוקרתי ונקי.</small></div>
             </div>
         </div>
 
@@ -412,6 +412,7 @@
 
     function toggleCart() { isCartOpen = !isCartOpen; document.getElementById('collected-list').style.display = isCartOpen ? 'block' : 'none'; feather.replace(); }
     
+    // מנתק את המשתמש ומחזיר למסך היכולות הפתוח!
     function logout() { localStorage.removeItem('floww_u'); location.reload(); }
     
     function toggleOverlay(id, s) { document.getElementById(id).style.display = s ? 'flex' : 'none'; }
